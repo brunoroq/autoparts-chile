@@ -65,7 +65,7 @@ docs/                    arquitectura, decisiones y evidencias
 
 ## Infraestructura y observabilidad
 
-Docker Compose se propone para PostgreSQL local con volumen persistente y verificación de disponibilidad. La aplicación puede comenzar en el host; se evaluará contenerizarla si simplifica la reproducción. No hay archivos Docker en etapa 0.
+Docker Compose está configurado para PostgreSQL local con volumen persistente y healthcheck. La aplicación corre en el host; se evaluará contenerizarla solo si simplifica la reproducción. La etapa 1 incorpora exclusivamente base técnica, página provisional y esquema inicial.
 
 El cloud gratuito se seleccionará según cuotas, posibilidad de observar recursos y condiciones de carga. Si no expone CPU, memoria o I/O, declarar la limitación y obtener esas métricas localmente; consultar con el docente si esa evidencia no satisface la evaluación. No inventar métricas de infraestructura.
 

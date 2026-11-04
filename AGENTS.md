@@ -10,7 +10,7 @@ Actuar como ingeniero de software senior especializado en Next.js, TypeScript, P
 
 1. Leer este archivo y `LogFile.txt` antes de modificar el proyecto.
 2. Revisar `git status`, la arquitectura, el plan y las decisiones relevantes. No sobrescribir cambios del usuario.
-3. Identificar la etapa autorizada y sus límites. Actualmente solo está autorizada la etapa 0 (documentación); la etapa 1 requiere aprobación nueva.
+3. Identificar la etapa autorizada y sus límites. Etapas 0 y 1 completadas; commit de etapa 1 autorizado. Solo se autoriza planificar la etapa 2 (catálogo); no escribir código hasta aprobar la propuesta concreta. Identidad visual solicitada: blanco, negro, gris y detalles rojos. Sin carrito, autenticación, checkout, pagos, GA4 ni despliegues en etapa 2.
 4. Registrar el prompt completo del usuario en `LogFile.txt`, conforme a su formato. Revisar el historial antes de anexar para evitar duplicados.
 
 ## Aprobación y cierre de cambios

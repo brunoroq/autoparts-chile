@@ -1,5 +1,7 @@
 # Plan de implementación
 
+Estado al 4 de noviembre de 2026: etapas 0 y 1 completadas. Etapa 0 en commit `adbfa0e`; cambios de etapa 1 pendientes de revisión y commit. Etapa 2 no autorizada; despliegues excluidos por el usuario.
+
 Cada etapa comienza con explicación de archivos, comportamiento y pruebas, y requiere aprobación del usuario. Al cerrar: ejecutar verificaciones disponibles, registrar resultado y preguntar por commit y despliegue. No avanzar automáticamente a la etapa siguiente.
 
 | Etapa | Alcance | Criterio de aceptación |
@@ -26,4 +28,4 @@ La instrumentación mínima de errores y tiempos se incorporará desde las prime
 
 ## Decisiones pendientes antes de sus respectivas etapas
 
-Versiones compatibles y lockfile; estrategia de credenciales/sesiones de Auth.js; comportamiento del carrito anónimo; diseño visual y recursos; contenedor de aplicación; proveedor cloud y observabilidad; contratos de API; estados de pago y stock; valores concretos de cargas y umbrales. Resolver cada decisión cuando sea necesaria, sin ampliar el alcance aprobado.
+Versiones y lockfile definidos en etapa 1. Pendientes: estrategia de credenciales/sesiones de Auth.js; carrito anónimo; diseño visual final y recursos; contenedor de aplicación; proveedor cloud y observabilidad; contratos de API; transiciones de estados de pago y stock; cargas y umbrales. El esquema inicial no implementa esas reglas. Resolver cada decisión cuando sea necesaria, sin ampliar el alcance aprobado.

@@ -16,3 +16,13 @@ Registrar decisiones importantes con fecha, estado, contexto, decisión y consec
 | D010 - 2026-11-04 | Aprobada | Etapa 0 exclusivamente documental y autorización por etapa | Etapa 1, commit y despliegue pendientes de autorización |
 
 No hay resultados de desempeño medidos ni proveedor cloud seleccionado.
+
+## Actualizaciones de etapa 1 - 2026-11-04
+
+- D005 implementada: PostgreSQL en Compose; Next.js en host, sin contenedor adicional. Imagen `postgres:17.11-bookworm`, volumen persistente y publicación solo en localhost.
+- D010 actualizada: commit de etapa 0 `adbfa0e`. Plan concreto de etapa 1 aprobado por el usuario y ejecutado; etapa 2 requiere aprobación. Sin despliegue.
+- D011: versiones exactas de dependencias directas y npm con lockfile. Prisma 7.10.1 estable en lugar de 8 candidata; TypeScript 5.9.3 y ESLint 9.39.5 según plan aprobado. Revisar soporte de ESLint antes de mantenerlo a largo plazo; npm lo marca fuera de soporte.
+- D012: generador `prisma-client` con salida ignorada en `src/generated/prisma`, adaptador `@prisma/adapter-pg`, pool de cinco conexiones y cliente reutilizado en desarrollo. Configuración de CLI en `prisma.config.ts` con dotenv.
+- D013: ocho tablas iniciales; carrito vinculado a usuario, sin resolver flujo anónimo. No crear tablas Auth.js hasta decidir autenticación. CHECK en segunda migración SQL para montos, stock y cantidades; no añadir índices de optimización antes de medir, salvo claves y relaciones básicas.
+- D014: página provisional estática deliberadamente aislada de PostgreSQL; conexión real mediante script de integración sin endpoint público. Las páginas de catálogo posteriores sí consultarán PostgreSQL.
+- D015: ocho avisos moderados transitivos en herramientas de lint, cero en auditoría de producción. Mantener versiones aprobadas; no usar `npm audit fix --force`, que propone degradar la configuración Next a otra versión mayor. Documentar y reevaluar actualización compatible en un cambio posterior.

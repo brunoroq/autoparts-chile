@@ -1,0 +1,127 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  importFileExtension = "ts"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum PaymentProvider {
+  SIMULATED
+  WEBPAY_INTEGRATION
+}
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique @db.VarChar(254)
+  name      String?  @db.VarChar(120)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  cart      Cart?
+  orders    Order[]
+}
+
+model Category {
+  id       String    @id @default(uuid()) @db.Uuid
+  name     String    @db.VarChar(120)
+  slug     String    @unique @db.VarChar(160)
+  products Product[]
+}
+
+model Product {
+  id          String      @id @default(uuid()) @db.Uuid
+  sku         String      @unique @db.VarChar(64)
+  slug        String      @unique @db.VarChar(180)
+  name        String      @db.VarChar(180)
+  description String      @db.Text
+  priceClp    Int
+  stock       Int         @default(0)
+  active      Boolean     @default(true)
+  categoryId  String      @db.Uuid
+  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  createdAt   DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime    @updatedAt @db.Timestamptz(3)
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+
+  @@index([categoryId])
+}
+
+model Cart {
+  id        String     @id @default(uuid()) @db.Uuid
+  userId    String     @unique @db.Uuid
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime   @updatedAt @db.Timestamptz(3)
+  items     CartItem[]
+}
+
+model CartItem {
+  id        String  @id @default(uuid()) @db.Uuid
+  cartId    String  @db.Uuid
+  productId String  @db.Uuid
+  quantity  Int
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@unique([cartId, productId])
+  @@index([productId])
+}
+
+model Order {
+  id             String           @id @default(uuid()) @db.Uuid
+  userId         String           @db.Uuid
+  user           User             @relation(fields: [userId], references: [id], onDelete: Restrict)
+  status         OrderStatus      @default(PENDING)
+  totalClp       Int
+  idempotencyKey String           @unique @db.VarChar(128)
+  createdAt      DateTime         @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime         @updatedAt @db.Timestamptz(3)
+  items          OrderItem[]
+  payments       PaymentAttempt[]
+
+  @@index([userId, createdAt])
+}
+
+model OrderItem {
+  id           String  @id @default(uuid()) @db.Uuid
+  orderId      String  @db.Uuid
+  productId    String  @db.Uuid
+  productName  String  @db.VarChar(180)
+  unitPriceClp Int
+  quantity     Int
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  product      Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model PaymentAttempt {
+  id                String          @id @default(uuid()) @db.Uuid
+  orderId           String          @db.Uuid
+  order             Order           @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  provider          PaymentProvider
+  status            PaymentStatus   @default(PENDING)
+  amountClp         Int
+  externalReference String?         @unique @db.VarChar(128)
+  createdAt         DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime        @updatedAt @db.Timestamptz(3)
+
+  @@index([orderId])
+}

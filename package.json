@@ -1,0 +1,48 @@
+{
+  "name": "autoparts-chile",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24.21.0 <25", "npm": ">=11 <12" },
+  "packageManager": "npm@11.19.0",
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "prisma generate && next build",
+    "start": "next start --hostname 127.0.0.1",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "prisma generate && next typegen && tsc --noEmit",
+    "validate": "npm run lint && npm run typecheck && npm run db:validate",
+    "check:http": "node scripts/check-http.mjs",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
+    "db:status": "docker compose ps",
+    "db:generate": "prisma generate",
+    "db:validate": "prisma validate",
+    "db:format": "prisma format",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:check": "tsx scripts/check-db.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
+    "next": "16.4.5",
+    "pg": "8.23.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.3.4",
+    "@types/node": "24.10.1",
+    "@types/pg": "8.15.6",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "dotenv": "17.2.3",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.5",
+    "prisma": "7.10.1",
+    "tailwindcss": "4.3.4",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  }
+}
