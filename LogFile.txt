@@ -1,0 +1,174 @@
+REGISTRO DE PROMPTS - AutoParts Chile
+Formato: entradas anexadas; fechas ISO 8601, zona America/Santiago.
+La hora original de los mensajes no está expuesta. Las marcas indicadas son horas de registro, no horas de envío. No se conoce el identificador exacto del modelo; no se infiere a partir del nombre del agente.
+
+======================================================================
+ID: 001
+Fecha y hora de registro retrospectivo: 2026-11-04T20:14:43-03:00
+Zona: America/Santiago
+Fecha y hora original del mensaje: no expuestas por el entorno.
+Agente: Codex
+Modelo utilizado: identificador exacto no expuesto por el entorno.
+Archivo de referencia: Trabajo 1 Semestre 2 - 2026.pdf
+Ruta proporcionada: c:\Users\br1rk\Downloads\Trabajo 1 Semestre 2 - 2026.pdf
+
+PROMPT COMPLETO:
+Actúa como un ingeniero de software senior especializado en Next.js, TypeScript, PostgreSQL, comercio electrónico y performance engineering.
+
+Estamos desarrollando un proyecto universitario para la asignatura INFB8091 - Desempeño de Sistemas.
+
+El proyecto consiste en construir una tienda online de accesorios automotrices llamada provisionalmente "AutoParts Chile", cuyo objetivo principal es permitir la evaluación del rendimiento bajo distintas condiciones de carga.
+
+Stack seleccionado:
+
+- Next.js con App Router
+- TypeScript
+- Tailwind CSS
+- PostgreSQL
+- Prisma ORM
+- Auth.js para autenticación
+- Transbank Webpay Plus en ambiente de integración
+- Modo de pago simulado para pruebas de carga
+- Google Analytics 4
+- k6 para generación de tráfico
+
+Requisitos funcionales:
+
+- Página de inicio
+- Catálogo de productos con filtros y búsqueda
+- Detalle de productos
+- Carrito de compras
+- Registro e inicio de sesión
+- Checkout de prueba
+- Historial de pedidos
+- API REST para las operaciones principales
+
+Requisitos de rendimiento:
+
+- Utilizar consultas reales a PostgreSQL.
+- Evitar que toda la aplicación dependa de datos estáticos.
+- Diseñar endpoints que permitan generar tráfico sintético.
+- Registrar tiempos de respuesta y errores.
+- Permitir pruebas de carga sin enviar transacciones masivas a Transbank.
+- Facilitar la integración de GA4 y Core Web Vitals.
+
+PRIMERA TAREA:
+
+No implementes todavía la tienda.
+
+1. Analiza el enunciado del trabajo que adjuntaré.
+2. Crea un archivo AGENTS.md con las instrucciones permanentes del proyecto.
+3. Define la arquitectura propuesta y la estructura de carpetas.
+4. Establece convenciones de código y documentación.
+5. Configura un sistema de registro de prompts en LogFile.txt, incluyendo fecha, hora, prompt completo, modelo utilizado y resumen de cambios.
+6. Indica que al comenzar cada nueva sesión debes revisar AGENTS.md y LogFile.txt.
+7. Establece que antes de cada implementación debes explicar qué modificarás y esperar mi aprobación.
+8. Establece que después de cada modificación debes ejecutar las pruebas disponibles y verificar que el proyecto compile.
+9. Pregunta al finalizar cada modificación si deseo realizar un commit y desplegar.
+10. Utiliza español neutro latinoamericano para la documentación y explicaciones.
+
+Entrega primero tu propuesta de arquitectura y plan de implementación para revisión.
+
+No comiences a desarrollar funcionalidades sin mi confirmación.
+FIN DEL PROMPT
+
+Aprobación y alcance: solicitar propuesta primero; sin autorización para implementar funcionalidades.
+Resumen de cambios: se leyeron las cinco páginas del PDF y se presentó arquitectura de monolito modular, estructura, convenciones y plan por etapas. No se crearon archivos en esa respuesta.
+Archivos afectados en esa respuesta: ninguno.
+Verificación: lectura completa del texto del enunciado y revisión del repositorio inicialmente vacío. Se consultó documentación oficial sobre Webpay y métricas de navegador k6.
+Pruebas y compilación: no aplica; no existía aplicación.
+Resultado: propuesta entregada; aprobación recibida en el prompt 002.
+Commit y despliegue: no realizados.
+
+======================================================================
+ID: 002
+Fecha y hora de registro: 2026-11-04T20:14:43-03:00
+Zona: America/Santiago
+Fecha y hora original del mensaje: no expuestas por el entorno.
+Agente: Codex
+Modelo utilizado: identificador exacto no expuesto por el entorno.
+
+PROMPT COMPLETO:
+Apruebo la arquitectura propuesta y autorizo la ejecución de la etapa 0, únicamente para crear los archivos de documentación y el registro inicial.
+
+Quiero agregar las siguientes consideraciones al proyecto:
+
+1. Mantener la arquitectura lo más sencilla posible, evitando sobreingeniería. El objetivo principal es evaluar el desempeño de la aplicación, no desarrollar un e-commerce comercial de producción.
+2. Considerar Docker Compose para PostgreSQL y, si resulta conveniente, para ejecutar la aplicación en un entorno local reproducible.
+3. Diseñar el proyecto para realizar pruebas de carga tanto localmente como en un proveedor cloud gratuito, documentando las diferencias de infraestructura.
+4. Priorizar una tienda visualmente atractiva, moderna y fácil de utilizar, pero sin agregar funcionalidades innecesarias.
+5. Mantener la posibilidad de generar catálogos de distintos tamaños (por ejemplo, 30, 1.000 y 10.000 productos) para estudiar el impacto en el rendimiento de las consultas.
+6. Registrar las decisiones técnicas importantes para facilitar posteriormente la elaboración del informe.
+
+Procede con la etapa 0. No implementes todavía funcionalidades de la tienda.
+
+Al terminar, indícame qué archivos creaste, qué contiene cada uno y cómo verificaste los resultados. Espera mi aprobación antes de comenzar la etapa 1.
+FIN DEL PROMPT
+
+Aprobación y alcance: etapa 0 y arquitectura aprobadas; únicamente documentación. Etapa 1 pendiente de nueva aprobación.
+Resumen de cambios: creación de instrucciones permanentes, historial de prompts, índice de documentación, análisis de requisitos, arquitectura, plan, registro de decisiones y metodología de evaluación. Se incorporan simplicidad, interfaz moderna, Compose propuesto, comparación local/cloud y semillas de tres tamaños.
+Archivos creados:
+- AGENTS.md
+- LogFile.txt
+- README.md
+- docs/requirements.md
+- docs/architecture.md
+- docs/implementation-plan.md
+- docs/decisions/README.md
+- docs/performance/methodology.md
+Verificación: pendiente de cierre; se anexará resultado real de la revisión documental.
+Pruebas y compilación: no aplica; no hay código de aplicación, manifiesto, dependencias ni comandos de build. No se instalaron herramientas ni se crearon pruebas artificiales para esta etapa documental.
+Commit y despliegue: no realizados; se consultará al usuario al cierre. No existe una aplicación desplegable.
+
+CIERRE DE VERIFICACIÓN DE LA ENTRADA 002
+Fecha y hora: 2026-11-04T20:18:00-03:00 (America/Santiago).
+Resultado: ocho archivos documentales presentes, legibles en UTF-8 y sin caracteres de reemplazo. Enlaces Markdown locales resueltos correctamente. Dos prompts completos delimitados. Inventario sin archivos fuera del alcance documental; sin código ni configuración ejecutable de la tienda. Revisión de formato sin espacios finales ni marcadores de conflicto, con salto de línea final. Estado Git: archivos nuevos sin commit. Revisión de cobertura: instrucciones de sesión/aprobación/cierre, requisitos académicos, seis consideraciones nuevas y etapas incluidas. No se ejecutaron pruebas de aplicación ni compilación porque aún no existe un proyecto ejecutable. Etapa 0 completada; etapa 1 pendiente de aprobación.
+
+======================================================================
+ID: 003
+Fecha y hora de registro: 2026-11-04T20:20:10-03:00
+Zona: America/Santiago
+Fecha y hora original del mensaje: no expuestas por el entorno.
+Agente: Codex
+Modelo utilizado: identificador exacto no expuesto por el entorno.
+
+PROMPT COMPLETO:
+Autorizo realizar un commit de la documentación correspondiente a la etapa 0.
+
+Una vez completado el commit, autorizo avanzar con la etapa 1: configuración de la base técnica del proyecto AutoParts Chile.
+
+Objetivos de esta etapa:
+
+1. Inicializar Next.js con App Router, TypeScript estricto y Tailwind CSS.
+2. Configurar PostgreSQL mediante Docker Compose para desarrollo local.
+3. Instalar y configurar Prisma, incluyendo la conexión a PostgreSQL.
+4. Crear una página inicial sencilla y provisional que permita comprobar que Next.js funciona correctamente.
+5. Configurar las variables de entorno necesarias, incluyendo un archivo .env.example sin credenciales reales.
+6. Preparar los scripts necesarios para ejecutar el proyecto, validar el código y compilar.
+7. Definir el esquema inicial de base de datos considerando usuarios, categorías, productos, carritos, pedidos y pagos, sin implementar todavía sus funcionalidades.
+8. Actualizar la documentación y el registro de prompts según AGENTS.md.
+
+Consideraciones:
+
+- Priorizar simplicidad, mantenibilidad y facilidad para realizar futuras pruebas de rendimiento.
+- No implementar todavía catálogo, autenticación, carrito, checkout, Transbank, GA4 ni k6.
+- No realizar despliegues.
+- No introducir servicios de pago.
+- Mantener las dependencias al mínimo necesario.
+
+Antes de implementar la etapa 1, presenta el plan concreto, las versiones de las tecnologías y los archivos que crearás o modificarás, siguiendo las reglas de aprobación establecidas en AGENTS.md.
+
+Una vez aprobado e implementado, ejecuta las verificaciones correspondientes e informa sus resultados.
+
+No avances a la etapa 2 sin mi autorización.
+FIN DEL PROMPT
+
+Aprobación y alcance: commit de documentación de etapa 0 autorizado. Presentar plan concreto de etapa 1 y esperar aprobación antes de implementarlo. Sin despliegue ni etapa 2.
+Resumen: revisión de instrucciones, historial, arquitectura, plan y decisiones; consulta de versiones npm y documentación oficial. Node 24.21.0 y npm 11.19.0 disponibles. Docker no encontrado en PATH ni en ruta habitual de Docker Desktop.
+Propuesta técnica: Next 16.4.5, React 19.3.1, TypeScript 5.9.3, Tailwind 4.3.4, Prisma y adaptador pg 7.10.1, pg 8.23.1, ESLint 9.39.5 y PostgreSQL 17.11. Versiones propuestas, no instaladas. Se evita Prisma 8.0.0-rc.30 por ser candidata.
+Archivos modificados en este turno: únicamente LogFile.txt para registrar esta solicitud. Los ocho archivos documentales de etapa 0 se incluirán en el commit autorizado.
+Validación: revisión documental de UTF-8, enlaces locales y formato antes del commit. Compilación y pruebas de aplicación no aplican porque no se ha inicializado el proyecto.
+Commit: autorizado; el resultado se informará con su hash al usuario y se podrá consultar en Git. Sin push ni despliegue.
+Estado: etapa 1 pendiente de aprobación del plan concreto; no se creó código ni se instalaron dependencias.
+
+Resultado del intento de commit (entrada 003): validación documental correcta en los ocho archivos; git diff --cached --check sin errores. Git rechazó crear el commit por falta de user.name y user.email. No se inventó identidad ni se cambió configuración global. Se solicitaron nombre y correo para configuración local al repositorio. Los ocho documentos quedaron preparados en el índice. Commit pendiente de esos datos; sin push ni despliegue.
