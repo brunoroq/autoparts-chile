@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { requireUser } from "@/lib/auth/session";
 import { checkOrigin, readJson } from "@/lib/http/input";
 import { ApiError } from "@/lib/http/errors";

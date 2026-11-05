@@ -41,3 +41,7 @@ Versiones y lockfile definidos en etapa 1. Pendientes: estrategia de credenciale
 Cierre autorizado, prompt 012: versionar etapa 4 después de verificar estabilidad y secretos. Sandbox oficial de Transbank pendiente de prueba manual. Etapa 5 solo propuesta en chat tras el commit; no implementar antes de aprobación. Sin despliegue ni carga.
 
 Estado vigente prompt 013: etapa 5 aprobada e implementada, con verificación y configuración documentadas en stage-5.md y verification-stage-5.md. No activar propiedad real/accesos externos, no hacer commit ni comenzar etapa 6 sin nueva autorización.
+
+Prompt 015: preparada compatibilidad Vercel/Neon, verificada en bases locales nuevas. No ejecutar migraciones/bootstrap cloud, commits, push o despliegue antes de autorización nueva. Etapa 5 sigue implementada y sin commit; separar su cierre del delta de despliegue según commit-plan-stage5-deployment.md.
+
+Cierre prompt 016: etapa 5 y preparación Vercel/Neon versionadas en dos commits locales separados. No avanzar: Neon manual, migraciones/bootstrap remotos, push y despliegue siguen pendientes de autorización. Consultar Git para hashes.

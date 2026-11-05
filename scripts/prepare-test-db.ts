@@ -26,5 +26,5 @@ try {
 execFileSync(
   process.execPath,
   ["node_modules/prisma/build/index.js", "migrate", "deploy"],
-  { env: { ...process.env, DATABASE_URL: connectionString }, stdio: "inherit" },
+  { env: { ...process.env, DATABASE_URL: connectionString, DIRECT_URL: connectionString }, stdio: "inherit" },
 );

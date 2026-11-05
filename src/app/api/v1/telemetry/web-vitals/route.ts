@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { checkOrigin, readJson } from "@/lib/http/input";
 import { ApiError } from "@/lib/http/errors";
 import { apiResponse } from "@/lib/observability/request";

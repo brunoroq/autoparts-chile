@@ -46,6 +46,12 @@ export interface PaymentGateway {
 }
 export function paymentProvider() {
   const mode = process.env.PAYMENT_PROVIDER || "simulated";
+  if (process.env.VERCEL === "1" && mode !== "simulated")
+    throw new ApiError(
+      "Esta publicación admite exclusivamente pagos simulados.",
+      503,
+      "PAYMENT_CONFIGURATION",
+    );
   if (
     !["simulated", "webpay_integration"].includes(mode) ||
     (process.env.WEBPAY_ENVIRONMENT &&
@@ -142,6 +148,12 @@ type WebpayTransport = {
   refund(token: string, amount: number): Promise<unknown>;
 };
 export function webpayGateway(transport?: WebpayTransport): PaymentGateway {
+  if (process.env.VERCEL === "1")
+    throw new ApiError(
+      "Webpay no está habilitado en esta publicación.",
+      503,
+      "PAYMENT_CONFIGURATION",
+    );
   paymentProvider();
   // Credenciales públicas oficiales de prueba; no existe configuración de producción.
   const transaction =

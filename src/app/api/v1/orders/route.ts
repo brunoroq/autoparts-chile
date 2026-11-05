@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { requireUser } from "@/lib/auth/session";
 import { ApiError } from "@/lib/http/errors";
 import { apiResponse } from "@/lib/observability/request";

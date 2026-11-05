@@ -833,3 +833,138 @@ CIERRE DE IMPLEMENTACIÓN 013
 Archivos: contratos/compra de analytics, provider y Web Vitals, instrumentación/config/resources/vitals/docker, dos endpoints, columna/migración nullable, scripts de exportación/manifiesto/Docker/comprobación y pruebas aisladas; layout/detalle/checkout/carrito y contratos; package.json, entorno de ejemplo, gitignore, preparación de fixtures, AGENTS/README/plan/arquitectura/base/decisiones e informes.
 Problemas corregidos: excepción lint para cola Arguments de gtag tras formateo; patrón [id] de formatter; preparación no destructiva de bases con fixtures; capturas UTF-8/BOM y unidades numéricas de Docker; ruta portable del ejecutable. Sin cambios visuales salvo controles de consentimiento cuando se habilita analítica.
 Limitaciones: no hay propiedad real configurada ni DebugView de Google verificado (falta ID del propietario); transporte interceptado en pruebas, sin envíos externos. Reclamación de purchase no significa recepción ni se reintenta; PostgreSQL prevalece. Sandbox Webpay oficial sigue pendiente de compra manual. No conceder acceso al profesor sin nueva autorización. Se solicita autorización antes del commit final.
+
+
+ENTRADA 014 — REGISTRO RETROSPECTIVO
+Registro: 2026-11-05T17:51:15-03:00, America/Santiago. Hora original no disponible. Agente: Codex. Modelo exacto no expuesto.
+PROMPT COMPLETO
+Quiero preparar el despliegue público de AutoParts Chile utilizando Vercel Hobby y Neon PostgreSQL Free.
+
+Ya creé mi cuenta gratuita en Vercel, conecté GitHub y seleccioné el repositorio del proyecto. Estoy en la pantalla anterior a pulsar Deploy.
+
+El objetivo es publicar la tienda para que mis compañeros y el profesor puedan acceder desde Internet y posteriormente recopilar datos con Google Analytics 4.
+
+Antes de realizar cambios, revisa la arquitectura actual y prepara una propuesta de despliegue que incluya:
+
+1. Compatibilidad de Next.js 16, Prisma 7, Auth.js/NextAuth y los módulos actuales con Vercel.
+2. Configuración de producción para funciones Node.js, sin utilizar Edge Runtime en operaciones que dependan de Prisma o criptografía de Node.
+3. Creación de una base PostgreSQL independiente en Neon, conservando intacta la base local de Docker.
+4. Variables de entorno necesarias en Vercel, incluyendo DATABASE_URL, secretos de autenticación y configuración de pagos simulados.
+5. Generación del cliente Prisma y estrategia segura para aplicar migraciones a Neon.
+6. Configuración correcta del build de producción y detección de Next.js.
+7. Revisión de los endpoints, sesiones, cookies y URLs de retorno para el dominio HTTPS público.
+8. Revisión de la instrumentación existente para evitar procesos permanentes incompatibles con funciones serverless.
+9. Procedimiento para cargar el catálogo inicial sin sobrescribir datos de usuarios.
+10. Estrategia para comprobar registro, login, carrito, checkout, pagos simulados y persistencia en producción.
+11. Revisión de seguridad, límites del plan gratuito y prevención de gastos o uso excesivo.
+12. Procedimiento para publicar los commits necesarios en GitHub y desplegar desde Vercel.
+
+Condiciones:
+
+- No modificar ni borrar la base PostgreSQL local.
+- No incluir credenciales ni secretos en el repositorio.
+- No habilitar pagos reales.
+- Mantener el simulador como proveedor de pagos predeterminado.
+- No ejecutar pruebas de estrés contra Vercel.
+- No implementar todavía k6.
+- No modificar innecesariamente el diseño de la tienda.
+- Mantener la arquitectura sencilla y apropiada para un proyecto académico.
+
+También verifica si la etapa 5 de GA4 y observabilidad ya fue implementada o sigue pendiente, para evitar mezclar cambios.
+
+Primero entrégame una propuesta técnica con los archivos que habría que modificar, variables de entorno requeridas, pasos manuales que debo realizar en Neon y Vercel, y verificaciones previstas.
+
+No implementes cambios, no hagas push y no despliegues hasta que apruebe la propuesta.
+FIN DEL PROMPT
+Resultado: propuesta en chat tras revisión de solo lectura; etapa 5 confirmada localmente sin commit. No se modificaron archivos durante ese turno por instrucción expresa. Sin push ni despliegue. Se registra ahora tras aprobarse la preparación.
+
+ENTRADA 015
+Registro: 2026-11-05T17:51:15-03:00, America/Santiago. Hora original no disponible. Agente: Codex. Modelo exacto no expuesto.
+PROMPT COMPLETO
+Apruebo la propuesta de preparación del despliegue de AutoParts Chile en Vercel Hobby y Neon PostgreSQL Free.
+
+Autorizo implementar los ajustes de compatibilidad y configuración descritos, con estas condiciones:
+
+1. Mantener intacta la base PostgreSQL local y sus datos.
+2. Preparar la aplicación para Next.js en Vercel, Node.js 24 y Prisma 7.
+3. Configurar un pool de conexiones pequeño y apropiado para funciones serverless.
+4. Desactivar explícitamente los procesos permanentes de monitoreo cuando se ejecute en Vercel.
+5. Preparar migraciones de producción mediante prisma migrate deploy, sin ejecutarlas todavía.
+6. Preparar un bootstrap inicial de 30 productos que no sobrescriba stock, precios ni pedidos existentes.
+7. Documentar las variables de entorno requeridas, sin almacenar secretos reales.
+8. Mantener exclusivamente pagos simulados en la primera publicación.
+9. Mantener GA4 desactivado hasta disponer del identificador de medición y verificar el consentimiento.
+10. Conservar el diseño y las funcionalidades actuales.
+
+Verifica que los scripts de preparación cloud comprueben el destino de la base de datos antes de realizar operaciones que escriban datos.
+
+Realiza las verificaciones locales necesarias: lint, TypeScript, Prisma, build, pruebas automatizadas y regresión.
+
+Una vez completado:
+
+- Presenta un resumen de los cambios realizados.
+- Indica los archivos modificados.
+- Entrega los resultados de las pruebas.
+- Confirma que no se incluyeron secretos.
+- Propón los dos commits separados: cierre de etapa 5 y preparación de despliegue.
+
+IMPORTANTE:\
+No ejecutes migraciones en Neon todavía.\
+No hagas git push.\
+No despliegues en Vercel.\
+No ejecutes pruebas de carga.\
+No realices commits sin solicitar mi autorización.
+
+Cuando termines, continuaremos con la creación y configuración manual de Neon.
+FIN DEL PROMPT
+Alcance aprobado: compatibilidad Node/Vercel/Neon, scripts seguros preparados sin ejecución remota, bootstrap de solo inserción y verificaciones locales aisladas. Base habitual intacta; sin commits, push, despliegue o carga. Instantánea ignorada de 44 archivos de etapa 5 guardada antes de cambios para separar los dos commits futuros. Verificaciones en curso.
+
+CIERRE DE PREPARACIÓN 015
+2026-11-05T18:07:57-03:00: preparación de despliegue finalizada. 23 unitarias, 14 integraciones PostgreSQL, 8 HTTP y 18 navegador = 63 pruebas exitosas; reinicio y observabilidad/exportaciones exitosos. validate (lint/TypeScript/Prisma) y build final correctos; manifiesto sin funciones Edge. Auditoría de producción cero vulnerabilidades. Comparación READ ONLY de ocho tablas y _prisma_migrations local coincide exactamente antes/después. Se crearon seis bases locales nuevas autoparts_deploy_*_test; ninguna migración/seed/transacción comercial se ejecutó en la base habitual. No hubo conexión ni migración/bootstrap en Neon: guardas y simulación probaron cero connect con mock; bootstrap real solo en base nueva local. Simulador exclusivo y monitor permanente bloqueado en Vercel; GA4 sigue desactivado por defecto. Sin dependencias nuevas, diseño cambiado, commits, push, despliegue o carga.
+Archivos de preparación: engines/lock/scripts npm, prisma.config, pool/target/deployment guard y Prisma, instrumentación/sampler/proveedor de pagos, runtime de layout/handlers; scripts cloud/bootstrap, runner y huella local; tests de despliegue/helpers; ejemplo de entorno y documentación. Instantánea previa de etapa 5 (44 archivos) ignorada con SHA-256 conservada para separar commits sin perder trabajo.
+Propuestos: 1) feat: integrar GA4 con consentimiento, Web Vitals y observabilidad; 2) chore: preparar Vercel y Neon con bootstrap seguro. No creados, índice Git intacto.
+Pendiente: crear/configurar manualmente Neon y Vercel, verificar TLS/permisos/HTTPS reales; migraciones y bootstrap remotos requieren autorización nueva. DebugView GA4 real y Webpay oficial siguen pendientes.
+
+Auditoría de cierre: 234 archivos revisables sin secretos locales conocidos, claves privadas, enlaces rotos ni rutas excluidas; 44 hashes de la instantánea de etapa 5 correctos. Índice Git sin cambios. Smoke habitual HTTP 200. Una invocación restringida de tsx devolvió uv_os_get_passwd ENOMEM antes de iniciar la consulta; se repitió la comprobación en el entorno local autorizado y la huella de la base volvió a coincidir. No se trató como fallo de aplicación ni se modificaron datos para resolverlo.
+
+
+ENTRADA 016
+Registro: 2026-11-05T18:13:01-03:00, America/Santiago. Hora original no disponible. Agente: Codex. Identificador exacto del modelo no expuesto.
+PROMPT COMPLETO
+Autorizo crear los dos commits propuestos para AutoParts Chile:
+
+1. feat: integrar GA4 con consentimiento, Web Vitals y observabilidad
+2. chore: preparar Vercel y Neon con bootstrap seguro
+
+Condiciones:
+
+1. Mantener la separación entre los cambios funcionales de etapa 5 y la preparación del despliegue.
+2. Verificar que cada commit contenga únicamente los archivos correspondientes.
+3. Comprobar que no se incluyan secretos, archivos .env privados, credenciales de Neon, datos PostgreSQL, node_modules ni artefactos generados.
+4. Conservar AGENTS.md, LogFile.txt y la documentación correspondiente.
+5. No alterar la base de datos local.
+6. Confirmar que el estado final del proyecto mantiene las verificaciones exitosas.
+7. Entregar los hashes de ambos commits, sus mensajes y un resumen de los archivos incluidos.
+8. Confirmar que el repositorio queda limpio.
+
+IMPORTANTE:
+
+- No ejecutar git push.
+- No ejecutar migraciones ni bootstrap en Neon.
+- No realizar despliegues en Vercel.
+- No ejecutar pruebas de carga.
+- No avanzar a otras etapas.
+
+Una vez creados los commits, detente y entrégame los resultados.
+
+Después continuaremos con la creación manual de la base PostgreSQL en Neon.
+FIN DEL PROMPT
+Autorización: crear exactamente los dos commits separados tras auditoría; detenerse después. Sin push, operaciones Neon, despliegue, carga ni otras etapas. No alterar la base local.
+Plan de cierre: primer índice desde instantánea de 44 archivos de etapa 5, validando hashes y base Git; segundo índice solo con el delta de preparación y documentación de este cierre. Verificaciones actuales sin escritura en PostgreSQL: validate, unitarias y build; conservar evidencia previa de regresión de 63 pruebas.
+
+CIERRE PREVIO AL SEGUNDO COMMIT 016 — 2026-11-05T18:16:33-03:00
+Primer commit creado: 69fe039280522b79f0b147432cee0afc2778ee6a, feat: integrar GA4 con consentimiento, Web Vitals y observabilidad. Sus 44 archivos y blobs coinciden exactamente con la instantánea de etapa 5; árbol auditado de 219 archivos, sin archivos exclusivos del despliegue. Se conserva la separación por contenido en archivos compartidos.
+Verificaciones de este cierre: validate (lint, TypeScript y Prisma), 23 unitarias y build de producción exitosos; auditoría de producción cero vulnerabilidades. No se modificó código durante el cierre. La regresión documentada de 63 casos permanece como evidencia previa; no se repitieron pruebas de escritura ni se ejecutaron consultas/migraciones/seed sobre PostgreSQL en este turno. Sin conexión a Neon, push, despliegue, carga o nueva etapa.
+Segundo commit autorizado: chore: preparar Vercel y Neon con bootstrap seguro. Se audita por separado su índice y contenido; hash final y limpieza se entregarán en chat/Git para no modificar archivos después del commit. Documentación, AGENTS y registro actualizados. Permanecen pendientes configuración manual de Neon/Vercel, DebugView real y sandbox Webpay. Detenerse tras confirmar ambos commits y repositorio limpio.
+
+Auditoría de separación: el segundo delta contiene 40 archivos de preparación/cierre. En los handlers existentes la única diferencia es la declaración runtime nodejs; no incluye otra migración ni cambios de lógica comercial/analítica. Los archivos de etapa 5 exclusivos permanecen en el primer commit. Cada árbol se revisa contra secretos y exclusiones antes de confirmar.

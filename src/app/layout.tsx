@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+export const runtime = "nodejs";
 
 export const metadata: Metadata = {
   title: {

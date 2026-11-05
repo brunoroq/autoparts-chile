@@ -3,7 +3,11 @@ import { Pool } from "pg";
 import { experimentContext } from "./config";
 const state = globalThis as unknown as { resourceSampler?: boolean };
 export function startResourceSampler() {
-  if (process.env.RESOURCE_METRICS_ENABLED !== "true" || state.resourceSampler)
+  if (
+    process.env.VERCEL === "1" ||
+    process.env.RESOURCE_METRICS_ENABLED !== "true" ||
+    state.resourceSampler
+  )
     return;
   state.resourceSampler = true;
   const interval = Number(process.env.RESOURCE_SAMPLE_MS || 15000);

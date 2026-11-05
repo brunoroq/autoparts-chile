@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { requireUser } from "@/lib/auth/session";
 import { checkOrigin } from "@/lib/http/input";
 import { productIdInput } from "@/modules/cart/validation";

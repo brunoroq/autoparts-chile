@@ -10,7 +10,7 @@ Actuar como ingeniero de software senior especializado en Next.js, TypeScript, P
 
 1. Leer este archivo y `LogFile.txt` antes de modificar el proyecto.
 2. Revisar `git status`, la arquitectura, el plan y las decisiones relevantes. No sobrescribir cambios del usuario.
-3. Identificar la etapa autorizada y sus límites. Etapas 0 a 4 versionadas; etapa 5 autorizada por prompt 013, pendiente de aprobación de commit. Consultar docs/stage-5.md y docs/verification-stage-5.md. GA4 opt-in y métricas opcionales desactivadas por defecto. Sin accesos externos, k6, despliegue ni etapa 6. No confundir reclamación de purchase con recepción por Google. Mantener PostgreSQL como fuente de verdad y preservar el diseño. Las restricciones históricas se interpretan según la aprobación más reciente.
+3. Identificar la etapa autorizada y sus límites. Prompt 016 autoriza exactamente dos commits locales separados: cierre de etapa 5 y preparación de Vercel/Neon. Consultar docs/commit-plan-stage5-deployment.md y Git para hashes. Conservar base local sin escrituras. Sin push, migraciones/bootstrap Neon, despliegue, carga ni otras etapas; detenerse después de confirmar ambos commits y repositorio limpio.
 4. Registrar el prompt completo del usuario en `LogFile.txt`, conforme a su formato. Revisar el historial antes de anexar para evitar duplicados.
 
 ## Aprobación y cierre de cambios
@@ -70,3 +70,7 @@ Actualización vigente, prompt 011: etapa 4 autorizada para checkout, pedidos, s
 Actualización vigente, prompt 012: autorizado el commit de etapa 4 después de auditoría y verificaciones. El sandbox oficial de Transbank aún requiere una compra manual; las pruebas automáticas usan simulador/transporte controlado. Después del commit solo se autoriza proponer etapa 5 en el chat, sin código ni dependencias, GA4 activo, k6 o despliegue. No modificar archivos después del commit para conservar el estado limpio solicitado.
 
 Actualización vigente, prompt 013: implementación de etapa 5 autorizada: gtag.js con consentimiento, eventos con valores del servidor, deduplicación persistente de purchase (no acuse de Google), Web Vitals e instrumentación/exportación de recursos. Analytics queda desactivado por defecto. No conceder accesos externos, desplegar, implementar k6/etapa 6 ni hacer commit sin nueva autorización. Mantener PostgreSQL como fuente de verdad y no enviar datos personales/tokens.
+
+Actualización vigente, prompt 015: autorizada solo preparación de Vercel/Neon, sin ejecutar migraciones ni bootstrap remoto, commits, push, despliegue o carga. Conservar íntegra la base local y usar bases nuevas _test para regresión. Mantener simulador exclusivo en Vercel, Analytics desactivado por defecto y sin muestreo permanente serverless. Registrar cambios de etapa 5 y preparación en dos commits separados únicamente tras nueva autorización.
+
+Actualización vigente, prompt 016: commits de etapa 5 y preparación autorizados, sin autorización de publicación ni cambios de datos. Validar contenido de cada índice y secreto/exclusiones antes de confirmar. Reportar hashes y estado limpio; no continuar con Neon todavía.

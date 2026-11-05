@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { requireUser } from "@/lib/auth/session";
 import { productIdInput } from "@/modules/cart/validation";
 import { apiResponse } from "@/lib/observability/request";

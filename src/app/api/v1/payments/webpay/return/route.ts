@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { instrumentResponse } from "@/lib/observability/request";
 import { webpayReturn, webpayReturnMetadata } from "@/modules/orders/service";
 import { ApiError } from "@/lib/http/errors";

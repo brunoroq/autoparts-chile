@@ -4,7 +4,9 @@ Proyecto universitario de **INFB8091 - Desempeño de Sistemas**: tienda de acces
 
 ## Estado
 
-Etapas 0 a 4 versionadas; etapa 4: b4fd0006c5db5ac66d220955b64f08a746b6f60d. Etapa 5 implementada y pendiente de autorización de commit: GA4 opt-in, Web Vitals y observabilidad/exportaciones. Analytics, Web Vitals y recursos opcionales desactivados por defecto. No se configuró una propiedad real ni accesos externos. Sin k6, dinero real, despliegues ni etapa 6. Webpay oficial sigue pendiente de compra manual.
+Etapas 0 a 5 versionadas; cierre de etapa 5: 69fe039280522b79f0b147432cee0afc2778ee6a. Preparación Vercel/Neon incluida en un segundo commit local separado autorizado por prompt 016 (consultar Git). Analytics y métricas opcionales desactivados por defecto. Sin propiedad GA4 real, acceso externo, despliegue, k6 ni etapa 6. Webpay oficial sigue pendiente de compra manual.
+
+La preparación Vercel/Neon está implementada, verificada localmente y versionada por separado de etapa 5, sin push ni publicación. La base Docker habitual se conserva íntegra; continuar con configuración manual de Neon.
 
 ## Documentación
 
@@ -30,6 +32,10 @@ Etapas 0 a 4 versionadas; etapa 4: b4fd0006c5db5ac66d220955b64f08a746b6f60d. Eta
 
 - [Etapa 5 y configuración GA4/DebugView](docs/stage-5.md): eventos, consentimiento, métricas y exportaciones.
 - [Verificación de etapa 5](docs/verification-stage-5.md): resultados, errores y limitaciones.
+
+- [Preparación Vercel/Neon](docs/deployment-vercel-neon.md): variables, scripts cloud protegidos y pasos manuales pendientes.
+- [Verificación de preparación](docs/verification-deployment-preparation.md): pruebas aisladas y conservación local.
+- [Plan de dos commits](docs/commit-plan-stage5-deployment.md): separación de etapa 5 y despliegue, sin commits realizados.
 
 ## Inicio de una sesión
 
