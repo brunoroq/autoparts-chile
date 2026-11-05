@@ -1,7 +1,7 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import { ApiError } from "../http/errors";
 
-type Metric = "db" | "auth" | "hash";
+type Metric = "db" | "auth" | "hash" | "provider";
 type Metrics = Record<Metric, number>;
 export type RequestContext = {
   db: <T>(operation: () => Promise<T>) => Promise<T>;
@@ -27,7 +27,7 @@ export async function instrumentResponse(
 ) {
   const start = performance.now();
   const requestId = crypto.randomUUID();
-  const metrics: Metrics = { db: 0, auth: 0, hash: 0 };
+  const metrics: Metrics = { db: 0, auth: 0, hash: 0, provider: 0 };
   let errorCode: string | undefined;
   return storage.run(metrics, async () => {
     let response: Response;
@@ -56,7 +56,7 @@ export async function instrumentResponse(
     response.headers.set("X-Request-Id", requestId);
     response.headers.set(
       "Server-Timing",
-      `app;dur=${totalMs.toFixed(2)}, db;dur=${metrics.db.toFixed(2)}, auth;dur=${metrics.auth.toFixed(2)}, hash;dur=${metrics.hash.toFixed(2)}`,
+      `app;dur=${totalMs.toFixed(2)}, db;dur=${metrics.db.toFixed(2)}, auth;dur=${metrics.auth.toFixed(2)}, hash;dur=${metrics.hash.toFixed(2)}, provider;dur=${metrics.provider.toFixed(2)}`,
     );
     console.log(
       JSON.stringify({
@@ -70,6 +70,7 @@ export async function instrumentResponse(
         dbMs: +metrics.db.toFixed(2),
         authMs: +metrics.auth.toFixed(2),
         hashMs: +metrics.hash.toFixed(2),
+        providerMs: +metrics.provider.toFixed(2),
         ...(errorCode ? { error: errorCode } : {}),
       }),
     );

@@ -12,6 +12,8 @@ enum OrderStatus {
   PENDING
   PAID
   CANCELLED
+  FAILED
+  REVIEW
 }
 
 enum PaymentStatus {
@@ -19,6 +21,10 @@ enum PaymentStatus {
   APPROVED
   REJECTED
   CANCELLED
+  PROCESSING
+  UNKNOWN
+  REVERSAL_PENDING
+  REVERSED
 }
 
 enum PaymentProvider {
@@ -93,13 +99,18 @@ model Order {
   user           User             @relation(fields: [userId], references: [id], onDelete: Restrict)
   status         OrderStatus      @default(PENDING)
   totalClp       Int
-  idempotencyKey String           @unique @db.VarChar(128)
+  idempotencyKey String           @db.VarChar(128)
+  cartId         String?          @db.Uuid
+  cartVersion    Int              @default(0)
+  requestHash    String           @default("") @db.VarChar(64)
   createdAt      DateTime         @default(now()) @db.Timestamptz(3)
   updatedAt      DateTime         @updatedAt @db.Timestamptz(3)
   items          OrderItem[]
   payments       PaymentAttempt[]
 
+  @@unique([userId, idempotencyKey])
   @@index([userId, createdAt])
+  @@index([cartId, status])
 }
 
 model OrderItem {
@@ -124,6 +135,15 @@ model PaymentAttempt {
   status            PaymentStatus   @default(PENDING)
   amountClp         Int
   externalReference String?         @unique @db.VarChar(128)
+  sessionId         String?         @db.VarChar(61)
+  tokenHash         String?         @unique @db.VarChar(64)
+  tokenCipher       String?         @db.Text
+  redirectUrl       String?         @db.VarChar(240)
+  operation         String?         @db.VarChar(24)
+  operationAt       DateTime?       @db.Timestamptz(3)
+  simulatedOutcome  String?         @db.VarChar(40)
+  providerState     String?         @db.VarChar(40)
+  reversalResult    String?         @db.VarChar(40)
   createdAt         DateTime        @default(now()) @db.Timestamptz(3)
   updatedAt         DateTime        @updatedAt @db.Timestamptz(3)
 

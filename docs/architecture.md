@@ -82,3 +82,5 @@ Logs estructurados con solicitud, ejecución, ruta normalizada, método, estado 
 La línea base no usará caché de datos para evitar consultas en rutas evaluadas. Documentar también caché del navegador/CDN, calentamiento y reutilización de conexiones. Cada optimización se compara contra la misma carga y conjunto de datos.
 
 GA4 medirá embudo y engagement; Web Vitals medirá experiencia de navegador. k6 HTTP medirá API y carga. Mantener una propiedad GA4 de evaluación e identificar tráfico sintético; confirmar compras solo tras persistir su resultado y evitar eventos duplicados.
+
+Etapa 4 vigente: `/checkout`, `/pedidos`, `/pedidos/[id]` y página privada de redirección a Webpay. `modules/orders` comparte reglas entre UI y API; `modules/payments` implementa proveedores y protección de tokens. Migración aditiva, idempotencia por usuario, snapshots y confirmación atómica de stock. Se añade providerMs a la instrumentación existente. No se implementan carpetas hipotéticas de etapas futuras. Consultar [flujo y recuperación](stage-4.md), [API](api/checkout-orders.md) y [evidencias](verification-stage-4.md).

@@ -77,3 +77,7 @@ El hash se conserva exclusivamente en User y nunca se selecciona para respuestas
 `npm run test:auth:prepare` crea/migra `autoparts_auth_test` y carga 30 productos, sin borrar datos. Puede usarse AUTH_TEST_DATABASE_URL local terminada en `_test` para otro destino aislado. Los tests generan usuarios únicos, contraseñas en memoria y carritos ficticios; se conservan para inspección, sin tareas automáticas de borrado. `autoparts_catalog_test` conserva sus 10.000 productos y es independiente.
 
 La tienda habitual sigue en `autoparts`, sin usuarios de prueba predefinidos. No se incluye una contraseña de administrador ni se agrega autenticación al seed de productos. Cualquier limpieza de bases/cuentas requiere autorización específica.
+
+## Actualización de etapa 4
+
+Migración aditiva 20261105030000_checkout, aplicada sin reset. Estados indeterminados/reversa/revisión; versión y referencia del carrito; fingerprint e idempotencia compuesta por usuario; reclamaciones persistentes y referencias de pago. Token cifrado AES-GCM y hash SHA-256 único, nunca datos de tarjeta. Índice por carrito/estado para pedidos pendientes. Se conservan restricciones monetarias y cantidades. Ver [reglas transaccionales](stage-4.md).

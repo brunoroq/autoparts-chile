@@ -10,7 +10,7 @@ Actuar como ingeniero de software senior especializado en Next.js, TypeScript, P
 
 1. Leer este archivo y `LogFile.txt` antes de modificar el proyecto.
 2. Revisar `git status`, la arquitectura, el plan y las decisiones relevantes. No sobrescribir cambios del usuario.
-3. Identificar la etapa autorizada y sus límites. Etapas 0 a 3 completadas; commit conjunto de etapas 2 y 3 autorizado por prompt 010. Después de ese commit solo se autoriza planificar etapa 4 (checkout/pagos de integración y simulados); esperar aprobación antes de código o dependencias. Mantener identidad visual. Sin dinero real, tarjetas almacenadas, tráfico masivo a Transbank, GA4, k6, despliegue ni etapas posteriores.
+3. Identificar la etapa autorizada y sus límites. Etapas 0 a 3 versionadas; etapa 4 implementada; commit autorizado por prompt 012 después de auditoría y pruebas. Consultar docs/stage-4.md y docs/verification-stage-4.md. Mantener identidad visual; simulador predeterminado, Webpay solo integración. Sin dinero real, tarjetas almacenadas, carga externa, GA4, k6, despliegue ni etapa 5. Las restricciones históricas se interpretan según la aprobación más reciente.
 4. Registrar el prompt completo del usuario en `LogFile.txt`, conforme a su formato. Revisar el historial antes de anexar para evitar duplicados.
 
 ## Aprobación y cierre de cambios
@@ -64,3 +64,7 @@ Cierre de etapa 3: implementada y verificada; consultar `docs/verification-stage
 Actualización vigente, prompt 010: autorizado commit conjunto de etapas 2 y 3 tras auditoría y pruebas. La propuesta de etapa 4 se presenta en el chat después del commit, sin crear código ni archivos posteriores al commit para conservar el repositorio limpio. Su implementación requiere nueva aprobación. Consultar Git para hash/autor del commit de cierre; el registro no puede contener su propio hash antes de ser confirmado.
 
 Consultar `docs/requirements.md`. Conservar evidencias para informe y video de ambas fases: arquitectura, metodología, configuración de GA4, gráficos, resultados, cuellos de botella y conclusiones. El acceso del profesor a GA4 se realizará con autorización explícita; no está autorizado por la mera presencia de su correo en el enunciado.
+
+Actualización vigente, prompt 011: etapa 4 autorizada para checkout, pedidos, simulador predeterminado y Webpay exclusivamente de integración, incluyendo reversas compensatorias verificadas. Aplicar docs/stage-4.md. No reservar stock al crear pedidos; confirmar existencias atómicamente, sin llamadas externas dentro de transacciones. Conservar resultados indeterminados y reversas no verificadas para revisión. Sin tarjetas, producción, carga externa, GA4, k6, despliegues ni etapa 5. No realizar commit final sin autorización. Las restricciones históricas de etapa 4 quedan reemplazadas por esta aprobación.
+
+Actualización vigente, prompt 012: autorizado el commit de etapa 4 después de auditoría y verificaciones. El sandbox oficial de Transbank aún requiere una compra manual; las pruebas automáticas usan simulador/transporte controlado. Después del commit solo se autoriza proponer etapa 5 en el chat, sin código ni dependencias, GA4 activo, k6 o despliegue. No modificar archivos después del commit para conservar el estado limpio solicitado.

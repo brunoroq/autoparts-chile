@@ -1,5 +1,7 @@
 # Plan de implementación
 
+Estado vigente, prompt 011: etapas 2/3 versionadas en `5c609ee`; etapa 4 autorizada e implementada, con [flujo documentado](stage-4.md) y [verificaciones](verification-stage-4.md). Las restricciones históricas de este documento se conservan como antecedentes; ya no impiden la implementación aprobada. Sin autorización de commit final, etapa 5, GA4, k6 o despliegue.
+
 Estado al 4 de noviembre de 2026: etapas 0 y 1 completadas, commits `adbfa0e` y `4d224a6`. Etapa 2 aprobada e implementada según [propuesta concreta](stage-2-proposal.md); cambios sin commit para revisión. Etapa 3 y despliegues no autorizados.
 
 El diseño de etapa 2 fue aprobado visualmente en prompt 008. [Etapa 3 propuesta](stage-3-proposal.md): solo planificación de usuarios/autenticación/carrito, pendiente de aprobación antes de implementar; sin autorización nueva de commit ni despliegue.
@@ -35,3 +37,5 @@ La instrumentación mínima de errores y tiempos se incorporará desde las prime
 ## Decisiones pendientes antes de sus respectivas etapas
 
 Versiones y lockfile definidos en etapa 1. Pendientes: estrategia de credenciales/sesiones de Auth.js; carrito anónimo; diseño visual final y recursos; contenedor de aplicación; proveedor cloud y observabilidad; contratos de API; transiciones de estados de pago y stock; cargas y umbrales. El esquema inicial no implementa esas reglas. Resolver cada decisión cuando sea necesaria, sin ampliar el alcance aprobado.
+
+Cierre autorizado, prompt 012: versionar etapa 4 después de verificar estabilidad y secretos. Sandbox oficial de Transbank pendiente de prueba manual. Etapa 5 solo propuesta en chat tras el commit; no implementar antes de aprobación. Sin despliegue ni carga.

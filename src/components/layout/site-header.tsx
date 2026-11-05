@@ -35,6 +35,7 @@ export async function SiteHeader() {
           <Link href="/carrito">Carrito</Link>
           {user ? (
             <>
+              <Link href="/pedidos">Pedidos</Link>
               <span className="sr-only">Sesión iniciada</span>
               <SignOutButton />
             </>

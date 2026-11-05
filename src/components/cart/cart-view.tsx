@@ -136,9 +136,12 @@ export function CartView({ initialCart }: { initialCart: CartSnapshot }) {
               está reservado.
             </p>
             <div className="demo-note">
-              Tienda de demostración. El checkout y los pagos todavía no están
-              habilitados.
+              Compra de prueba sin dinero real. El stock se valida al confirmar
+              el pago.
             </div>
+            <Link href="/checkout" className="button button-red">
+              Continuar al checkout →
+            </Link>
             <Link href="/catalogo" className="button button-dark">
               Seguir explorando →
             </Link>

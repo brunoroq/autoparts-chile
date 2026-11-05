@@ -1266,3 +1266,39 @@ p {
     transition: none !important;
   }
 }
+
+/* Checkout y pedidos reutilizan la identidad y distribuci?n del carrito. */
+.order-line {
+  border-bottom: 1px solid #dedede;
+  padding: 24px 0;
+}
+.order-line h2 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+.order-line p {
+  color: #666;
+  margin-bottom: 12px;
+}
+.payment-actions {
+  display: grid;
+  gap: 16px;
+  margin: 24px 0;
+}
+.payment-actions form {
+  display: grid;
+  gap: 12px;
+}
+.payment-actions select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid #bbb;
+  background: white;
+}
+.cart-summary .button {
+  margin-top: 12px;
+  width: 100%;
+  white-space: normal;
+  text-align: center;
+}

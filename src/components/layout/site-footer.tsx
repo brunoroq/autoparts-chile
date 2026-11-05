@@ -22,7 +22,7 @@ export function SiteFooter() {
             <br />
             Productos, precios y stock ficticios.
             <br />
-            Sin ventas ni pagos habilitados.
+            Compras de prueba, sin dinero real.
           </p>
         </div>
       </div>

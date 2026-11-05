@@ -64,3 +64,15 @@ No hay resultados de desempeño medidos ni proveedor cloud seleccionado.
 ## Cierre conjunto de etapas 2 y 3 - prompt 010
 
 Commit descriptivo autorizado con auditoría de índice y verificaciones actualizadas. Conservar recursos fuente/visuales, lockfile y migraciones; excluir entorno privado, dependencias, generados de compilación, datos PostgreSQL, capturas y aplicaciones temporales. Propuesta de etapa 4 solo en chat después del commit; implementación y dependencias todavía no autorizadas. No realizar otro cambio de archivos después del commit para mantener el estado limpio solicitado.
+
+## 2026-11-04 — Etapa 4: confirmación atómica y compensación sencilla
+
+Contexto: checkout académico aprobado en prompt 011, sin reserva de stock ni dinero real. Dos usuarios pueden pagar externamente por la última unidad antes de confirmar en PostgreSQL.
+
+Decisión: servicio compartido de pedidos y sustitución exclusiva del proveedor. Simulador durable predeterminado; SDK oficial transbank-sdk 6.1.1 con constantes y host de integración. Idempotencia por usuario/solicitud, bloqueo breve del carrito al crear y stock condicional en orden estable al confirmar. Snapshots y reclamaciones persistidas; llamadas externas fuera de transacciones. Solo se vacía el carrito no modificado.
+
+Consecuencias: puede requerirse reversa si falta stock. Se intenta compensación oficial y se registra el resultado permitido; si es incierto queda en revisión, sin colas ni reintentos ciegos. Tras reinicio se consulta estado. Create sin token no tiene recuperación automática. Token cifrado con secreto separado estable; logs por lista permitida y Referrer-Policy no-referrer. Prueba manual con proveedor oficial pendiente. Prioriza trazabilidad y sencillez sobre disponibilidad comercial continua.
+
+## 2026-11-05 — Cierre versionado de etapa 4 y límite de etapa 5
+
+Prompt 012 autoriza commit después de auditoría y verificación. Se conserva expresamente la prueba manual pendiente contra sandbox oficial de Transbank. Etapa 5 se propone en chat después del commit para mantener limpio el repositorio; no se crean módulos, migraciones ni configuración activa de analítica hasta nueva aprobación.

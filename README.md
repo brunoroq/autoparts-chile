@@ -4,7 +4,7 @@ Proyecto universitario de **INFB8091 - Desempeño de Sistemas**: tienda de acces
 
 ## Estado
 
-Etapas 0 a 3 completadas. El cierre conjunto de etapas 2 y 3 incluye catálogo, API, seed, registro/login/logout y carrito persistente con concurrencia (consultar `git log` para hash y autor). Sin checkout, Transbank, GA4, pruebas de carga ni despliegue. Solo está autorizada la planificación de etapa 4; código pendiente de aprobación.
+Etapas 0 a 3 completadas y versionadas; cierre de etapas 2/3: `5c609ee41612f5a1a7dc7c53e16daae5c0482f1d`. Etapa 4 implementada con checkout, pedidos, historial, simulador predeterminado y adaptador Webpay exclusivamente de integración. Commit de etapa 4 autorizado por prompt 012 después de auditoría y pruebas; consultar Git para su hash. Etapa 5 solo en planificación, pendiente de aprobación. Sin GA4, k6, dinero real ni despliegues. La compra manual contra Webpay oficial todavía no fue ejecutada; consultar las instrucciones y limitaciones de etapa 4.
 
 ## Documentación
 
@@ -24,6 +24,9 @@ Etapas 0 a 3 completadas. El cierre conjunto de etapas 2 y 3 incluye catálogo, 
 - [Propuesta de etapa 3](docs/stage-3-proposal.md): alcance aprobado y diseño conservado.
 - [API de usuarios y carrito](docs/api/auth-cart.md): autenticación, seguridad, concurrencia y contratos.
 - [Verificación de etapa 3](docs/verification-stage-3.md): pruebas, límites e inventario.
+- [Etapa 4 y revisión manual](docs/stage-4.md): flujo, estados, reversas, configuración y limitaciones.
+- [API de checkout y pedidos](docs/api/checkout-orders.md): contratos para evaluación posterior.
+- [Verificación de etapa 4](docs/verification-stage-4.md): evidencia y archivos afectados.
 
 ## Inicio de una sesión
 
@@ -78,7 +81,7 @@ npm run check:http
 
 Los filtros se conservan en la URL, el formulario reinicia a página 1 y la paginación conserva criterios. En móvil los filtros comienzan plegados; se abren por clic o teclado. Los precios son CLP enteros, las imágenes de producto son ilustraciones referenciales y todas las existencias son de prueba.
 
-Para revisar el flujo: crear tu propia cuenta (sin credenciales predeterminadas), iniciar sesión, abrir un detalle, indicar cantidad y agregar al carrito. Allí puedes cambiar cantidades y eliminar líneas. Salir y volver a iniciar conserva el carrito en PostgreSQL; no reserva stock ni permite finalizar compras. Usar el origen exacto configurado en NEXTAUTH_URL para evitar rechazo de Origin.
+Para revisar el flujo: crear tu propia cuenta (sin credenciales predeterminadas), iniciar sesión, abrir un detalle, indicar cantidad y agregar al carrito. Allí puedes cambiar cantidades y eliminar líneas. Salir y volver a iniciar conserva el carrito en PostgreSQL. Continuar al checkout, crear un pedido y simular su pago; revisar historial en `/pedidos`. El stock se descuenta solo al confirmar. Usar el origen exacto configurado en NEXTAUTH_URL para evitar rechazo de Origin.
 
 ## Pruebas
 
@@ -96,6 +99,15 @@ npm run test:auth:server
 npm run test:auth:http
 npm run test:browser
 npm run test:auth:restart
+# Checkout: preparar otra base aislada y ejecutar sus pruebas:
+npm run test:checkout:prepare
+npm run test:checkout:integration
+npm run test:checkout:restart
+# En otra terminal, dejar activo localhost:3004 junto a 3000 y 3002:
+npm run test:checkout:server
+# En la terminal de pruebas:
+npm run test:checkout:http
+npm run test:browser
 ```
 
 Playwright 1.64.1 es una dependencia exclusiva de desarrollo y usa Chrome instalado (channel chrome). Las pruebas cubren 1440x1000 y 390x844, catálogo, cuenta, carrito, conflictos, teclado y foco; capturas e informes quedan en `test-results/` ignorado por Git. Para otro equipo, instalar Chrome desde su proveedor o adaptar channel de forma explícita; no se descargó otro navegador aquí. La única dependencia nueva de producción de etapa 3 es next-auth.
