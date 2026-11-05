@@ -26,3 +26,41 @@ No hay resultados de desempeño medidos ni proveedor cloud seleccionado.
 - D013: ocho tablas iniciales; carrito vinculado a usuario, sin resolver flujo anónimo. No crear tablas Auth.js hasta decidir autenticación. CHECK en segunda migración SQL para montos, stock y cantidades; no añadir índices de optimización antes de medir, salvo claves y relaciones básicas.
 - D014: página provisional estática deliberadamente aislada de PostgreSQL; conexión real mediante script de integración sin endpoint público. Las páginas de catálogo posteriores sí consultarán PostgreSQL.
 - D015: ocho avisos moderados transitivos en herramientas de lint, cero en auditoría de producción. Mantener versiones aprobadas; no usar `npm audit fix --force`, que propone degradar la configuración Next a otra versión mayor. Documentar y reevaluar actualización compatible en un cambio posterior.
+
+## Cierre de etapa 1 y planificación de etapa 2 - 2026-11-04
+
+- Commit `4d224a6`: base técnica y documentación. Índice revisado sin credenciales locales, node_modules, código generado ni datos locales PostgreSQL. `next-env.d.ts` ignorado por ser generado por Next.js.
+- D016 propuesta: identidad blanca/negra/gris con detalles rojos; seis categorías y 30 productos ficticios. Detalle en [propuesta de catálogo](../stage-2-proposal.md). Pendiente de aprobación, sin implementación.
+- D017 evaluación: ESLint 10.14.0 soporta el Node instalado, pero los peers efectivos de React/import/jsx-a11y aún excluyen v10. Dry-run emitió conflictos; no se cambió dependencia ni lockfile. Recomendar posponer actualización hasta compatibilidad completa. No se interpretó el peer amplio de eslint-config-next como prueba suficiente.
+
+## Implementación de etapa 2 - 2026-11-04
+
+- D016 aprobada por prompt 007 e implementada. Blanco/negro/gris/rojo, hero de carretera, seis categorías y 30 productos ficticios. Sin funciones posteriores.
+- D017 confirmada por usuario: mantener ESLint 9.39.5. No se actualizó ni se usó force, legacy-peer-deps u overrides.
+- D018: una fotografía Unsplash licenciada y 30 ilustraciones originales de producto con fuente SVG y WebP. No usar fotografías comerciales sin permiso ni contratar generación. Hero 191.920 bytes, productos hasta 7.934 bytes. [Procedencia](../images.md).
+- D019: conteo y listado en RepeatableRead para snapshot coherente; no garantiza consistencia entre solicitudes distintas. dbMs es tiempo de pared Prisma, totalMs es handler con serialización, no latencia de red. [Contrato](../api/catalog.md).
+- D020: base de integración local `autoparts_catalog_test`; pruebas completas de seed hasta 10.000 sin borrar datos, dejando `autoparts` con 30. Upserts en lotes de 100, abortar reducción de tamaño y datos ajenos.
+- D021: Playwright 1.64.1 solo en dev para Chrome existente ante CUA indisponible; sin navegador adicional ni dependencias nuevas de producción. Capturas ignoradas por Git. Prettier se ejecutó una vez para formato desde npm sin añadirse al manifiesto.
+- D022: filtros con formulario GET y URL reproducible; plegados inicialmente en móvil tras hidratación y abiertos en escritorio. Datos dinámicos sin caché, imágenes con carga diferida y caché documentada. Sin animaciones pesadas ni librerías UI.
+
+## Propuestas de etapa 3 - 2026-11-04 (sin implementación)
+
+- D023 propuesta: next-auth 4.24.15 estable, Credentials, JWT y persistencia User propia con Prisma. Versión 5.0.0-beta.32 es beta; ambas declaran Next 16/React 19 en npm. Confirmar compatibilidad efectiva al implementar, sin force ni degradación de versiones.
+- D024 propuesta: scrypt asíncrono de Node (N=2^17, r=8, p=1), sal aleatoria y parámetros versionados; no agregar dependencia nativa de hash. Documentar costo de memoria/CPU y limitar intentos sin relajar el hash para benchmarks.
+- D025 propuesta: Cart.version e If-Match con transacciones y actualización condicional para detectar conflictos 409; cantidades 1..99 y stock validado, sin reservarlo en carrito. Precios calculados en servidor, persistencia por usuario, sin carrito anónimo.
+- D026 propuesta: extender instrumentación actual a métodos variables, autenticación y hashing; conservar protocolo de cookies/CSRF y respuestas propias de Auth.js. Sin telemetría externa ni datos sensibles en logs.
+- Diseño de etapa 2 aprobado visualmente: conservarlo e integrar solo pantallas/acciones necesarias. Propuesta completa en [etapa 3](../stage-3-proposal.md). No hay aprobación de implementación ni commit pendiente.
+
+## Etapa 3 implementada - prompt 009, 2026-11-04
+
+- D023 aprobada y verificada con app aislada real: NextAuth 4.24.15, Next 16.4.5 y React 19.3.1 compatibles; no cambiar stack ni usar beta.
+- D024 implementada: scrypt nativo asíncrono, sal 16 bytes, key 64 bytes, N=2^17/r=8/p=1 y formato versionado. Costo y límites documentados; sin biblioteca externa.
+- D025 implementada: versión Cart y CAS dentro de transacción ReadCommitted. 409 real de concurrencia, rollback completo y recuperación UI sin repetir incrementos. Precios del servidor, stock sin reserva.
+- D026 implementada: AsyncLocalStorage nativo correlaciona db/auth/hash, respuesta NextAuth preservada y logger solo de códigos. Se verificó ausencia de secretos conocidos en logs capturados.
+- D027: base `autoparts_auth_test` y servidor 3002 separados del catálogo y de la tienda; usuarios y contraseñas sintéticos por ejecución. Persistencia tras reinicio comprobada en proceso efímero 3104.
+- D028: validar origen canónico en JSON y POST de Auth.js, cuerpo acotado, CSRF de biblioteca y retornos locales. Limitador por identidad/global en memoria; sin prometer protección distribuida o revocación global de JWT.
+- Diseño mantenido, agregando solo cuenta/carrito. Migración aditiva sin cambiar datos de catálogo. [Verificación](../verification-stage-3.md). Sin autorización de commit, despliegue o etapa 4.
+
+## Cierre conjunto de etapas 2 y 3 - prompt 010
+
+Commit descriptivo autorizado con auditoría de índice y verificaciones actualizadas. Conservar recursos fuente/visuales, lockfile y migraciones; excluir entorno privado, dependencias, generados de compilación, datos PostgreSQL, capturas y aplicaciones temporales. Propuesta de etapa 4 solo en chat después del commit; implementación y dependencias todavía no autorizadas. No realizar otro cambio de archivos después del commit para mantener el estado limpio solicitado.

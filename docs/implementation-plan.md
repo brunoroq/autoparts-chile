@@ -1,6 +1,12 @@
 # Plan de implementación
 
-Estado al 4 de noviembre de 2026: etapas 0 y 1 completadas. Etapa 0 en commit `adbfa0e`; cambios de etapa 1 pendientes de revisión y commit. Etapa 2 no autorizada; despliegues excluidos por el usuario.
+Estado al 4 de noviembre de 2026: etapas 0 y 1 completadas, commits `adbfa0e` y `4d224a6`. Etapa 2 aprobada e implementada según [propuesta concreta](stage-2-proposal.md); cambios sin commit para revisión. Etapa 3 y despliegues no autorizados.
+
+El diseño de etapa 2 fue aprobado visualmente en prompt 008. [Etapa 3 propuesta](stage-3-proposal.md): solo planificación de usuarios/autenticación/carrito, pendiente de aprobación antes de implementar; sin autorización nueva de commit ni despliegue.
+
+Actualización vigente, prompt 009: etapa 3 aprobada e implementada; [resultados](verification-stage-3.md). Compatibilidad NextAuth v4 comprobada antes de integrar. Etapas 2 y 3 sin commit; no hay autorización de etapa 4, despliegue o commit final.
+
+Actualización de cierre, prompt 010: commit conjunto de etapas 2 y 3 autorizado después de auditoría y verificaciones. Propuesta de etapa 4 se entrega en chat tras el commit; sin archivos nuevos posteriores para mantener el repositorio limpio. No está autorizado implementar checkout/pagos, instalar SDK, GA4/k6 o desplegar. El hash de cierre se consulta en Git.
 
 Cada etapa comienza con explicación de archivos, comportamiento y pruebas, y requiere aprobación del usuario. Al cerrar: ejecutar verificaciones disponibles, registrar resultado y preguntar por commit y despliegue. No avanzar automáticamente a la etapa siguiente.
 

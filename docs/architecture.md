@@ -67,6 +67,14 @@ docs/                    arquitectura, decisiones y evidencias
 
 Docker Compose está configurado para PostgreSQL local con volumen persistente y healthcheck. La aplicación corre en el host; se evaluará contenerizarla solo si simplifica la reproducción. La etapa 1 incorpora exclusivamente base técnica, página provisional y esquema inicial.
 
+Etapa 2: inicio, `/catalogo` y `/productos/[slug]` dinámicos con consultas directas a servicios Prisma compartidos con tres endpoints GET v1. Los módulos concretos son `service.ts`, `queries.ts` y `validation.ts`; los tipos públicos se derivan de los servicios en lugar de mantener un archivo duplicado. Listado/conteo usan snapshot RepeatableRead y orden con ID de desempate. Instrumentación en stdout y Server-Timing, sin colector adicional. [Contratos y límites](api/catalog.md).
+
+El seed mantiene datos locales de demostración y una base `_test` separada para integración. Imágenes locales con Next Image y caché de imagen separada de los datos de catálogo. Única dependencia nueva: Playwright en desarrollo para las verificaciones; sin nuevas dependencias de producción. Fotografías autorizadas e ilustraciones propias documentadas en [recursos visuales](images.md).
+
+Etapa 3: NextAuth 4.24.15 Credentials/JWT, persistencia propia de User/Cart sin adaptador Auth.js; scrypt asíncrono nativo. Sesión de servidor y autorización por propietario en todos los endpoints privados. Nueva columna passwordHash y Cart.version; mutaciones con CAS transaccional e If-Match. Sin reserva de stock ni checkout. El helper compartido usa AsyncLocalStorage para db/auth/hash y conserva respuestas/cookies de NextAuth. [Contratos](api/auth-cart.md).
+
+Autenticación se verifica en otra base, `autoparts_auth_test`; las cuentas ficticias no se crean en la base habitual. Diseño conservado, con nuevas pantallas/acciones de cuenta y carrito. Sin servicios externos, tablas de sesiones ni dependencias de hashing.
+
 El cloud gratuito se seleccionará según cuotas, posibilidad de observar recursos y condiciones de carga. Si no expone CPU, memoria o I/O, declarar la limitación y obtener esas métricas localmente; consultar con el docente si esa evidencia no satisface la evaluación. No inventar métricas de infraestructura.
 
 Logs estructurados con solicitud, ejecución, ruta normalizada, método, estado y duración. No almacenar logs de cada petición en PostgreSQL medido por defecto: la instrumentación podría alterar el experimento. Elegir un destino sencillo y documentar su costo.

@@ -6,7 +6,11 @@ const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 function createClient() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) throw new Error("DATABASE_URL no está definida.");
-  const adapter = new PrismaPg({ connectionString, max: 5, connectionTimeoutMillis: 5000 });
+  const adapter = new PrismaPg({
+    connectionString,
+    max: 5,
+    connectionTimeoutMillis: 5000,
+  });
   return new PrismaClient({ adapter });
 }
 

@@ -10,7 +10,7 @@ Actuar como ingeniero de software senior especializado en Next.js, TypeScript, P
 
 1. Leer este archivo y `LogFile.txt` antes de modificar el proyecto.
 2. Revisar `git status`, la arquitectura, el plan y las decisiones relevantes. No sobrescribir cambios del usuario.
-3. Identificar la etapa autorizada y sus límites. Etapas 0 y 1 completadas; commit de etapa 1 autorizado. Solo se autoriza planificar la etapa 2 (catálogo); no escribir código hasta aprobar la propuesta concreta. Identidad visual solicitada: blanco, negro, gris y detalles rojos. Sin carrito, autenticación, checkout, pagos, GA4 ni despliegues en etapa 2.
+3. Identificar la etapa autorizada y sus límites. Etapas 0 a 3 completadas; commit conjunto de etapas 2 y 3 autorizado por prompt 010. Después de ese commit solo se autoriza planificar etapa 4 (checkout/pagos de integración y simulados); esperar aprobación antes de código o dependencias. Mantener identidad visual. Sin dinero real, tarjetas almacenadas, tráfico masivo a Transbank, GA4, k6, despliegue ni etapas posteriores.
 4. Registrar el prompt completo del usuario en `LogFile.txt`, conforme a su formato. Revisar el historial antes de anexar para evitar duplicados.
 
 ## Aprobación y cierre de cambios
@@ -52,5 +52,15 @@ Actuar como ingeniero de software senior especializado en Next.js, TypeScript, P
 `LogFile.txt` es un registro anexado, sin reescritura de entradas históricas. Incluir ID, fecha/hora ISO 8601 y zona `America/Santiago`, agente, modelo realmente disponible, prompt completo, aprobación, resumen, archivos y validación. Si el identificador exacto del modelo o la hora original no están disponibles, declararlo; no inventarlos. Separar hora del mensaje y hora del registro retrospectivo. Registrar correcciones mediante nuevas entradas. No incluir instrucciones internas del sistema, razonamientos privados ni credenciales. Si un prompt contiene un secreto, redactar solo ese valor e indicar la redacción.
 
 ## Entregables académicos
+
+Estado de cierre de etapa 2: implementación y verificaciones completadas; cambios sin commit para revisión. Consultar `docs/verification-stage-2.md`, `docs/api/catalog.md` y `docs/images.md`. No iniciar etapa 3 sin nueva aprobación. Las pruebas de escritura usan una base local con nombre terminado en `_test`; no usar la tienda habitual como base de pruebas. Mantener ESLint 9 mientras sus plugins no permitan una migración compatible.
+
+Actualización de prompt 008: el usuario aprobó visualmente el diseño actual y solicitó solo una propuesta de etapa 3. Mantener el diseño; consultar `docs/stage-3-proposal.md` y esperar aprobación antes de código, dependencias o migraciones. No interpretar esta solicitud como autorización para el commit pendiente de etapa 2.
+
+Actualización vigente, prompt 009: etapa 3 aprobada para implementar registro, login/logout, sesiones y carrito persistente con control de versiones. Primero verificar compatibilidad NextAuth v4; detener esa parte y proponer alternativas ante incompatibilidad importante, sin cambiar stack. Mantener diseño; sin checkout, Transbank, GA4, carga, despliegue ni etapa 4. No realizar commit sin autorización.
+
+Cierre de etapa 3: implementada y verificada; consultar `docs/verification-stage-3.md` y `docs/api/auth-cart.md`. Compatibilidad v4 comprobada sin cambios de stack. Etapa 4 no autorizada. Usar `autoparts_auth_test` y localhost:3002 para pruebas de cuentas, sin crear identidades ficticias en la tienda habitual. Mantener secretos en entorno local ignorado. Consultar al usuario antes de versionar los cambios pendientes de etapas 2 y 3.
+
+Actualización vigente, prompt 010: autorizado commit conjunto de etapas 2 y 3 tras auditoría y pruebas. La propuesta de etapa 4 se presenta en el chat después del commit, sin crear código ni archivos posteriores al commit para conservar el repositorio limpio. Su implementación requiere nueva aprobación. Consultar Git para hash/autor del commit de cierre; el registro no puede contener su propio hash antes de ser confirmado.
 
 Consultar `docs/requirements.md`. Conservar evidencias para informe y video de ambas fases: arquitectura, metodología, configuración de GA4, gráficos, resultados, cuellos de botella y conclusiones. El acceso del profesor a GA4 se realizará con autorización explícita; no está autorizado por la mera presencia de su correo en el enunciado.

@@ -4,7 +4,7 @@ Proyecto universitario de **INFB8091 - Desempeño de Sistemas**: tienda de acces
 
 ## Estado
 
-Etapa 0 completada y registrada en el commit `adbfa0e`. Etapa 1 implementada: Next.js, página provisional, PostgreSQL con Compose y esquema Prisma inicial. Sin funcionalidades de tienda ni despliegue. La etapa 2 requiere aprobación del usuario.
+Etapas 0 a 3 completadas. El cierre conjunto de etapas 2 y 3 incluye catálogo, API, seed, registro/login/logout y carrito persistente con concurrencia (consultar `git log` para hash y autor). Sin checkout, Transbank, GA4, pruebas de carga ni despliegue. Solo está autorizada la planificación de etapa 4; código pendiente de aprobación.
 
 ## Documentación
 
@@ -17,6 +17,13 @@ Etapa 0 completada y registrada en el commit `adbfa0e`. Etapa 1 implementada: Ne
 - [Metodología de evaluación](docs/performance/methodology.md): escenarios, catálogos, métricas y comparación local/cloud.
 - [Base de datos](docs/database.md): esquema, conexión y migraciones.
 - [Verificación de etapa 1](docs/verification-stage-1.md): resultados y errores encontrados.
+- [Propuesta de etapa 2](docs/stage-2-proposal.md): alcance aprobado.
+- [API de catálogo](docs/api/catalog.md): contratos, errores e instrumentación.
+- [Imágenes](docs/images.md): procedencia, licencia y optimización.
+- [Verificación de etapa 2](docs/verification-stage-2.md): pruebas, resultados e inventario de cambios.
+- [Propuesta de etapa 3](docs/stage-3-proposal.md): alcance aprobado y diseño conservado.
+- [API de usuarios y carrito](docs/api/auth-cart.md): autenticación, seguridad, concurrencia y contratos.
+- [Verificación de etapa 3](docs/verification-stage-3.md): pruebas, límites e inventario.
 
 ## Inicio de una sesión
 
@@ -24,7 +31,7 @@ Leer `AGENTS.md` y `LogFile.txt`, revisar el estado de Git y confirmar el alcanc
 
 ## Stack previsto
 
-Node.js 24.21.0, npm 11.19.0, Next.js 16.4.5, React 19.3.1, TypeScript 5.9.3 estricto, Tailwind CSS 4.3.4, Prisma 7.10.1 y PostgreSQL 17.11. Versiones directas fijadas y lockfile versionado. Auth.js, pagos, GA4 y k6 no están instalados; corresponden a etapas posteriores.
+Node.js 24.21.0, npm 11.19.0, Next.js 16.4.5, React 19.3.1, TypeScript 5.9.3 estricto, Tailwind CSS 4.3.4, Prisma 7.10.1, PostgreSQL 17.11 y NextAuth 4.24.15 estable. Versiones directas fijadas y lockfile versionado. Scrypt nativo de Node, sin dependencia de hash adicional. Transbank, GA4 y k6 no están instalados.
 
 ## Puesta en marcha local (PowerShell)
 
@@ -33,15 +40,17 @@ Requisitos: Node/npm indicados y Docker Desktop activo con Compose y contenedore
 ```powershell
 Copy-Item .env.example .env
 # Editar .env: reemplazar la contraseña de ejemplo y sincronizar DATABASE_URL.
+# Configurar NEXTAUTH_URL=http://localhost:3000 y NEXTAUTH_SECRET aleatorio (48 bytes).
 npm ci
 npm run db:up
 npm run db:generate
 npm run db:deploy
+npm run db:seed -- --size 30
 npm run db:check
 npm run dev
 ```
 
-No sobrescribir un `.env` existente. En la implementación inicial se creó uno local con contraseña aleatoria; no está versionado. La base inicial queda vacía y la página no depende de consultas a PostgreSQL todavía. La conexión se verifica por separado, sin exponer un endpoint público de diagnóstico.
+No sobrescribir un `.env` existente. Se creó uno local con contraseña aleatoria; no está versionado. El seed carga seis categorías y 30 productos ficticios. Inicio, catálogo, detalle y API consultan PostgreSQL realmente; el servidor debe tener acceso a la base. No se expone un endpoint público de diagnóstico.
 
 Abrir http://localhost:3000. La app se enlaza a loopback, no a toda la red. PostgreSQL también está limitado a localhost.
 
@@ -55,6 +64,46 @@ npm start
 npm run check:http
 ```
 
-`validate` ejecuta lint, tipos y validación de Prisma. Next.js genera el cliente Prisma durante build y typecheck; `.env` debe existir también para estos comandos, aunque la página provisional no consulta la base durante la compilación. `check:http` verifica HTTP 200, título, idioma, contenido y CSS en localhost:3000. `db:check` es una comprobación de integración real. No hay pruebas de negocio porque aún no hay reglas implementadas.
+`validate` ejecuta lint, tipos y validación de Prisma. Next.js genera el cliente Prisma durante build y typecheck; `.env` debe existir también para estos comandos. Las páginas de catálogo son dinámicas y no consultan la base durante la compilación. Detener el servidor antes de reconstruir y volver a iniciarlo después para no mezclar archivos de builds diferentes. `check:http` verifica inicio, catálogo, detalle, API y optimización de imágenes. `db:check` consulta las ocho tablas reales.
+
+## Revisar la tienda
+
+- Inicio: http://localhost:3000
+- Catálogo: http://localhost:3000/catalogo
+- Ejemplo de búsqueda: http://localhost:3000/catalogo?q=LED&category=iluminacion&sort=price_asc
+- API: http://localhost:3000/api/v1/products y http://localhost:3000/api/v1/categories
+- Crear cuenta: http://localhost:3000/registro
+- Iniciar sesión: http://localhost:3000/iniciar-sesion
+- Carrito privado: http://localhost:3000/carrito
+
+Los filtros se conservan en la URL, el formulario reinicia a página 1 y la paginación conserva criterios. En móvil los filtros comienzan plegados; se abren por clic o teclado. Los precios son CLP enteros, las imágenes de producto son ilustraciones referenciales y todas las existencias son de prueba.
+
+Para revisar el flujo: crear tu propia cuenta (sin credenciales predeterminadas), iniciar sesión, abrir un detalle, indicar cantidad y agregar al carrito. Allí puedes cambiar cantidades y eliminar líneas. Salir y volver a iniciar conserva el carrito en PostgreSQL; no reserva stock ni permite finalizar compras. Usar el origen exacto configurado en NEXTAUTH_URL para evitar rechazo de Origin.
+
+## Pruebas
+
+```powershell
+npm test
+npm run test:prepare
+npm run test:integration
+npm run test:auth:prepare
+npm run test:auth:integration
+# Requieren el servidor de producción activo en localhost:3000:
+npm run test:http
+# En otra terminal, servidor exclusivo de pruebas en localhost:3002:
+npm run test:auth:server
+# Después, en otra terminal:
+npm run test:auth:http
+npm run test:browser
+npm run test:auth:restart
+```
+
+Playwright 1.64.1 es una dependencia exclusiva de desarrollo y usa Chrome instalado (channel chrome). Las pruebas cubren 1440x1000 y 390x844, catálogo, cuenta, carrito, conflictos, teclado y foco; capturas e informes quedan en `test-results/` ignorado por Git. Para otro equipo, instalar Chrome desde su proveedor o adaptar channel de forma explícita; no se descargó otro navegador aquí. La única dependencia nueva de producción de etapa 3 es next-auth.
+
+La integración escribe solo en una base local terminada en `_test`, por defecto `autoparts_catalog_test`, y la deja en 10.000 productos. No borra datos ni cambia el catálogo habitual de 30. [Preparación y seeds aislados](docs/database.md).
+
+Las pruebas de cuenta usan `autoparts_auth_test`, con 30 productos y usuarios ficticios únicos generados en ejecución. `test:auth:server` deriva un secreto distinto y configura NEXTAUTH_URL para localhost:3002; no crea cuentas en `autoparts`. `test:auth:restart` administra un servidor efímero en 3104 y `test:auth:compat` una app temporal en 3103. Son verificaciones funcionales acotadas, no generadores de carga. Detener los servidores propios antes de recompilar.
+
+El caso de error HTTP requiere un servidor separado en puerto 3001 con DATABASE_URL apuntando a un puerto local sin PostgreSQL; ejecutar `npm run test:http:error` contra ese servidor. El procedimiento exacto está en [verificación de etapa 2](docs/verification-stage-2.md). No detener PostgreSQL de la tienda para provocar un fallo.
 
 Para detener PostgreSQL conservando datos: `npm run db:down`. Para consultar salud: `npm run db:status`. Las mediciones de carga futuras utilizarán build de producción, nunca `npm run dev`.

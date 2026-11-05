@@ -1,0 +1,9 @@
+export default function Loading() {
+  return (
+    <div className="container section" role="status">
+      <p className="eyebrow red">AUTOPARTS CHILE</p>
+      <h1>Cargando accesorios…</h1>
+      <p>Estamos preparando tu próximo camino.</p>
+    </div>
+  );
+}
