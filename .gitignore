@@ -17,3 +17,6 @@ src/generated/prisma/
 test-results/
 playwright-report/
 /tmp/
+
+# Exportaciones experimentales locales (documentar resúmenes en docs).
+/artifacts/

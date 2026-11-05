@@ -16,7 +16,7 @@
     "typecheck": "prisma generate && next typegen && tsc --noEmit",
     "validate": "npm run lint && npm run typecheck && npm run db:validate",
     "check:http": "node scripts/check-http.mjs",
-    "test": "tsx --test tests/catalog.test.ts tests/auth.test.ts tests/checkout.test.ts",
+    "test": "tsx --test tests/catalog.test.ts tests/auth.test.ts tests/checkout.test.ts tests/analytics.test.ts",
     "test:auth:compat": "node scripts/check-auth-compat.mjs",
     "test:auth:prepare": "tsx scripts/prepare-auth-tests.ts",
     "test:auth:integration": "tsx --test tests/auth.integration.test.ts",
@@ -43,7 +43,14 @@
     "test:checkout:integration": "tsx --test tests/checkout.integration.test.ts",
     "test:checkout:server": "tsx scripts/start-checkout-test-server.ts",
     "test:checkout:http": "tsx --test tests/checkout.http.test.ts",
-    "test:checkout:restart": "tsx scripts/check-checkout-restart.ts"
+    "test:checkout:restart": "tsx scripts/check-checkout-restart.ts",
+    "metrics:export": "tsx scripts/export-metrics.ts",
+    "metrics:docker": "tsx scripts/observe-docker.ts",
+    "test:analytics:prepare": "tsx scripts/prepare-analytics-tests.ts",
+    "test:analytics:integration": "tsx --test tests/analytics.integration.test.ts",
+    "test:analytics:server": "tsx scripts/start-analytics-test-server.ts",
+    "metrics:manifest": "tsx scripts/experiment-manifest.ts",
+    "test:observability": "tsx scripts/check-observability.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

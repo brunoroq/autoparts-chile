@@ -4,7 +4,7 @@ Proyecto universitario de **INFB8091 - Desempeño de Sistemas**: tienda de acces
 
 ## Estado
 
-Etapas 0 a 3 completadas y versionadas; cierre de etapas 2/3: `5c609ee41612f5a1a7dc7c53e16daae5c0482f1d`. Etapa 4 implementada con checkout, pedidos, historial, simulador predeterminado y adaptador Webpay exclusivamente de integración. Commit de etapa 4 autorizado por prompt 012 después de auditoría y pruebas; consultar Git para su hash. Etapa 5 solo en planificación, pendiente de aprobación. Sin GA4, k6, dinero real ni despliegues. La compra manual contra Webpay oficial todavía no fue ejecutada; consultar las instrucciones y limitaciones de etapa 4.
+Etapas 0 a 4 versionadas; etapa 4: b4fd0006c5db5ac66d220955b64f08a746b6f60d. Etapa 5 implementada y pendiente de autorización de commit: GA4 opt-in, Web Vitals y observabilidad/exportaciones. Analytics, Web Vitals y recursos opcionales desactivados por defecto. No se configuró una propiedad real ni accesos externos. Sin k6, dinero real, despliegues ni etapa 6. Webpay oficial sigue pendiente de compra manual.
 
 ## Documentación
 
@@ -27,6 +27,9 @@ Etapas 0 a 3 completadas y versionadas; cierre de etapas 2/3: `5c609ee41612f5a1a
 - [Etapa 4 y revisión manual](docs/stage-4.md): flujo, estados, reversas, configuración y limitaciones.
 - [API de checkout y pedidos](docs/api/checkout-orders.md): contratos para evaluación posterior.
 - [Verificación de etapa 4](docs/verification-stage-4.md): evidencia y archivos afectados.
+
+- [Etapa 5 y configuración GA4/DebugView](docs/stage-5.md): eventos, consentimiento, métricas y exportaciones.
+- [Verificación de etapa 5](docs/verification-stage-5.md): resultados, errores y limitaciones.
 
 ## Inicio de una sesión
 
@@ -119,3 +122,7 @@ Las pruebas de cuenta usan `autoparts_auth_test`, con 30 productos y usuarios fi
 El caso de error HTTP requiere un servidor separado en puerto 3001 con DATABASE_URL apuntando a un puerto local sin PostgreSQL; ejecutar `npm run test:http:error` contra ese servidor. El procedimiento exacto está en [verificación de etapa 2](docs/verification-stage-2.md). No detener PostgreSQL de la tienda para provocar un fallo.
 
 Para detener PostgreSQL conservando datos: `npm run db:down`. Para consultar salud: `npm run db:status`. Las mediciones de carga futuras utilizarán build de producción, nunca `npm run dev`.
+
+## Analítica y métricas opcionales
+
+Todo permanece desactivado por defecto. Seguir [etapa 5](docs/stage-5.md) para configurar GA4, consentimiento y DebugView antes de habilitarlo. PostgreSQL conserva la verdad de las compras; purchase reclamado no acredita recepción de Google. Para verificar sin servicios externos: npm run test:analytics:prepare, npm run test:analytics:integration y npm run test:observability. Las exportaciones se generan con npm run metrics:export; el manifiesto y Docker con metrics:manifest y metrics:docker. Consultar el documento para captura UTF-8, duración medida y separación de tráfico. No se configura acceso del profesor ni despliegue.

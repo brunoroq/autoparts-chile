@@ -1,3 +1,5 @@
+import { CommerceView } from "@/components/analytics/analytics-provider";
+import { commerce } from "@/lib/analytics/contracts";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -25,6 +27,7 @@ export default async function ProductPage({
   if (!product) notFound();
   return (
     <div className="container detail-page">
+      <CommerceView name="view_item" eventKey={product.id+":"+product.priceClp} value={commerce([{productId:product.id,unitPriceClp:product.priceClp,quantity:1}])} />
       <nav className="breadcrumbs" aria-label="Ruta de navegación">
         <Link href="/">Inicio</Link>
         <span aria-hidden="true">/</span>
@@ -59,7 +62,7 @@ export default async function ProductPage({
           </div>
           <div className="demo-note">
             Catálogo de demostración. Los precios y existencias son ficticios;
-            las compras todavía no están habilitadas.
+            las compras son de prueba, sin dinero real.
           </div>
           <AddToCart
             productId={product.id}

@@ -1,3 +1,4 @@
+import { commerce } from "@/lib/analytics/contracts";
 import { apiResponse } from "@/lib/observability/request";
 import { requireUser } from "@/lib/auth/session";
 import { checkOrigin, readJson } from "@/lib/http/input";
@@ -20,6 +21,19 @@ export function POST(request: Request) {
     );
     context.status = 201;
     context.headers.set("ETag", `"${data.version}"`);
-    return { data };
+    const item = data.items.find((i) => i.productId === body.productId)!;
+    return {
+      data,
+      analytics: {
+        eventId: crypto.randomUUID(),
+        value: commerce([
+          {
+            productId: item.productId,
+            unitPriceClp: item.unitPriceClp,
+            quantity: body.quantity,
+          },
+        ]),
+      },
+    };
   });
 }

@@ -748,3 +748,88 @@ Resumen en curso: revisión de secretos/archivos excluidos, pruebas y compilaci�
 CIERRE PREVIO AL COMMIT 012
 2026-11-05T13:32:08-03:00: verificación previa al commit de etapa 4 completada. validate (lint, TypeScript, Prisma) y build exitosos; 13 unitarias, 10 integraciones checkout, 2 integraciones de regresión (auth/carrito y catálogo/seed), 8 HTTP y 12 navegador: 45 pruebas exitosas. Reinicio real de proceso y smoke HTTP 200 correctos. Primera ejecución de integraciones falló por Docker Desktop apagado; se inició en segundo plano, se levantó el contenedor existente sin borrar datos y se repitieron las pruebas con resultado exitoso. PostgreSQL healthy. Auditoría de producción cero vulnerabilidades. Auditoría de 195 archivos revisables sin secretos locales conocidos, claves privadas ni rutas excluidas. Sandbox oficial de Transbank sigue pendiente de prueba manual; ninguna prueba automática lo contactó. Servidores de pruebas cerrados; tienda habitual activa en localhost:3000. Sin cambios de código durante este turno: solo documentación/registro de cierre. Se auditará el índice antes del commit. Hash y estado limpio se entregan en chat; no se modifican archivos después del commit para registrar su propio hash. Sin push, despliegue ni implementación de etapa 5.
 Propuesta de etapa 5 en chat: gtag.js directo, contratos de eventos basados en servidor, deduplicación de compra, Web Vitals nativos de Next, ampliación sencilla de logs/recursos, separación de tráfico y procedimiento de acceso de solo lectura. Esperar aprobación antes de código, migraciones o activación de Google Analytics.
+
+
+ENTRADA 013
+Fecha/hora de registro: 2026-11-05T13:46:46-03:00, America/Santiago. Hora original del mensaje no disponible.
+Agente: Codex. Identificador exacto del modelo no expuesto.
+PROMPT COMPLETO
+Apruebo la propuesta de la etapa 5 de AutoParts Chile y autorizo su implementación, manteniendo la arquitectura y el alcance presentados.
+
+Agrego las siguientes consideraciones:
+
+1. GOOGLE ANALYTICS 4
+
+- Integrar GA4 mediante gtag.js y next/script.
+- Mantener Analytics desactivado hasta configurar el identificador de medición y obtener consentimiento.
+- Registrar correctamente view_item, add_to_cart, begin_checkout y purchase.
+- Utilizar valores obtenidos del servidor, con moneda CLP.
+- Evitar eventos duplicados por renderizados, recargas o navegación.
+- Mantener transaction_id estable para las compras.
+- No enviar información personal ni datos sensibles.
+- Documentar la configuración de la propiedad GA4 y el procedimiento para otorgar acceso de lectura al profesor.
+
+2. DEDUPLICACIÓN
+
+- Implementar una estrategia sencilla y confiable para evitar duplicaciones.
+- Si se utiliza una marca persistente de reclamación del evento purchase, documentar que no equivale a una confirmación de recepción por Google Analytics.
+- No implementar sistemas complejos de reintentos.
+- Mantener PostgreSQL como fuente de verdad para las compras y conversiones.
+
+3. CORE WEB VITALS
+
+- Medir LCP, CLS e INP mediante las herramientas de Next.js.
+- Registrar las métricas con sus unidades correctas.
+- Permitir comparar resultados según dispositivo, entorno y experimento.
+- Evitar contar varias actualizaciones de una misma métrica como observaciones independientes.
+
+4. OBSERVABILIDAD
+
+- Mantener los tiempos de aplicación, base de datos y proveedor de pagos separados.
+- Incorporar mediciones de CPU, memoria, event loop y conexiones PostgreSQL.
+- Incorporar mediciones de recursos de Docker para PostgreSQL.
+- Preparar exportaciones CSV o JSON que puedan utilizarse posteriormente en gráficos e informes.
+- Registrar latencias, percentiles, throughput y errores HTTP.
+- Diferenciar los errores técnicos de los errores comerciales esperados, como un conflicto de stock o una validación incorrecta.
+- Evitar instrumentación pesada que altere significativamente los resultados.
+
+5. PREPARACIÓN PARA PRUEBAS DE CARGA
+
+- Permitir identificar cada experimento mediante un identificador único.
+- Separar tráfico humano y sintético.
+- Mantener comparables los resultados entre diferentes tamaños de catálogo y niveles de concurrencia.
+- Preparar mediciones tanto para ejecución local como para un futuro despliegue cloud.
+- Documentar claramente qué métricas provienen de GA4, del navegador, de PostgreSQL y del servidor.
+- No implementar todavía los escenarios de carga con k6.
+
+6. VALIDACIONES
+
+- Probar eventos, importes, consentimiento, navegación y deduplicación.
+- Comprobar que no se envían datos sensibles.
+- Verificar las métricas y exportaciones generadas.
+- Ejecutar pruebas automatizadas, regresión, lint, TypeScript, Prisma y build.
+- Documentar los resultados y limitaciones.
+
+7. ALCANCE
+
+- Mantener el diseño actual de la tienda.
+- No incorporar nuevas funcionalidades comerciales.
+- Evitar dependencias innecesarias.
+- No realizar despliegues.
+- No configurar todavía accesos externos sin mi autorización.
+- Mantener actualizados AGENTS.md, LogFile.txt y la documentación.
+
+Puedes implementar la etapa 5 completa según el alcance aprobado.
+
+Al finalizar, entrega un resumen de funcionalidades implementadas, pruebas realizadas, problemas encontrados y pasos para configurar GA4 y comprobar los eventos en DebugView.
+
+No realices el commit final sin solicitar mi autorización y no avances a la etapa 6.
+FIN DEL PROMPT
+Aprobación: implementar etapa 5, sin commit final, etapa 6, k6, despliegues o accesos externos.
+Resumen en curso: gtag con consentimiento, contratos seguros desde servidor, reclamación atómica de purchase; Web Vitals consolidados y observabilidad/CSV/JSON sin dependencias nuevas. Se anexarán resultados reales.
+
+CIERRE DE IMPLEMENTACIÓN 013
+2026-11-05T14:05:35-03:00: cierre funcional de etapa 5. 18 unitarias, 13 casos de integración PostgreSQL (10 checkout, 1 analítica, 1 usuarios/carrito, 1 catálogo/seed), 8 HTTP y 18 navegador (37,5 s en última suite): 57 pruebas exitosas. validate (lint/TypeScript/Prisma) y build exitosos; reinicio real de checkout y observabilidad real/exportaciones correctos. Captura final de observabilidad: 11 registros, un CLS consolidado de 0,2, Node/PostgreSQL/Docker presentes, sin errores de muestreo; artifacts locales en tmp/observability-Gbwp43/export. La captura parcial del navegador también verificó LCP/CLS/INP reales, sin presentar los valores como benchmark. Auditoría de producción cero vulnerabilidades. Conexión real de base habitual correcta: 0 usuarios, 6 categorías, 30 productos y 0 carritos/pedidos/pagos ficticios. Auditoría de 219 archivos revisables sin secretos locales conocidos, enlaces rotos o rutas excluidas; git diff --check correcto. Integraciones opcionales desactivadas en tienda habitual; sin dependencias nuevas, accesos externos, despliegue, k6 ni etapa 6. Cambios sin commit para revisión.
+Archivos: contratos/compra de analytics, provider y Web Vitals, instrumentación/config/resources/vitals/docker, dos endpoints, columna/migración nullable, scripts de exportación/manifiesto/Docker/comprobación y pruebas aisladas; layout/detalle/checkout/carrito y contratos; package.json, entorno de ejemplo, gitignore, preparación de fixtures, AGENTS/README/plan/arquitectura/base/decisiones e informes.
+Problemas corregidos: excepción lint para cola Arguments de gtag tras formateo; patrón [id] de formatter; preparación no destructiva de bases con fixtures; capturas UTF-8/BOM y unidades numéricas de Docker; ruta portable del ejecutable. Sin cambios visuales salvo controles de consentimiento cuando se habilita analítica.
+Limitaciones: no hay propiedad real configurada ni DebugView de Google verificado (falta ID del propietario); transporte interceptado en pruebas, sin envíos externos. Reclamación de purchase no significa recepción ni se reintenta; PostgreSQL prevalece. Sandbox Webpay oficial sigue pendiente de compra manual. No conceder acceso al profesor sin nueva autorización. Se solicita autorización antes del commit final.

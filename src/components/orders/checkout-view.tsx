@@ -1,4 +1,6 @@
 "use client";
+import { CommerceView } from "@/components/analytics/analytics-provider";
+import { commerce } from "@/lib/analytics/contracts";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { CartSnapshot } from "@/modules/cart/service";
@@ -43,6 +45,14 @@ export function CheckoutView({
   }
   return (
     <>
+      <CommerceView
+        name="begin_checkout"
+        eventKey={JSON.stringify([
+          cart.version,
+          cart.items.map((i) => [i.productId, i.quantity, i.unitPriceClp]),
+        ])}
+        value={commerce(cart.items)}
+      />
       <div className="catalog-heading">
         <p className="eyebrow red">ÚLTIMO PASO</p>
         <h1>

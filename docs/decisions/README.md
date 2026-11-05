@@ -76,3 +76,7 @@ Consecuencias: puede requerirse reversa si falta stock. Se intenta compensación
 ## 2026-11-05 — Cierre versionado de etapa 4 y límite de etapa 5
 
 Prompt 012 autoriza commit después de auditoría y verificación. Se conserva expresamente la prueba manual pendiente contra sandbox oficial de Transbank. Etapa 5 se propone en chat después del commit para mantener limpio el repositorio; no se crean módulos, migraciones ni configuración activa de analítica hasta nueva aprobación.
+
+## 2026-11-05 — Etapa 5: analítica opt-in y métricas locales
+
+Contexto: evaluar desempeño académico sin servicios de pago ni rediseño. Decisión: gtag.js directo y Next Web Vitals, sin dependencias nuevas; datos comerciales desde servidor, rutas/títulos normalizados, consentimiento básico, propiedad separada para sintéticos. Una columna nullable permite reclamación purchase atómica. Representa como máximo un intento de envío, no un acuse; pérdida posterior puede subregistrar y PostgreSQL prevalece. Web Vitals propios consolidados por ID/secuencia, recursos opcionales y logs/exportación fuera de la base medida. Sin colas, dashboards externos ni escenarios k6. Reportar por separado CPU Node/Docker y errores comerciales/técnicos; no presentar pruebas funcionales como benchmark. Configuración/DebugView y accesos reales permanecen manuales y pendientes.

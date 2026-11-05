@@ -1,3 +1,6 @@
+import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
+import { WebVitals } from "@/components/analytics/web-vitals";
+import { analyticsConfig } from "@/lib/observability/config";
 import type { Metadata } from "next";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/site-header";
@@ -18,11 +21,14 @@ export default function RootLayout({
   return (
     <html lang="es-CL">
       <body>
-        <SiteHeader />
-        <main id="contenido" tabIndex={-1}>
-          {children}
-        </main>
-        <SiteFooter />
+        <AnalyticsProvider config={analyticsConfig()}>
+          <WebVitals />
+          <SiteHeader />
+          <main id="contenido" tabIndex={-1}>
+            {children}
+          </main>
+          <SiteFooter />
+        </AnalyticsProvider>
       </body>
     </html>
   );

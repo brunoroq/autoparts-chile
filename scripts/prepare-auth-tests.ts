@@ -16,7 +16,12 @@ const client = new PrismaClient({
   adapter: new PrismaPg({ connectionString }),
 });
 try {
-  console.log("Catálogo aislado:", await seedCatalog(client, 30));
+  const existing = await client.product.count();
+  if (existing > 30)
+    console.log(
+      `Catálogo aislado conservado: ${existing} productos, incluidos fixtures de pruebas. No se redujo ni borró información.`,
+    );
+  else console.log("Catálogo aislado:", await seedCatalog(client, 30));
 } finally {
   await client.$disconnect();
 }

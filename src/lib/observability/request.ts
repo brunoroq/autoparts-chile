@@ -1,3 +1,4 @@
+import { experimentContext } from "./config";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { ApiError } from "../http/errors";
 
@@ -61,6 +62,19 @@ export async function instrumentResponse(
     console.log(
       JSON.stringify({
         event: "api_request",
+        ...experimentContext(),
+        errorKind:
+          response.status >= 500
+            ? "technical"
+            : response.status === 429
+              ? "rate_limit"
+              : [401, 403].includes(response.status)
+                ? "authorization"
+                : response.status >= 400
+                  ? "business"
+                  : "none",
+        businessOutcome:
+          response.headers.get("X-Business-Outcome") ?? undefined,
         timestamp: new Date().toISOString(),
         requestId,
         route,
@@ -90,6 +104,19 @@ export function apiResponse(
       db: (operation) => measure("db", operation),
     };
     const data = await operation(context);
+    const result = data as { data?: { payment?: { status?: string } } };
+    const outcome = result?.data?.payment?.status;
+    if (
+      outcome &&
+      [
+        "REJECTED",
+        "CANCELLED",
+        "UNKNOWN",
+        "REVERSAL_PENDING",
+        "REVERSED",
+      ].includes(outcome)
+    )
+      context.headers.set("X-Business-Outcome", outcome);
     return Response.json(data, {
       status: context.status,
       headers: context.headers,

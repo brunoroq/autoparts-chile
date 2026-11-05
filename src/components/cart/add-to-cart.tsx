@@ -1,4 +1,5 @@
 "use client";
+import { useAnalytics } from "@/components/analytics/analytics-provider";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,6 +18,7 @@ export function AddToCart({
   const [message, setMessage] = useState("");
   const [added, setAdded] = useState(false);
   const router = useRouter();
+  const { track } = useAnalytics();
   return (
     <div className="add-cart">
       <form
@@ -55,6 +57,12 @@ export function AddToCart({
               );
               return;
             }
+            if (result.analytics)
+              track(
+                "add_to_cart",
+                result.analytics.value,
+                result.analytics.eventId,
+              );
             setAdded(true);
             setMessage("Accesorio agregado a tu carrito.");
           } catch {

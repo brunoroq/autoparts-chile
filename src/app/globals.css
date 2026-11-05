@@ -1302,3 +1302,30 @@ p {
   white-space: normal;
   text-align: center;
 }
+
+.analytics-consent {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  max-width: 620px;
+  padding: 20px;
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 24px #0002;
+  z-index: 50;
+}
+.analytics-consent p {
+  margin-bottom: 12px;
+}
+.analytics-consent button {
+  margin: 4px;
+  min-height: 44px;
+}
+.analytics-preferences {
+  display: block;
+  margin: 16px auto;
+  font-size: 12px;
+  text-decoration: underline;
+  padding: 8px;
+}

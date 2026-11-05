@@ -1,3 +1,4 @@
+import { PurchaseEvent } from "@/components/analytics/analytics-provider";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { currentUser } from "@/lib/auth/session";
@@ -26,6 +27,7 @@ export default async function Page({
   });
   return (
     <div className="container cart-page">
+      {order.status==="PAID"&&<PurchaseEvent orderId={order.id}/>}
       <div className="catalog-heading">
         <p className="eyebrow red">PEDIDO {id.slice(0, 8)}</p>
         <h1>

@@ -81,3 +81,5 @@ La tienda habitual sigue en `autoparts`, sin usuarios de prueba predefinidos. No
 ## Actualización de etapa 4
 
 Migración aditiva 20261105030000_checkout, aplicada sin reset. Estados indeterminados/reversa/revisión; versión y referencia del carrito; fingerprint e idempotencia compuesta por usuario; reclamaciones persistentes y referencias de pago. Token cifrado AES-GCM y hash SHA-256 único, nunca datos de tarjeta. Índice por carrito/estado para pedidos pendientes. Se conservan restricciones monetarias y cantidades. Ver [reglas transaccionales](stage-4.md).
+
+Etapa 5: migración 20261105170000_observability añade solo Order.analyticsPurchaseClaimedAt, nullable. Actualización condicional por propietario/estado PAID; una reclamación por pedido, sin tocar stock ni total. No equivale a recepción de GA4 y no se restablece automáticamente. No hay nuevas tablas de eventos/telemetría en PostgreSQL.

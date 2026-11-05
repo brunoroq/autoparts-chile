@@ -39,3 +39,5 @@ La instrumentación mínima de errores y tiempos se incorporará desde las prime
 Versiones y lockfile definidos en etapa 1. Pendientes: estrategia de credenciales/sesiones de Auth.js; carrito anónimo; diseño visual final y recursos; contenedor de aplicación; proveedor cloud y observabilidad; contratos de API; transiciones de estados de pago y stock; cargas y umbrales. El esquema inicial no implementa esas reglas. Resolver cada decisión cuando sea necesaria, sin ampliar el alcance aprobado.
 
 Cierre autorizado, prompt 012: versionar etapa 4 después de verificar estabilidad y secretos. Sandbox oficial de Transbank pendiente de prueba manual. Etapa 5 solo propuesta en chat tras el commit; no implementar antes de aprobación. Sin despliegue ni carga.
+
+Estado vigente prompt 013: etapa 5 aprobada e implementada, con verificación y configuración documentadas en stage-5.md y verification-stage-5.md. No activar propiedad real/accesos externos, no hacer commit ni comenzar etapa 6 sin nueva autorización.
