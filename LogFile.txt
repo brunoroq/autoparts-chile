@@ -1105,3 +1105,66 @@ Compatibilidad: corrección conserva contratos y dependencias de la aplicación 
 Verificaciones actuales: lint, TypeScript, Prisma, 26 unitarias y build correctos con configuración local loopback. Evidencia previa de nueve HTTP y 32 navegador conservada; sin nuevas pruebas de escritura ni consultas a producción. Auditoría de índice prevista: solo fuente de validación, regresión, package.json, .env.example saneado y documentación/registro; excluir secretos, .env privados, archivos de bases y tmp/generados. Estado/hash final se entregan en chat para no modificar archivos después del commit.
 Mensaje previsto: fix: validar origen canónico del carrito detrás de Vercel
 Detenerse tras commit y reporte; respaldo, migración, push y despliegue requieren autorizaciones adicionales.
+
+PROMPT 036 — registro 2026-11-06, America/Santiago
+Agente: Codex. Modelo exacto no disponible. Hora original del mensaje no disponible.
+INICIO DEL PROMPT
+Revisé la auditoría de Google Analytics 4 y autorizo implementar únicamente las correcciones locales de instrumentación necesarias para obtener mediciones confiables.
+
+Objetivos:
+
+1. Corregir page_view para registrar las visitas y navegaciones reales, incluidas recargas y regresos a rutas visitadas, evitando duplicados por renderizados o cambios de estado.
+2. Revisar la deduplicación de view_item y begin_checkout para que no suprima interacciones legítimas repetidas, manteniendo protección frente a duplicaciones accidentales.
+3. Corregir debug_mode: incluir el parámetro únicamente cuando GA4_DEBUG=true; omitirlo completamente cuando sea false.
+4. Implementar remove_from_cart después de una eliminación exitosa, con identificador, cantidad, precio y moneda CLP coherentes con los demás eventos.
+5. Conservar el consentimiento obligatorio antes de cargar GA4 o enviar eventos.
+6. Mantener la sanitización de rutas y evitar información personal en los eventos.
+7. Mantener la protección existente contra duplicación de purchase. No modificar su lógica de persistencia sin una justificación y autorización adicional.
+8. Añadir o actualizar pruebas unitarias y E2E locales para validar eventos, consentimiento, navegación y ausencia de duplicados.
+9. Documentar qué eventos quedan pendientes de comprobación en producción.
+
+Restricciones:
+
+- No habilitar Analytics todavía.
+- No modificar variables de Vercel.
+- No modificar Prisma, Neon, autenticación, checkout, pagos ni inventario.
+- No ejecutar compras ni crear cuentas.
+- No ejecutar pruebas de carga.
+- No hacer commits, push ni despliegues todavía.
+
+Al finalizar, informa los archivos modificados, pruebas realizadas y cualquier riesgo pendiente. Espera mi autorización antes de publicar.
+FIN DEL PROMPT
+Implementación: AnalyticsProvider observa ruta/parámetros dentro de Suspense y evita repetir una misma transición por renders, sin sessionStorage para page_view. CommerceView identifica cada observación/montaje y cambios de producto/contenido, respetando StrictMode y regresos/recargas. analyticsContext omite debug_mode salvo true y normaliza ubicaciones. CartView añade únicamente remove_from_cart tras eliminar correctamente para invitados/autenticados, con cantidad y precio del snapshot validado del servidor, evento único por operación; errores/PATCH no emiten. PurchaseEvent, claimPurchase, endpoint, tablas y persistencia sin cambios.
+Archivos: src/components/analytics/analytics-provider.tsx, src/components/cart/cart-view.tsx, src/lib/analytics/contracts.ts; tests/analytics.test.ts, tests/browser/analytics.spec.ts (expectativa de recarga), nuevos tests/analytics.browser.test.ts y tests/fixtures/analytics-harness.tsx, comando npm test:analytics:browser:local, docs/analytics-instrumentation-corrections.md, AGENTS.md y este registro. Sin dependencias nuevas ni cambios de lockfile.
+Validación: 29 unitarias y cuatro pruebas de navegador locales correctas; lint, TypeScript, Prisma y build correctos. Harness usa componentes reales React StrictMode y mocks locales de Next/Google/HTTP; purchase solo respuesta ficticia en memoria. No cuentas/bases/carritos/pedidos reales, ni llamadas Google/Neon/producción. Fallos iniciales limitados a tipos de helper y selector accesible de fixture corregidos antes del resultado final. Spec integrado antiguo actualizado pero no ejecutado por crear cuentas/pedidos, fuera del alcance.
+Pendientes: comprobar router real/GA4 DebugView y Realtime tras autorización de publicación/configuración; BFCache no cubierto; desactivar medición automática por historial para evitar duplicar manuales. purchase conserva riesgo de reclamación sin confirmación de recepción; no se alteró. Analytics/variables intactos, sin secretos, despliegues, commits/push, carga, cuentas o compras. Cambios previos del usuario conservados.
+
+PROMPT 037 — registro 2026-11-06, America/Santiago
+Agente: Codex. Modelo exacto no disponible. Hora original del mensaje no disponible.
+INICIO DEL PROMPT
+Las correcciones de instrumentación de Google Analytics 4 pasaron las pruebas locales.
+
+Autorizo crear un commit y publicar exclusivamente las correcciones de Analytics en la rama main del repositorio de AutoParts Chile.
+
+Antes de publicar:
+1. Revisar git status y git diff para identificar todos los cambios pendientes.
+2. Incluir únicamente los archivos relacionados con Analytics y las pruebas necesarias. No incorporar por accidente cambios pendientes del verificador E2E, respaldos, credenciales o archivos privados.
+3. Confirmar que se conservan el consentimiento, la sanitización y la protección existente contra duplicados de purchase.
+4. Ejecutar nuevamente lint, TypeScript, pruebas y build.
+5. Confirmar que ANALYTICS_ENABLED sigue desactivado por defecto y que el despliegue no habilitará GA4 accidentalmente.
+
+Si todo está correcto:
+6. Crear un commit específico para las correcciones de Analytics.
+7. Hacer push a main para activar el despliegue automático del proyecto autoparts-chile en Vercel.
+8. Verificar que el despliegue termine correctamente y que catálogo, carrito y consentimiento sigan funcionando.
+
+No modificar variables de Vercel todavía.
+No ejecutar compras, crear cuentas, migraciones ni pruebas de carga.
+No modificar Neon ni los datos de producción.
+
+Si detectas un riesgo o cambios no relacionados que impidan una publicación segura, detenerte e informar antes de continuar.
+
+Entrega el hash del commit publicado y el resultado del despliegue.
+FIN DEL PROMPT
+Preparación: índice selectivo para Analytics; package.json excluye comandos/prueba E2E anterior. AGENTS.md y LogFile.txt staged solo notas Analytics/publicación, conservando historial anterior sin mezclar documentos pendientes. Consentimiento y saneamiento conservados; PurchaseEvent/claimPurchase/endpoint/persistencia sin modificaciones. Lectura pública inicial: enabled=false, measurementId vacío, sin script Google. Valores por defecto siguen opt-in. Sin cambios de variables. Verificación del snapshot exacto preparado y publicación condicionadas a todos los checks correctos.
+Verificaciones previas a publicación: snapshot exacto exclusivo de Analytics con 27 unitarias y cuatro E2E locales correctos; lint, TypeScript, Prisma y build correctos. Las dos unitarias del verificador previo se excluyen intencionalmente. Primera copia anidada generó advertencia de raíz y compiló en 81 s; copia hermana aislada compiló correctamente sin esa advertencia, sin cambios de configuración. main remoto coincide con base 8b2e4f9. Auditados 11 archivos permitidos, sin secretos/respaldos/.env privados/artefactos/E2E pendientes. Consentimiento, saneamiento, opt-in Analytics y reclamación purchase conservados; no cambios de variables. Ambos proyectos Vercel conectados pueden autodesplegar por push, se comprobará autoparts-chile. Se autoriza el commit y push, sin datos de producción modificados.

@@ -9,10 +9,11 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
+  Suspense,
 } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
-  normalizedPath,
+  analyticsContext,
   safeCommerce,
   type AnalyticsConfig,
   type Commerce,
@@ -75,19 +76,10 @@ export function AnalyticsProvider({
   const choice = useSyncExternalStore(subscribe, consent, () => "unknown");
   const [loaded, setLoaded] = useState(false);
   const pathname = usePathname();
-  const previous = useRef("");
   const memory = useRef(new Set<string>());
   const ready = config.enabled && choice === "granted" && loaded;
   const common = useMemo(
-    () => ({
-      environment: config.environment,
-      experiment_id: config.experimentId,
-      traffic_kind: config.traffic,
-      debug_mode: config.debug,
-      page_location: config.origin + normalizedPath(pathname),
-      page_referrer: "",
-      page_title: "AutoParts Chile " + normalizedPath(pathname),
-    }),
+    () => analyticsContext(config, pathname),
     [config, pathname],
   );
   const track = useCallback(
@@ -110,21 +102,6 @@ export function AnalyticsProvider({
       `ga-disable-${config.measurementId}`
     ] = choice !== "granted";
   }, [choice, config.measurementId]);
-  useEffect(() => {
-    if (!ready || previous.current === pathname) return;
-    previous.current = pathname;
-    // Reemplaza URL y título completos; nunca consulta, token, término libre ni ID privado.
-    window.gtag("set", {
-      page_location: common.page_location,
-      page_referrer: "",
-      page_title: common.page_title,
-    });
-    const id = `ap-page:${config.measurementId}:${pathname}`;
-    if (!seen(id)) {
-      remember(id);
-      window.gtag("event", "page_view", common);
-    }
-  }, [ready, pathname, common, config.measurementId]);
   function choose(value: string) {
     try {
       localStorage.setItem(consentKey, value);
@@ -172,6 +149,7 @@ export function AnalyticsProvider({
   }
   return (
     <Context.Provider value={{ ready, config, track }}>
+      <Suspense fallback={null}><PageViews /></Suspense>
       {children}
       {config.enabled && choice === "granted" && (
         <Script
@@ -212,6 +190,21 @@ export function AnalyticsProvider({
     </Context.Provider>
   );
 }
+function PageViews() {
+  const { ready, config } = useAnalytics();
+  const pathname = usePathname(), search = useSearchParams().toString();
+  const previous = useRef<string | null>(null);
+  useEffect(() => {
+    // Los parámetros solo identifican transiciones en memoria, nunca se envían.
+    const navigation = pathname + "?" + search;
+    if (!ready || previous.current === navigation) return;
+    previous.current = navigation;
+    const common = analyticsContext(config, pathname);
+    window.gtag("set", { page_location: common.page_location, page_referrer: "", page_title: common.page_title });
+    window.gtag("event", "page_view", common);
+  }, [ready, config, pathname, search]);
+  return null;
+}
 export function useAnalytics() {
   const value = useContext(Context);
   if (!value) throw new Error("Falta AnalyticsProvider");
@@ -227,8 +220,13 @@ export function CommerceView({
   eventKey: string;
 }) {
   const { track } = useAnalytics();
+  const observation = useRef<{ key: string; id: string } | null>(null);
   useEffect(() => {
-    track(name, value, eventKey);
+    // Identidad por montaje, conservada durante el replay de efectos de StrictMode.
+    // Volver al producto/checkout o recargar crea otra observación legítima.
+    if (observation.current?.key !== eventKey)
+      observation.current = { key: eventKey, id: crypto.randomUUID() };
+    track(name, value, `${observation.current.id}:${eventKey}`);
   }, [name, value, eventKey, track]);
   return null;
 }

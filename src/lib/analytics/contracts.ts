@@ -12,6 +12,7 @@ export type Commerce = {
 export type CommerceEvent =
   | "view_item"
   | "add_to_cart"
+  | "remove_from_cart"
   | "begin_checkout"
   | "purchase";
 // No nombres libres: los IDs del catálogo permiten analizar productos sin texto ingresado por usuarios.
@@ -90,3 +91,15 @@ export type AnalyticsConfig = {
   debug: boolean;
   origin: string;
 };
+
+export function analyticsContext(config: AnalyticsConfig, pathname: string) {
+  return {
+    environment: config.environment,
+    experiment_id: config.experimentId,
+    traffic_kind: config.traffic,
+    ...(config.debug ? { debug_mode: true } : {}),
+    page_location: config.origin + normalizedPath(pathname),
+    page_referrer: "",
+    page_title: "AutoParts Chile " + normalizedPath(pathname),
+  };
+}

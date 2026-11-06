@@ -5,8 +5,11 @@ import Link from "next/link";
 import type { CartSnapshot } from "@/modules/cart/service";
 import { ProductImage } from "@/components/catalog/product-image";
 import { formatClp } from "@/lib/format";
+import { useAnalytics } from "@/components/analytics/analytics-provider";
+import { commerce } from "@/lib/analytics/contracts";
 
 export function CartView({ initialCart, guest = false }: { initialCart: CartSnapshot; guest?: boolean }) {
+  const { track } = useAnalytics();
   const [cart, setCart] = useState(initialCart);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
@@ -17,9 +20,18 @@ export function CartView({ initialCart, guest = false }: { initialCart: CartSnap
   ) {
     setPending(true);
     setMessage("");
+    // El snapshot procede del servidor/cotización; no tomar precios de localStorage.
+    const removed = method === "DELETE" ? cart.items.find(i => i.productId === productId) : undefined;
+    const removalKey = crypto.randomUUID();
+    function trackRemoval() {
+      if (removed) track("remove_from_cart", commerce([{
+        productId: removed.productId, unitPriceClp: removed.unitPriceClp, quantity: removed.quantity,
+      }]), removalKey);
+    }
     try {
       if (guest) {
         setCart(await changeGuest(productId, method === "DELETE" ? "remove" : "set", quantity));
+        trackRemoval();
         setMessage(method === "DELETE" ? "Accesorio eliminado del carrito." : "Cantidad actualizada.");
         return;
       }
@@ -34,6 +46,7 @@ export function CartView({ initialCart, guest = false }: { initialCart: CartSnap
       const result = await response.json();
       if (response.ok) {
         setCart(result.data);
+        trackRemoval();
         setMessage(
           method === "DELETE"
             ? "Accesorio eliminado del carrito."

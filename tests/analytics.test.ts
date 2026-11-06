@@ -7,8 +7,17 @@ import {
   commerce,
   safeCommerce,
   normalizedPath,
+  analyticsContext,
 } from "../src/lib/analytics/contracts.ts";
 import { vitalsInput } from "../src/lib/observability/vitals.ts";
+test("contexto GA omite debug_mode false y sanea rutas sin cambiar importes CLP", () => {
+  const config = { measurementId: "G-TEST12345", enabled: false, vitals: false, environment: "local", experimentId: "unit", traffic: "human" as const, debug: false, origin: "http://localhost:3018" };
+  const clean = analyticsContext(config, "/pedidos/private?token=secret");
+  assert.equal(Object.hasOwn(clean, "debug_mode"), false);
+  assert.equal(clean.page_location, "http://localhost:3018/pedidos/[id]");
+  assert.ok(!JSON.stringify(clean).includes("secret"));
+  assert.equal(analyticsContext({ ...config, debug: true }, "/").debug_mode, true);
+});
 import { analyticsConfig } from "../src/lib/observability/config.ts";
 import {
   dockerBytes,

@@ -133,7 +133,7 @@ test("consentimiento, cuatro eventos CLP, deduplicación, privacidad y Web Vital
     await expect
       .poll(async () => await page.evaluate(() => !!window.gtag))
       .toBe(true);
-    expect(await commands(page, "view_item")).toHaveLength(0);
+    await expect.poll(async () => (await commands(page, "view_item")).length).toBe(1);
     await page.getByLabel("Cantidad", { exact: true }).fill("2");
     await page.getByRole("button", { name: "Agregar al carrito" }).click();
     await expect
