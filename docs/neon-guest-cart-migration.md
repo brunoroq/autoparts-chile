@@ -2,6 +2,14 @@
 
 Este documento es un plan, no una autorización de ejecución. El usuario autoriza únicamente el commit local. Verificación remota, respaldo, migración, push y despliegue deben contar con autorización para cada operación. No se consultó Neon para redactarlo.
 
+Actualización de 2026-11-06: autorizado el commit local de la corrección de origen y preparar este procedimiento; no ejecutar el respaldo ni la migración. La lectura remota del diagnóstico anterior confirmó seis migraciones completas, ausencia de CartMergeReceipt y User.id UUID. No se volvió a consultar producción en este cierre. La migración ya está versionada en `040dd8215ca76265b448525865e70207cb6c9191`; el commit de corrección de origen no modifica su SQL.
+
+## Compatibilidad con el despliegue actual
+
+La corrección de origen conserva rutas, cuerpos, respuestas, sesiones y controles del carrito desplegado. No necesita otro esquema ni versiones nuevas de dependencias. Requiere corregir NEXTAUTH_URL Production a `https://autoparts-chile.vercel.app`; publicar solo el código con el dominio antiguo configurado seguirá devolviendo 403. Host y X-Forwarded-Host presentes deben coincidir con ese host, conforme al proxy de Vercel; no se habilitan aliases o previews automáticamente.
+
+La migración aditiva es compatible tanto con la aplicación anterior al carrito invitado como con la versión que ya incorpora el carrito. El despliegue actual con carrito invitado necesita esa tabla para fusionar: su ausencia es un problema preexistente, separado del origen. Mantener una ventana sin operaciones de fusión durante la migración/verificación evita escrituras nuevas mientras se revisa. No afirmar que la tabla estará vacía si la aplicación activa ya pudo procesar fusiones después de crearla.
+
 ## Contenido y compatibilidad
 
 `20261106010000_guest_cart_merge/migration.sql` crea `CartMergeReceipt` con `id` UUID como clave primaria, `userId` UUID, `requestHash` VARCHAR(64), `createdAt` TIMESTAMPTZ(3), índice de `userId` y FK a `User(id)`. ON DELETE CASCADE elimina comprobantes solo si posteriormente se elimina su usuario; aplicar la migración no elimina ningún usuario ni registro existente.
@@ -48,7 +56,7 @@ El script utiliza DIRECT_URL exclusiva del archivo privado, verifica destino/TLS
 ## 4. Comprobación posterior y publicación separada
 
 - Mediante SELECT verificar siete migraciones terminadas y checksum correcto de la nueva; revisar nueve tablas de aplicación (antes ocho), columnas, índice, PK y FK nuevos.
-- Confirmar cero comprobantes antes de desplegar la funcionalidad y ausencia de referencias huérfanas. Comparar las ocho tablas originales con las huellas previas si se mantuvo pausa de escrituras; si no, explicar cambios legítimos antes de concluir.
+- Confirmar ausencia de referencias huérfanas. Bajo pausa de escrituras y sin fusiones ejecutadas, la tabla nueva debe estar vacía; si la aplicación ya está activa, comprobar y explicar los registros legítimos sin borrarlos. Comparar las ocho tablas originales con las huellas previas si se mantuvo pausa de escrituras; si no, explicar cambios legítimos antes de concluir.
 - Verificar permisos del rol pooled sobre la tabla nueva. La lectura sola no prueba permisos de INSERT: consultar has_table_privilege sin crear registros de prueba en producción.
 - Comprobar con pocas lecturas que la aplicación anterior sigue mostrando catálogo y las rutas públicas; pruebas funcionales que escriban pedidos/cuentas requieren autorización aparte.
 - Informar resultados y detenerse. Push y despliegue Vercel siguen requiriendo autorizaciones separadas. Un push a un repositorio conectado puede activar un despliegue automático: confirmar esa configuración antes de autorizarlo.

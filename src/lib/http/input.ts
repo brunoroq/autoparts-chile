@@ -1,14 +1,37 @@
 import { ApiError } from "./errors";
 
 export function checkOrigin(request: Request) {
+  // CSRF protege operaciones inseguras; los GET/HEAD/OPTIONS no deben mutar datos.
+  if (["GET", "HEAD", "OPTIONS"].includes(request.method)) return;
   const canonical = process.env.NEXTAUTH_URL;
-  if (!canonical)
+  let expected: URL;
+  try {
+    expected = new URL(canonical || "");
+    if (
+      !["http:", "https:"].includes(expected.protocol) ||
+      expected.username || expected.password || expected.pathname !== "/" ||
+      expected.search || expected.hash ||
+      (process.env.VERCEL === "1" && expected.protocol !== "https:")
+    ) throw new Error("Invalid canonical origin");
+  } catch {
     throw new ApiError(
-      "Configuración de autenticación incompleta.",
+      "Configuración de origen incompleta o inválida.",
       500,
       "CONFIGURATION_ERROR",
     );
-  if (request.headers.get("origin") !== new URL(canonical).origin)
+  }
+  // La autoridad viene de configuración del servidor, nunca de Host ni de un
+  // dominio *.vercel.app presentado por el cliente. No inferirla de request.url:
+  // detrás de un proxy esa URL puede representar el transporte interno.
+  const host = request.headers.get("host");
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  if (
+    request.headers.get("origin") !== expected.origin ||
+    request.headers.get("sec-fetch-site") === "cross-site" ||
+    (host !== null && host.toLowerCase() !== expected.host) ||
+    (process.env.VERCEL === "1" && forwardedHost !== null &&
+      forwardedHost.toLowerCase() !== expected.host)
+  )
     throw new ApiError(
       "Origen de la solicitud no permitido.",
       403,

@@ -1050,3 +1050,58 @@ Validación actual de cierre: lint, TypeScript, Prisma, 25 unitarias y build de 
 Auditoría previa al commit: incluir únicamente fuentes, pruebas, migración SQL y documentación revisadas. Excluir .env privados, credenciales, dumps, archivos de bases, datos Docker, node_modules, tmp, evidencias generadas y cliente Prisma generado. Comprobar además que las seis migraciones anteriores no cambiaron. El índice y el árbol confirmado se auditan por separado; entregar hash y limpieza en chat sin modificar archivos después del commit.
 Mensaje previsto: feat: permitir carrito de invitados con fusión idempotente
 Limitaciones: migración todavía no aplicada en Neon; aplicar antes de desplegar la nueva versión. La aplicación anterior tolera la tabla adicional. Respaldo y restauración de ensayo pendientes de autorización; no se crearon recursos externos. No commits adicionales, push, despliegue ni carga.
+
+
+PROMPT 023 — registro 2026-11-06T00:28:05-03:00, America/Santiago
+Agente: Codex. Modelo exacto no disponible. Hora original del mensaje no disponible; hora indicada corresponde al registro.
+INICIO DEL PROMPT
+Necesito corregir un problema de producción en AutoParts Chile.
+
+Dominio estable de producción:
+[https://autoparts-chile.vercel.app](https://autoparts-chile.vercel.app)
+
+Después de desplegar el carrito de invitados, tanto al consultar el carrito como al agregar productos aparece:
+
+"Origen de la solicitud no permitido."
+
+Ya se actualizó DATABASE_URL de Neon y se realizó un redeploy.
+
+Investiga la causa exacta revisando:
+
+1. Los endpoints de cotización y fusión del carrito de invitados.
+2. La validación de Origin, Host y X-Forwarded-Host detrás del proxy de Vercel.
+3. La configuración de NEXTAUTH_URL y su relación con la validación de origen.
+4. Las diferencias entre localhost y el dominio estable de producción.
+5. Si el código está rechazando solicitudes GET legítimas que no deberían necesitar protección CSRF.
+6. La migración pendiente del carrito y su compatibilidad con Neon.
+
+Corrige el problema manteniendo las protecciones contra CSRF, solicitudes de terceros y manipulación del carrito. No desactives controles de seguridad para hacer que funcione.
+
+Agrega pruebas de regresión y ejecuta lint, TypeScript, pruebas y build de producción.
+
+No ejecutes migraciones en Neon, no hagas push y no despliegues todavía.
+
+Entrégame la causa exacta, los cambios realizados, las pruebas y el procedimiento seguro para publicar la corrección.
+FIN DEL PROMPT
+Autorización: diagnóstico y corrección local con pruebas; consultas públicas y metadatos Neon de lectura para investigar. No autoriza migraciones Neon, push, despliegues ni commit.
+Causa comprobada: GET público /api/auth/providers en el dominio estable devuelve signinUrl/callbackUrl con origen autoparts-store.vercel.app. NEXTAUTH_URL canónica desplegada conserva el dominio anterior; el Origin autoparts-chile.vercel.app es distinto y genera INVALID_ORIGIN antes de acceder a PostgreSQL. GET /api/v1/cart sin sesión devuelve correctamente 401, no 403. La cotización invitada usa POST aunque sea lectura, por eso abrir/agregar comparten el fallo. DATABASE_URL no determina esta política.
+Verificación Neon: conexiones directa/pooled validadas en memoria para mismo endpoint, neondb, São Paulo y TLS verify-full; sesión default_transaction_read_only y BEGIN READ ONLY. Solo SELECT de metadatos: seis migraciones terminadas/no revertidas, CartMergeReceipt ausente, User.id UUID. Sin lecturas de filas personales ni escrituras/migraciones. La migración 20261106010000_guest_cart_merge sigue pendiente: compatible/aditiva y separada del 403; se requiere antes de usar fusión en producción. No se certificaron checksums/permisos de producción en esta consulta acotada.
+Cambios: src/lib/http/input.ts conserva Origin exacto configurado, valida configuración, limita CSRF a métodos inseguros, comprueba Host y X-Forwarded-Host en Vercel sin confiar en ellos como allowlist, rechaza cross-site y permite transporte interno del proxy sin deducir origen desde request.url. .env.example documenta NEXTAUTH_URL Production correcto; ningún archivo privado o variable remota modificado. Pruebas tests/origin.test.ts y regresión auth/guest HTTP; package.json integra nueva prueba. Documentación en docs/verification-origin-production.md y estado de AGENTS.md. No cambios de esquema/migraciones ni lógica de pagos.
+Verificaciones: validate (lint/TypeScript/Prisma), 26 unitarias, nueve HTTP, 32 casos de navegador móvil/escritorio y npm run build correctos. Servidores temporales detenidos. HTTP/navegador escriben solo fixtures en bases locales Docker _test existentes; no se ejecutaron migraciones. GA4 interceptado en pruebas, sin tráfico de analítica real. Lecturas de producción sin cookies para providers/carrito y metadatos Neon exclusivamente de lectura. Sin secretos/URLs de conexión publicados.
+Procedimiento pendiente: autorizar commit si se desea; corregir NEXTAUTH_URL Production a https://autoparts-chile.vercel.app; revisión, respaldo y migración pendiente con aprobación separada; comprobar esquema/permisos y datos; autorizar push/despliegue y verificar providers/carrito/login/fusión/checkout con pocas operaciones. No ampliar a comodines ni aceptar el dominio antiguo para evitar el control.
+
+
+PROMPT 024 — registro 2026-11-06T00:32:34-03:00, America/Santiago
+Agente: Codex. Modelo exacto no disponible. Hora original del mensaje no disponible; hora indicada corresponde al registro.
+INICIO DEL PROMPT
+Autorizo crear el commit local de la corrección de validación de origen, manteniendo las protecciones CSRF y las pruebas de regresión.
+También autorizo preparar el procedimiento de migración de Neon, incluyendo revisión del SQL, respaldo y verificaciones previas y posteriores, pero todavía NO autorizo ejecutar la migración ni modificar datos de producción.
+Antes de publicar, confirma que el cambio es compatible con la versión actualmente desplegada y que la migración es aditiva y no destructiva.
+No hagas push ni redeploy todavía. Entrégame el hash del commit, el detalle de la migración y el procedimiento para aplicarla de forma segura.
+FIN DEL PROMPT
+Autorización: commit local de corrección de origen; preparación documental del procedimiento, no ejecución de respaldos ni migraciones. Sin escrituras de producción, push o redeploy.
+Resumen: auditada validación de origen y regresión, conservando CSRF. SQL 20261106010000_guest_cart_merge revisado: crea CartMergeReceipt y su índice/FK; sin cambios en columnas/tablas existentes ni DML. No se modificó SQL ni esquema en este cierre. La migración permanece en el commit anterior del carrito, no se duplica en el commit de origen. Procedimiento actualizado en docs/neon-guest-cart-migration.md para contemplar que la aplicación con carrito invitado ya está desplegada, y que los comprobantes pueden empezar a insertarse al crear la tabla si no se coordina pausa de escrituras. No eliminar registros legítimos.
+Compatibilidad: corrección conserva contratos y dependencias de la aplicación desplegada; NEXTAUTH_URL Production debe coincidir con https://autoparts-chile.vercel.app. La tabla aditiva es compatible con versiones anteriores y actual, pero la fusión de la actual necesita la migración pendiente. La observación de Neon corresponde al diagnóstico anterior de 2026-11-06, no a una consulta nueva en este cierre.
+Verificaciones actuales: lint, TypeScript, Prisma, 26 unitarias y build correctos con configuración local loopback. Evidencia previa de nueve HTTP y 32 navegador conservada; sin nuevas pruebas de escritura ni consultas a producción. Auditoría de índice prevista: solo fuente de validación, regresión, package.json, .env.example saneado y documentación/registro; excluir secretos, .env privados, archivos de bases y tmp/generados. Estado/hash final se entregan en chat para no modificar archivos después del commit.
+Mensaje previsto: fix: validar origen canónico del carrito detrás de Vercel
+Detenerse tras commit y reporte; respaldo, migración, push y despliegue requieren autorizaciones adicionales.

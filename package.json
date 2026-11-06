@@ -16,7 +16,7 @@
     "typecheck": "prisma generate && next typegen && tsc --noEmit",
     "validate": "npm run lint && npm run typecheck && npm run db:validate",
     "check:http": "node scripts/check-http.mjs",
-    "test": "tsx --test tests/catalog.test.ts tests/auth.test.ts tests/checkout.test.ts tests/analytics.test.ts tests/deployment.test.ts tests/guest-cart.test.ts",
+    "test": "tsx --test tests/catalog.test.ts tests/auth.test.ts tests/checkout.test.ts tests/analytics.test.ts tests/deployment.test.ts tests/guest-cart.test.ts tests/origin.test.ts",
     "test:auth:compat": "node scripts/check-auth-compat.mjs",
     "test:auth:prepare": "tsx scripts/prepare-auth-tests.ts",
     "test:auth:integration": "tsx --test tests/auth.integration.test.ts",

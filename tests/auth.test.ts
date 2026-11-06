@@ -75,6 +75,7 @@ test("retornos locales, origen y JSON seguro", async () => {
     () =>
       checkOrigin(
         new Request("http://localhost:3000", {
+          method: "POST",
           headers: { origin: "https://otro.invalid" },
         }),
       ),

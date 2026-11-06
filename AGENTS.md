@@ -1,5 +1,9 @@
 # Instrucciones permanentes de AutoParts Chile
 
+Autorización vigente de cierre: crear un commit local de la corrección de origen y preparar el procedimiento de migración/respaldo/verificaciones. No ejecutar respaldos remotos, migraciones, escrituras de producción, push ni redeploy. Auditar exclusiones e informar hash y estado limpio. Compatibilidad: mismos contratos de API; NEXTAUTH_URL Production debe ser https://autoparts-chile.vercel.app; la migración de comprobantes es aditiva y debe verificarse/aplicarse con otra autorización. Detenerse después del commit y reporte.
+
+Autorización más reciente (corrección de origen): investigar el dominio estable autoparts-chile.vercel.app y corregir localmente la validación, agregar regresión y validar build. Lecturas públicas y de metadatos Neon para diagnosticar; sin migraciones Neon, push, despliegues ni commits en esta tarea. Consultar docs/verification-origin-production.md. NEXTAUTH_URL Production debe coincidir exactamente con el origen estable, sin confiar en Host/X-Forwarded-Host para ampliar la lista permitida. CartMergeReceipt sigue pendiente en Neon según la lectura de metadatos de 2026-11-06.
+
 Actualización vigente: el usuario autorizó la implementación local del carrito de invitados y la migración de CartMergeReceipt exclusivamente en bases locales _test. Ahora autoriza preparar y crear un commit local tras auditar secretos/exclusiones. Sin conexiones ni migraciones en Neon, push o despliegues. Entregar hash, estado Git y procedimiento de migración; detenerse después. Cada operación de producción requiere autorización separada. Consultar `docs/guest-cart.md` y `docs/neon-guest-cart-migration.md`. La autorización más reciente reemplaza las restricciones históricas incompatibles.
 
 ## Propósito y alcance
