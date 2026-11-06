@@ -49,6 +49,7 @@ if (mode === "prepare") {
     "tests/deployment.integration.test.ts",
     "tests/analytics.integration.test.ts",
     "tests/auth.integration.test.ts",
+    "tests/guest-cart.integration.test.ts",
     "tests/checkout.integration.test.ts",
     "tests/catalog.integration.test.ts",
   ]);
@@ -59,6 +60,7 @@ else if (mode === "http")
     tsx,
     "--test",
     "tests/auth.http.test.ts",
+    "tests/guest-cart.http.test.ts",
     "tests/checkout.http.test.ts",
     "tests/catalog.http.test.ts",
   ]);
@@ -80,11 +82,13 @@ else if (mode === "start-base")
   );
 else if (mode === "start-auth")
   await run([tsx, "scripts/start-auth-test-server.ts"]);
+else if (mode === "start-guest")
+  await run([tsx, "scripts/start-auth-test-server.ts", "guest"]);
 else if (mode === "start-checkout")
   await run([tsx, "scripts/start-checkout-test-server.ts"]);
 else if (mode === "start-analytics")
   await run([tsx, "scripts/start-analytics-test-server.ts"]);
 else
   throw new Error(
-    "Modo: prepare|integration|browser|http|observability|restart|start-base|start-auth|start-checkout|start-analytics.",
+    "Modo: prepare|integration|browser|http|observability|restart|start-base|start-auth|start-guest|start-checkout|start-analytics.",
   );

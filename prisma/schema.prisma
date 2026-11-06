@@ -33,14 +33,26 @@ enum PaymentProvider {
 }
 
 model User {
-  id           String   @id @default(uuid()) @db.Uuid
-  email        String   @unique @db.VarChar(254)
-  name         String?  @db.VarChar(120)
-  passwordHash String?  @db.VarChar(300)
-  createdAt    DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+  id           String             @id @default(uuid()) @db.Uuid
+  email        String             @unique @db.VarChar(254)
+  name         String?            @db.VarChar(120)
+  passwordHash String?            @db.VarChar(300)
+  createdAt    DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime           @updatedAt @db.Timestamptz(3)
   cart         Cart?
   orders       Order[]
+  cartMerges   CartMergeReceipt[]
+}
+
+// Comprobante duradero: se confirma atómicamente junto con la fusión del carrito.
+model CartMergeReceipt {
+  id          String   @id @db.Uuid
+  userId      String   @db.Uuid
+  requestHash String   @db.VarChar(64)
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Category {

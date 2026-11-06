@@ -4,7 +4,7 @@ import { ApiError } from "../../lib/http/errors";
 import { measure } from "../../lib/observability/request";
 import { productIdInput, quantityInput } from "./validation";
 
-async function snapshot(tx: Prisma.TransactionClient, userId: string) {
+export async function snapshot(tx: Prisma.TransactionClient, userId: string) {
   const cart = await tx.cart.findUnique({
     where: { userId },
     select: {

@@ -84,3 +84,8 @@ Contexto: evaluar desempeño académico sin servicios de pago ni rediseño. Deci
 ## 2026-11-05 — Preparación serverless sin publicación ni escrituras cloud
 
 Prompt 015: conservar Node/PrismaPg y la aplicación modular; pool Vercel por defecto 2, reutilización por instancia, runtime Node y TLS verificable. Vercel bloquea monitor periódico y todo Webpay. CLI cloud exige archivo exclusivo, endpoint/base confirmados y --execute, con simulación sin red por defecto; solo migrate deploy. Bootstrap solo inserta y no repone stock, a diferencia del seed general. Las regresiones usan seis bases nuevas _test y huella de lectura de la tienda habitual. Sin servicios nuevos, migraciones remotas, commits ni despliegue. Snapshot previo de etapa 5 permite dos commits separados tras aprobación.
+
+
+## Carrito invitado y comprobantes de fusión — 2026-11-05
+
+Contexto: se requiere carrito sin cuenta y fusión sin duplicación ante recargas o respuestas perdidas. Decisión: localStorage conserva solo IDs/cantidades; PostgreSQL cotiza y valida. La fusión autenticada crea CartMergeReceipt y suma cantidades en la misma transacción, con clave única y bloqueo de la fila del carrito mediante upsert. Un conflicto de stock revierte todo y conserva la copia anónima. Web Locks serializa cambios entre pestañas. Consecuencias: una migración aditiva autorizada exclusivamente en bases locales _test; deberá aprobarse aparte su aplicación en Neon antes de publicar. No hay reserva de stock ni doble evento add_to_cart. Ver [contratos, pruebas y límites](../guest-cart.md).

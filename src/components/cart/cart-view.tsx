@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
+import { changeGuest } from "@/lib/cart/guest-client";
 import Link from "next/link";
 import type { CartSnapshot } from "@/modules/cart/service";
 import { ProductImage } from "@/components/catalog/product-image";
 import { formatClp } from "@/lib/format";
 
-export function CartView({ initialCart }: { initialCart: CartSnapshot }) {
+export function CartView({ initialCart, guest = false }: { initialCart: CartSnapshot; guest?: boolean }) {
   const [cart, setCart] = useState(initialCart);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
@@ -17,6 +18,11 @@ export function CartView({ initialCart }: { initialCart: CartSnapshot }) {
     setPending(true);
     setMessage("");
     try {
+      if (guest) {
+        setCart(await changeGuest(productId, method === "DELETE" ? "remove" : "set", quantity));
+        setMessage(method === "DELETE" ? "Accesorio eliminado del carrito." : "Cantidad actualizada.");
+        return;
+      }
       const response = await fetch(`/api/v1/cart/items/${productId}`, {
         method,
         headers: {
@@ -40,8 +46,8 @@ export function CartView({ initialCart }: { initialCart: CartSnapshot }) {
         }
         setMessage(result.error?.message ?? "No pudimos modificar el carrito.");
       }
-    } catch {
-      setMessage("No pudimos conectar. Vuelve a intentar.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "No pudimos conectar. Vuelve a intentar.");
     } finally {
       setPending(false);
     }
@@ -53,7 +59,7 @@ export function CartView({ initialCart }: { initialCart: CartSnapshot }) {
         <h1>
           Tu carrito<span className="red">.</span>
         </h1>
-        <p>Guardado en tu cuenta para cuando vuelvas.</p>
+        <p>{guest ? "Guardado en este navegador. Inicia sesi?n al finalizar tu compra." : "Guardado en tu cuenta para cuando vuelvas."}</p>
       </div>
       {message && (
         <p role="status" className="form-notice cart-message">
@@ -93,7 +99,7 @@ export function CartView({ initialCart }: { initialCart: CartSnapshot }) {
                         name="quantity"
                         type="number"
                         min={1}
-                        max={Math.min(99, item.availableStock)}
+                        max={Math.max(1, Math.min(99, item.availableStock))}
                         defaultValue={item.quantity}
                         required
                         disabled={pending}
@@ -139,7 +145,7 @@ export function CartView({ initialCart }: { initialCart: CartSnapshot }) {
               Compra de prueba sin dinero real. El stock se valida al confirmar
               el pago.
             </div>
-            <Link href="/checkout" className="button button-red">
+            <Link href={guest ? "/iniciar-sesion?callbackUrl=%2Fcheckout" : "/checkout"} className="button button-red">
               Continuar al checkout →
             </Link>
             <Link href="/catalogo" className="button button-dark">

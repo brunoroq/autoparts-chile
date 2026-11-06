@@ -8,17 +8,13 @@ test("registro, login, carrito, logout y persistencia con teclado", async ({
   const email = `${randomUUID()}@example.invalid`;
   const password = randomBytes(20).toString("hex");
   await page.goto("/carrito");
-  await expect(page).toHaveURL(/iniciar-sesion/);
-  await page.getByRole("link", { name: "Crea tu cuenta", exact: true }).click();
+  await expect(page).toHaveURL(/\/carrito$/);
+  await page.goto("/registro");
   await page.getByLabel("Nombre", { exact: true }).fill("Persona de prueba");
   await page.getByLabel("Correo electrónico").fill(email);
   await page.getByLabel("Contraseña", { exact: true }).fill(password);
   await page.getByLabel("Confirmar contraseña").fill(password);
   await page.getByRole("button", { name: "Crear cuenta", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("Cuenta creada");
-  await page.getByLabel("Correo electrónico").fill(email);
-  await page.getByLabel("Contraseña", { exact: true }).fill(password);
-  await page.getByLabel("Contraseña", { exact: true }).press("Enter");
   await expect(page).toHaveURL(/\/carrito$/);
   await expect(
     page.getByRole("heading", { name: "Tu carrito está vacío." }),
@@ -47,7 +43,9 @@ test("registro, login, carrito, logout y persistencia con teclado", async ({
     page.getByRole("link", { name: "Ingresar", exact: true }),
   ).toBeVisible();
   await page.goto("/carrito");
-  await expect(page).toHaveURL(/iniciar-sesion/);
+  await expect(page).toHaveURL(/\/carrito$/);
+  await expect(page.locator(".cart-row")).toHaveCount(0);
+  await page.goto("/iniciar-sesion");
   await page.getByLabel("Correo electrónico").fill(email);
   await page.getByLabel("Contraseña", { exact: true }).fill(password);
   await page

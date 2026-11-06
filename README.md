@@ -37,6 +37,8 @@ La preparación Vercel/Neon está implementada, verificada localmente y versiona
 - [Verificación de preparación](docs/verification-deployment-preparation.md): pruebas aisladas y conservación local.
 - [Plan de dos commits](docs/commit-plan-stage5-deployment.md): separación de etapa 5 y despliegue, sin commits realizados.
 
+- [Carrito de invitados y fusión segura](docs/guest-cart.md): implementación local, migración autorizada solo en bases _test, pruebas y revisión manual. Neon no fue modificado.
+
 ## Inicio de una sesión
 
 Leer `AGENTS.md` y `LogFile.txt`, revisar el estado de Git y confirmar el alcance autorizado antes de modificar archivos.

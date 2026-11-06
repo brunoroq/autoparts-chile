@@ -2,11 +2,11 @@
 import { useAnalytics } from "@/components/analytics/analytics-provider";
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { changeGuest, mergeGuestCart } from "@/lib/cart/guest-client";
+import { commerce } from "@/lib/analytics/contracts";
 
 export function AddToCart({
   productId,
-  slug,
   stock,
 }: {
   productId: string;
@@ -17,7 +17,6 @@ export function AddToCart({
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
   const [added, setAdded] = useState(false);
-  const router = useRouter();
   const { track } = useAnalytics();
   return (
     <div className="add-cart">
@@ -30,13 +29,17 @@ export function AddToCart({
           try {
             const current = await fetch("/api/v1/cart", { cache: "no-store" });
             if (current.status === 401) {
-              router.push(
-                `/iniciar-sesion?callbackUrl=${encodeURIComponent(`/productos/${slug}`)}`,
-              );
+              const cart = await changeGuest(productId, "add", quantity);
+              const item = cart.items.find(i => i.productId === productId)!;
+              track("add_to_cart", commerce([{ productId, unitPriceClp: item.unitPriceClp, quantity }]), crypto.randomUUID());
+              setAdded(true);
+              setMessage("Accesorio agregado a tu carrito.");
               return;
             }
-            const state = await current.json();
-            if (!current.ok) {
+            await mergeGuestCart();
+            const fresh = await fetch("/api/v1/cart", { cache: "no-store" });
+            const state = await fresh.json();
+            if (!fresh.ok) {
               setMessage(
                 state.error?.message ?? "No pudimos consultar el carrito.",
               );
@@ -65,8 +68,8 @@ export function AddToCart({
               );
             setAdded(true);
             setMessage("Accesorio agregado a tu carrito.");
-          } catch {
-            setMessage("No pudimos conectar. Intenta nuevamente.");
+          } catch (error) {
+            setMessage(error instanceof Error ? error.message : "No pudimos conectar. Intenta nuevamente.");
           } finally {
             setPending(false);
           }

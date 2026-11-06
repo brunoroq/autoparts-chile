@@ -1,5 +1,6 @@
 import { spawn } from "node:child_process";
 import { authTestSecret, authTestUrl } from "../tests/auth-database.ts";
+const port = process.argv[2] === "guest" ? "3012" : "3002";
 const server = spawn(
   process.execPath,
   [
@@ -8,14 +9,14 @@ const server = spawn(
     "--hostname",
     "127.0.0.1",
     "--port",
-    "3002",
+    port,
   ],
   {
     env: {
       ...process.env,
       DATABASE_URL: authTestUrl(),
       NEXTAUTH_SECRET: authTestSecret(),
-      NEXTAUTH_URL: "http://localhost:3002",
+      NEXTAUTH_URL: `http://localhost:${port}`,
     },
     stdio: "inherit",
   },

@@ -968,3 +968,85 @@ Verificaciones de este cierre: validate (lint, TypeScript y Prisma), 23 unitaria
 Segundo commit autorizado: chore: preparar Vercel y Neon con bootstrap seguro. Se audita por separado su índice y contenido; hash final y limpieza se entregarán en chat/Git para no modificar archivos después del commit. Documentación, AGENTS y registro actualizados. Permanecen pendientes configuración manual de Neon/Vercel, DebugView real y sandbox Webpay. Detenerse tras confirmar ambos commits y repositorio limpio.
 
 Auditoría de separación: el segundo delta contiene 40 archivos de preparación/cierre. En los handlers existentes la única diferencia es la declaración runtime nodejs; no incluye otra migración ni cambios de lógica comercial/analítica. Los archivos de etapa 5 exclusivos permanecen en el primer commit. Cada árbol se revisa contra secretos y exclusiones antes de confirmar.
+
+
+PROMPT 020 - registro 2026-11-05T21:49:55-03:00, America/Santiago
+Agente: Codex. Modelo exacto no disponible. Hora original del mensaje no disponible; hora indicada corresponde al registro.
+INICIO DEL PROMPT
+Necesito implementar una mejora en AutoParts Chile, una aplicación Next.js 16 + Prisma 7 + PostgreSQL (Neon), actualmente desplegada en Vercel como `autoparts-store`.
+
+**Objetivo:** permitir que los visitantes sin cuenta utilicen el carrito de compras. Actualmente, el sistema exige iniciar sesión para acceder al carrito, lo que dificulta las pruebas con usuarios reales y la medición posterior con Google Analytics 4.
+
+### Comportamiento esperado
+
+1. Los visitantes pueden agregar productos al carrito sin iniciar sesión.
+2. Pueden abrir el carrito, modificar cantidades y eliminar productos.
+3. El carrito de invitados debe persistir al recargar la página, usando `localStorage`.
+4. Los usuarios autenticados deben seguir utilizando su carrito persistido en PostgreSQL, sin regresiones.
+5. Al iniciar sesión o registrarse, el carrito de invitados debe fusionarse con el carrito del usuario en PostgreSQL, sin duplicar productos, respetando stock y evitando pérdidas de datos.
+6. La fusión debe ser segura ante reintentos y recargas para evitar agregar dos veces los mismos productos.
+7. Se debe solicitar autenticación al intentar finalizar la compra, no al agregar productos. Después del inicio de sesión, el usuario debe poder continuar con su carrito.
+8. El servidor debe seguir validando precios, cantidades, stock y disponibilidad. No debe confiar en precios provenientes de `localStorage`.
+
+### Compatibilidad y seguridad
+
+- Mantener el checkout simulado y las órdenes existentes.
+- No modificar migraciones ni datos de producción salvo que sea estrictamente necesario; en ese caso, explicar primero el motivo.
+- No exponer secretos, contraseñas ni cadenas de conexión.
+- Mantener el diseño visual y la experiencia responsive actual.
+- Conservar la integración existente con GA4 y los eventos `view_item`, `add_to_cart`, `begin_checkout` y `purchase`, respetando el consentimiento y evitando duplicaciones.
+- Evitar errores de hidratación de Next.js por el uso de `localStorage`.
+- No agregar dependencias innecesarias.
+
+### Verificaciones
+
+Implementa los cambios y ejecuta las pruebas disponibles, lint, TypeScript y `npm run build`. Agrega pruebas para el carrito de invitados y la fusión cuando corresponda.
+
+**Importante:** trabaja localmente. No hagas `git push`, no despliegues a Vercel y no modifiques la base de datos de Neon durante esta tarea.
+
+Al terminar, entrégame un resumen de los archivos modificados, las pruebas realizadas, los resultados y cualquier riesgo pendiente. Espera mi confirmación antes de publicar los cambios.
+FIN DEL PROMPT
+Autorización: implementación local; no Neon, commits, push ni despliegues.
+Resumen parcial: carrito anónimo con IDs/cantidades en localStorage, cotización PostgreSQL de lectura, interfaz y continuación al login; clientes preparados para fusión. Se explicó la necesidad de comprobante transaccional duradero y se solicitó autorización específica para una nueva migración local de pruebas; respuesta pendiente. No se modificó esquema ni se ejecutaron migraciones.
+Archivos: componentes de carrito/autenticación, páginas carrito/checkout, API cart/guest, validación/cotización, almacenamiento y cliente guest, pruebas guest unitarias/Playwright, package.json, AGENTS.md y docs/guest-cart.md.
+Validación parcial: lint, TypeScript y build exitosos; 23 unitarias existentes, dos nuevas y cuatro Playwright (móvil/escritorio) exitosas. Sin errores de hidratación. Fusión y regresión completa pendientes; no presentar esta implementación parcial como lista para publicar.
+
+
+PROMPT 021 - registro 2026-11-05T22:17:24-03:00, America/Santiago
+Agente: Codex. Modelo exacto no disponible. Hora original del mensaje no disponible; hora indicada corresponde al registro.
+Contexto: respuesta a la pregunta de autorización de una migración nueva para comprobantes de fusión, aplicada exclusivamente en una base local de pruebas; no en Neon.
+INICIO DEL PROMPT
+Sí, autorizar migración nueva solo en pruebas locales
+FIN DEL PROMPT
+Autorización: crear CartMergeReceipt y aplicar su migración únicamente en bases Docker _test. Continúan prohibidos Neon, commits, push, despliegues y carga.
+Resumen: completada fusión atómica con comprobante único ligado a usuario/hash normalizado; reintentos recuperan sin sumar, stock insuficiente revierte y conserva invitado. Registro inicia sesión mediante Credentials y fusiona; login/carrito/checkout recuperan operaciones pendientes. Se conserva instrumentación y consentimiento GA4; fusión no emite otro add_to_cart. Nueva migración aditiva 20261106010000_guest_cart_merge; no se modificaron las seis anteriores. Sin dependencias nuevas.
+Archivos: inventario completo en docs/guest-cart.md; esquema/migración, módulos y endpoints guest/merge, almacenamiento/cliente, componentes/páginas, pruebas, scripts de regresión y documentación.
+Resultados: 25 unitarias, 16 integraciones reales PostgreSQL, nueve HTTP y 32 casos de navegador comprobados en móvil/escritorio. Última suite navegador: 30 correctos; otros dos correctos al revalidar el selector del aviso acotado a cart-page. Corregidas esperas/selectores de pruebas, no se ocultaron errores de aplicación. Concurrencia entre fusiones/CAS, respuesta perdida, recuperación, aislamiento, stock y GA4 comprobados. Lint/TypeScript/Prisma/build se ejecutan nuevamente al cierre.
+Conservación: huella final de ocho tablas y metadatos de migraciones Docker habitual coincide exactamente con la inicial. Migraciones y escrituras de fixtures solo en autoparts_deploy_*_test, destinos loopback validados. Ninguna conexión a Neon; no se leyeron ni modificaron .env.neon.local ni credenciales remotas. Servidores temporales detenidos. Sin commit/push/despliegue/carga. Para publicar en otro turno se requerirá autorizar la migración remota y publicación; no está autorizado ahora.
+
+Cierre 021: validate final (lint, TypeScript y Prisma) y npm run build finalizaron correctamente despu?s de los ?ltimos cambios de c?digo/scripts. git diff --check sin errores. Inventario Git revisado: sin .env privados, node_modules, datos PostgreSQL, artefactos generados ni secretos a?adidos; nuevos scripts temporales y evidencias permanecen ignorados en tmp. No se realiz? commit ni publicaci?n.
+
+
+PROMPT 022 — registro 2026-11-05T23:34:47-03:00, America/Santiago
+Agente: Codex. Modelo exacto no disponible. Hora original del mensaje no disponible; hora indicada corresponde al registro.
+INICIO DEL PROMPT
+Sí, autorizo preparar y crear el commit local de la implementación del carrito de invitados.
+
+Antes de hacerlo, revisa que no se incluyan archivos `.env`, credenciales, bases de datos locales ni archivos temporales.
+
+Después del commit, necesito que me informes:
+
+1. Hash del commit y resumen de archivos modificados.
+2. Nombre y contenido funcional de la nueva migración.
+3. Si la migración es compatible con los datos actuales de Neon y si es aditiva o destructiva.
+4. Procedimiento seguro para aplicarla en Neon, incluyendo verificación previa, respaldo y comprobación posterior.
+5. Si hay algún riesgo de incompatibilidad entre la versión actualmente desplegada en Vercel y la nueva estructura de base de datos.
+
+No ejecutes migraciones en Neon, no hagas push a GitHub y no despliegues a Vercel todavía. Espera mi autorización para cada operación de producción.
+FIN DEL PROMPT
+Autorización: un commit local del carrito de invitados después de auditoría; sin conexión/migración Neon, push ni despliegue. Producción requiere aprobaciones separadas.
+Resumen: se revisó la implementación y la migración aditiva; se actualizó el estado vigente de AGENTS.md y se documentó el procedimiento previo/respaldo/migración/verificación/rollback en docs/neon-guest-cart-migration.md. No se modificó código funcional en este cierre ni se ejecutaron operaciones PostgreSQL. La compatibilidad remota se infiere del esquema conocido: no se certifica un estado actual de Neon sin autorización de lectura.
+Validación actual de cierre: lint, TypeScript, Prisma, 25 unitarias y build de producción correctos usando variables locales verificadas loopback. Se conserva evidencia anterior de 16 integraciones, nueve HTTP y 32 casos de navegador; no se repitieron pruebas de escritura ni navegación en este turno.
+Auditoría previa al commit: incluir únicamente fuentes, pruebas, migración SQL y documentación revisadas. Excluir .env privados, credenciales, dumps, archivos de bases, datos Docker, node_modules, tmp, evidencias generadas y cliente Prisma generado. Comprobar además que las seis migraciones anteriores no cambiaron. El índice y el árbol confirmado se auditan por separado; entregar hash y limpieza en chat sin modificar archivos después del commit.
+Mensaje previsto: feat: permitir carrito de invitados con fusión idempotente
+Limitaciones: migración todavía no aplicada en Neon; aplicar antes de desplegar la nueva versión. La aplicación anterior tolera la tabla adicional. Respaldo y restauración de ensayo pendientes de autorización; no se crearon recursos externos. No commits adicionales, push, despliegue ni carga.

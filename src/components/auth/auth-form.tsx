@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { mergeGuestCart } from "@/lib/cart/guest-client";
 
 export function AuthForm({
   register = false,
@@ -50,27 +51,25 @@ export function AuthForm({
                 );
                 return;
               }
-              router.push(
-                `/iniciar-sesion?registrado=1&callbackUrl=${encodeURIComponent(callbackUrl)}`,
-              );
-            } else {
-              const result = await signIn("credentials", {
-                email: data.get("email"),
-                password: data.get("password"),
-                callbackUrl,
-                redirect: false,
-              });
-              if (!result?.ok || result.error) {
-                setError(
-                  result?.error === "RateLimited"
-                    ? "Demasiados intentos. Vuelve a intentar más tarde."
-                    : "No pudimos iniciar sesión. Revisa tus datos o intenta más tarde.",
-                );
-                return;
-              }
-              router.push(callbackUrl);
-              router.refresh();
             }
+            const result = await signIn("credentials", {
+              email: data.get("email"),
+              password: data.get("password"),
+              callbackUrl,
+              redirect: false,
+            });
+            if (!result?.ok || result.error) {
+              setError(
+                result?.error === "RateLimited"
+                  ? "Demasiados intentos. Vuelve a intentar más tarde."
+                  : "No pudimos iniciar sesión. Revisa tus datos o intenta más tarde.",
+              );
+              return;
+            }
+            try { await mergeGuestCart(); }
+            catch { router.push("/carrito"); router.refresh(); return; }
+            router.push(callbackUrl);
+            router.refresh();
           } catch {
             setError("No pudimos conectar. Intenta nuevamente.");
           } finally {

@@ -1,5 +1,7 @@
 # Instrucciones permanentes de AutoParts Chile
 
+Actualización vigente: el usuario autorizó la implementación local del carrito de invitados y la migración de CartMergeReceipt exclusivamente en bases locales _test. Ahora autoriza preparar y crear un commit local tras auditar secretos/exclusiones. Sin conexiones ni migraciones en Neon, push o despliegues. Entregar hash, estado Git y procedimiento de migración; detenerse después. Cada operación de producción requiere autorización separada. Consultar `docs/guest-cart.md` y `docs/neon-guest-cart-migration.md`. La autorización más reciente reemplaza las restricciones históricas incompatibles.
+
 ## Propósito y alcance
 
 Proyecto universitario de INFB8091 - Desempeño de Sistemas. Construir una tienda de accesorios automotrices para medir rendimiento con distintas cargas y tamaños de catálogo. Priorizar evidencia reproducible, claridad y una interfaz moderna, atractiva y fácil de usar. Evitar sobreingeniería, microservicios y funcionalidades comerciales ajenas al trabajo.

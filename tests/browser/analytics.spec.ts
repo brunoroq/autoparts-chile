@@ -274,3 +274,32 @@ test("sin consentimiento ni configuración no hay Google; autorización y valida
   await page.goto("http://localhost:3000/catalogo");
   expect(await page.locator('script[src*="googletagmanager"]').count()).toBe(0);
 });
+
+test("invitado: add_to_cart exige consentimiento y fusionar no vuelve a emitirlo", async ({ page }) => {
+  const calls = await intercept(page);
+  await page.goto("/productos/kit-de-ampolletas-led-h7");
+  await page.getByRole("button", { name: "Agregar al carrito" }).click();
+  await expect(page.getByRole("status")).toContainText("Accesorio agregado");
+  expect(calls).toHaveLength(0);
+  await page.getByRole("button", { name: "Aceptar analítica" }).click();
+  await expect.poll(async () => (await commands(page, "view_item")).length).toBe(1);
+  await page.getByRole("button", { name: "Agregar al carrito" }).click();
+  await expect.poll(async () => (await commands(page, "add_to_cart")).length).toBe(1);
+  const products = await (await page.request.get("/api/v1/products?pageSize=50")).json();
+  const product = products.data.find((p: { slug: string }) => p.slug === "kit-de-ampolletas-led-h7");
+  const addition = (await commands(page, "add_to_cart"))[0][2] as { value: number; currency: string };
+  expect(addition.value).toBe(product.priceClp);
+  expect(addition.currency).toBe("CLP");
+  const identity = testIdentity();
+  await page.goto("/registro?callbackUrl=%2Fcheckout");
+  await page.getByLabel("Nombre", { exact: true }).fill(identity.name);
+  await page.getByLabel("Correo electrónico").fill(identity.email);
+  await page.getByLabel("Contraseña", { exact: true }).fill(identity.password);
+  await page.getByLabel("Confirmar contraseña").fill(identity.password);
+  await page.getByRole("button", { name: "Crear cuenta", exact: true }).click();
+  await expect(page).toHaveURL(/\/checkout$/);
+  await expect.poll(async () => (await commands(page, "begin_checkout")).length).toBe(1);
+  expect(await commands(page, "add_to_cart")).toHaveLength(0);
+  const checkout = (await commands(page, "begin_checkout"))[0][2] as { value: number };
+  expect(checkout.value).toBe(product.priceClp * 2);
+});
