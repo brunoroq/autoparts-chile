@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { createRequire } from "node:module";
+import { readFile, mkdir } from "node:fs/promises";
 import { chromium, expect, type Page } from "@playwright/test";
 import type { PluginBuild } from "esbuild";
 // esbuild ya forma parte de la herramienta tsx instalada; no es una dependencia de producción.
@@ -12,6 +13,7 @@ async function commands(page: Page, name: string) {
 }
 async function fixture(run: (page: Page, state: { googleLoads: number; failRemoval: boolean; claims: number }) => Promise<void>) {
   const state = { googleLoads: 0, failRemoval: false, claims: 0 };
+  const stylesheet = (await readFile("src/app/globals.css", "utf8")).replace('@import "tailwindcss";', "");
   const bundle = await build({ entryPoints: ["tests/fixtures/analytics-harness.tsx"], bundle: true, write: false, platform: "browser", jsx: "automatic", define: { "process.env.NODE_ENV": '"development"' }, plugins: [{ name: "next-fixtures", setup(b: PluginBuild) {
     b.onResolve({ filter: /^next\/(script|navigation|link|image)$/ }, (args: { path: string }) => ({ path: args.path, namespace: "fixture" }));
     b.onLoad({ filter: /.*/, namespace: "fixture" }, (args: { path: string }) => {
@@ -24,6 +26,7 @@ async function fixture(run: (page: Page, state: { googleLoads: number; failRemov
     });
   } }] });
   const server = createServer((req, res) => {
+    if (req.url === "/styles.css") { res.writeHead(200, { "Content-Type": "text/css" }); return res.end(stylesheet); }
     if (req.url?.endsWith("/analytics-purchase")) {
       state.claims++;
       res.writeHead(200, { "Content-Type": "application/json" });
@@ -32,7 +35,7 @@ async function fixture(run: (page: Page, state: { googleLoads: number; failRemov
     if (req.url === "/bundle.js") { res.writeHead(200, { "Content-Type": "application/javascript" }); return res.end(bundle.outputFiles[0].text); }
     if (req.url?.startsWith("/api/")) { res.writeHead(state.failRemoval ? 500 : 200, { "Content-Type": "application/json" }); return res.end(JSON.stringify(state.failRemoval ? { error: { message: "Error simulado" } } : { data: { version: 2, items: [], totalClp: 0, currency: "CLP" } })); }
     if (req.url === "/fixture.svg") { res.writeHead(200, { "Content-Type": "image/svg+xml" }); return res.end('<svg xmlns="http://www.w3.org/2000/svg"/>'); }
-    res.writeHead(200, { "Content-Type": "text/html" }); res.end('<html><body><div id="root"></div><script src="/bundle.js"></script></body></html>');
+    res.writeHead(200, { "Content-Type": "text/html" }); res.end('<html lang="es"><head><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/styles.css"></head><body><div id="root"></div><script src="/bundle.js"></script></body></html>');
   });
   await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
   const address = server.address(); if (!address || typeof address === "string") throw Error("Fixture unavailable");
@@ -45,6 +48,43 @@ async function fixture(run: (page: Page, state: { googleLoads: number; failRemov
     await page.goto("/productos/first?token=secret&email=private@example.invalid");
     await run(page, state);
   } finally { await browser.close(); await new Promise<void>(resolve => server.close(() => resolve())); }
+}
+for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }, { width: 320, height: 568 }, { width: 844, height: 390 }]) {
+  test(`aviso visible y teclado: ${viewport.width}x${viewport.height}, aceptación, rechazo y revocación`, async () => fixture(async (page, state) => {
+    await page.setViewportSize(viewport);
+    const region = page.getByRole("region", { name: "Preferencias de analítica" });
+    await expect(region).toBeVisible();
+    const geometry = await region.evaluate(el => {
+      const r = el.getBoundingClientRect(), s = getComputedStyle(el);
+      return { position: s.position, z: Number(s.zIndex), inside: r.top >= 0 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth, noOverflow: document.documentElement.scrollWidth <= innerWidth };
+    });
+    assert.equal(geometry.position, "fixed"); assert.ok(geometry.z >= 1000); assert.ok(geometry.inside && geometry.noOverflow);
+    const accept = region.getByRole("button", { name: "Aceptar analítica" });
+    const reject = region.getByRole("button", { name: "Rechazar analítica" });
+    for (const button of [accept, reject]) {
+      const box = await button.boundingBox(); assert.ok(box && box.height >= 44 && box.width >= 44);
+      assert.ok(await button.evaluate(el => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); }));
+    }
+    assert.equal(await accept.evaluate(el => getComputedStyle(el).backgroundColor), await reject.evaluate(el => getComputedStyle(el).backgroundColor));
+    assert.equal(state.googleLoads, 0); assert.equal((await commands(page, "page_view")).length, 0);
+    await mkdir("tmp/consent-preview", { recursive: true });
+    await page.screenshot({ path: `tmp/consent-preview/${viewport.width}x${viewport.height}.png`, mask: [page.locator("input,textarea")] });
+    await accept.focus(); await expect(accept).toBeFocused();
+    assert.equal(await accept.evaluate(el => getComputedStyle(el).outlineStyle), "solid");
+    await page.keyboard.press("Tab"); await expect(reject).toBeFocused(); await page.keyboard.press("Enter");
+    await expect(region).toHaveCount(0); assert.equal(state.googleLoads, 0);
+    await page.reload();
+    const preferences = page.getByRole("button", { name: "Preferencias de analítica" });
+    await expect(preferences).toBeVisible();
+    assert.ok(await preferences.evaluate(el => { const r = el.getBoundingClientRect(); return r.bottom <= innerHeight && r.right <= innerWidth && r.height >= 44; }));
+    await preferences.click(); await expect(region).toBeVisible();
+    await accept.focus(); await page.keyboard.press("Space");
+    await expect.poll(() => state.googleLoads).toBeGreaterThan(0);
+    await expect(region).toHaveCount(0);
+    await preferences.click(); await expect(region).toBeVisible();
+    assert.equal(await page.locator('script[src*="googletagmanager"]').count(), 0);
+    assert.equal((await commands(page, "page_view")).length, 0);
+  }));
 }
 test("consentimiento, StrictMode, renders, recargas, regreso a rutas y privacidad", async () => fixture(async (page, state) => {
   await expect(page.getByRole("button", { name: "Aceptar analítica" })).toBeVisible();

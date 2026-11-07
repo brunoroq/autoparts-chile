@@ -162,28 +162,36 @@ export function AnalyticsProvider({
       {config.enabled && choice === "unknown" && (
         <aside
           className="analytics-consent"
+          role="region"
           aria-label="Preferencias de analítica"
+          aria-describedby="analytics-consent-description"
         >
-          <p>
-            ¿Permites analítica opcional para evaluar esta tienda académica?
-            Puedes cambiar tu decisión. No enviamos datos de tu cuenta.
+          <h2>Tu privacidad, tu decisión</h2>
+          <p id="analytics-consent-description">
+            Usamos analítica opcional para evaluar esta tienda académica. Puedes
+            aceptar o rechazar: la tienda funciona igual. No enviamos datos de tu
+            cuenta y puedes cambiar tu decisión en «Preferencias de analítica».
           </p>
+          <div className="analytics-consent-actions">
           <button
-            className="button button-red"
+            type="button"
+            className="button analytics-choice"
             onClick={() => choose("granted")}
           >
             Aceptar analítica
           </button>
           <button
-            className="button button-dark"
+            type="button"
+            className="button analytics-choice"
             onClick={() => choose("denied")}
           >
             Rechazar analítica
           </button>
+          </div>
         </aside>
       )}
       {config.enabled && choice !== "unknown" && (
-        <button className="analytics-preferences" onClick={revoke}>
+        <button type="button" className="analytics-preferences" onClick={revoke}>
           Preferencias de analítica
         </button>
       )}

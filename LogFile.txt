@@ -1168,3 +1168,58 @@ Entrega el hash del commit publicado y el resultado del despliegue.
 FIN DEL PROMPT
 Preparación: índice selectivo para Analytics; package.json excluye comandos/prueba E2E anterior. AGENTS.md y LogFile.txt staged solo notas Analytics/publicación, conservando historial anterior sin mezclar documentos pendientes. Consentimiento y saneamiento conservados; PurchaseEvent/claimPurchase/endpoint/persistencia sin modificaciones. Lectura pública inicial: enabled=false, measurementId vacío, sin script Google. Valores por defecto siguen opt-in. Sin cambios de variables. Verificación del snapshot exacto preparado y publicación condicionadas a todos los checks correctos.
 Verificaciones previas a publicación: snapshot exacto exclusivo de Analytics con 27 unitarias y cuatro E2E locales correctos; lint, TypeScript, Prisma y build correctos. Las dos unitarias del verificador previo se excluyen intencionalmente. Primera copia anidada generó advertencia de raíz y compiló en 81 s; copia hermana aislada compiló correctamente sin esa advertencia, sin cambios de configuración. main remoto coincide con base 8b2e4f9. Auditados 11 archivos permitidos, sin secretos/respaldos/.env privados/artefactos/E2E pendientes. Consentimiento, saneamiento, opt-in Analytics y reclamación purchase conservados; no cambios de variables. Ambos proyectos Vercel conectados pueden autodesplegar por push, se comprobará autoparts-chile. Se autoriza el commit y push, sin datos de producción modificados.
+
+PROMPT 038 — registro 2026-11-06, America/Santiago
+Agente: Codex. Modelo exacto no disponible. Hora original del mensaje no disponible.
+INICIO DEL PROMPT
+Google Analytics 4 ya funciona en producción, pero detecté un problema de interfaz: el aviso de consentimiento de Analytics no es visible al entrar a AutoParts Chile.
+
+Quiero mejorar su visibilidad sin modificar el funcionamiento de Analytics.
+
+1. Investiga por qué el aviso no se muestra claramente al entrar por primera vez.
+2. Comprueba si existe un problema de posición, z-index, estilos, renderizado o diseño responsive.
+3. Haz que el aviso sea visible y accesible en computadores y dispositivos móviles cuando el usuario todavía no haya decidido.
+4. Mantén las opciones de aceptar y rechazar con igual claridad.
+5. Conserva la posibilidad de cambiar la decisión desde «Preferencias de analítica».
+6. No cargues GA4 ni envíes eventos antes del consentimiento.
+7. Añade pruebas locales para verificar visibilidad, aceptación, rechazo y revocación.
+
+No modifiques Neon, checkout, pagos ni inventario.
+No cambies variables de Vercel.
+No hagas commits, push ni despliegues todavía.
+
+Entrega el diagnóstico y las correcciones locales para revisarlas antes de publicar.
+FIN DEL PROMPT
+Diagnóstico: lectura pública sin escrituras/orígenes externos en contextos nuevos de escritorio 1440x1000 y móvil 390x844. Aviso presente, fixed/z-index50, opacity1, totalmente dentro del viewport y no tapado en centro. Cero cargas/intentos Google antes de decidir. No se reprodujo ausencia de renderizado; capturas muestran poca prominencia (sin título, abajo izquierda). Con una decisión ya almacenada se oculta legítimamente; preferencias anteriores en flujo al final. No se inspeccionó almacenamiento personal del usuario, no atribuirle una decisión específica sin evidencia.
+Correcciones locales: globals.css con panel centrado/fijo, título, borde rojo, contraste/sombra, z-index1000, acciones equivalentes, columnas responsive, altura limitada, scroll interno, safe-area inferior, foco visible y preferencias fijas de 44px mínimo. AnalyticsProvider solo markup/clases/semántica de región, descripción y botones explícitos; choose/revoke/initialize/guardas/eventos/purchase intactos.
+Pruebas: tests/analytics.browser.test.ts sirve CSS real y añade cuatro escenarios 1440x1000,390x844,320x568,844x390. Ocho E2E locales correctos: visibilidad/encuadre, sin overflow, botones sin obstrucción y de igual fondo, teclado/foco/Tab/Enter/Espacio, rechazo persistente, aceptación y revocación sin Google/eventos posteriores; conserva regresiones existentes. Harness componentes reales con Next/Google/HTTP ficticios, sin cuentas/pedidos/bases. 29 unitarias, lint/TypeScript/Prisma y build correctos. Previews escritorio/móvil inspeccionadas en tmp/consent-preview ignorado. Documentado docs/analytics-consent-visibility.md y AGENTS.md. Pendiente revisión tienda completa publicada y Safari/safe-areas reales; sin envíos reales a GA4 en esta tarea.
+Sin cambios Neon/variables Vercel/checkout/pagos/inventario/esquema/dependencias, cuentas, compras, commits/push/despliegues. Cambios anteriores pendientes conservados; esperar aprobación para publicar.
+
+PROMPT 039 — registro 2026-11-06, America/Santiago
+Agente: Codex. Modelo exacto no disponible. Hora original del mensaje no disponible.
+INICIO DEL PROMPT
+Revisé el resultado de las mejoras del aviso de consentimiento de Analytics.
+
+Autorizo crear un commit y publicar exclusivamente estas mejoras visuales y de accesibilidad en main, con despliegue automático en Vercel.
+
+Antes de publicar:
+1. Revisar git status y git diff.
+2. Incluir solamente los cambios relacionados con el consentimiento, sus pruebas y documentación necesaria.
+3. Excluir cambios E2E anteriores, archivos temporales, capturas, credenciales y otros cambios no relacionados.
+4. Confirmar que aceptar y rechazar siguen teniendo el mismo peso visual.
+5. Verificar que GA4 no se carga antes del consentimiento y que la revocación funciona.
+6. Ejecutar lint, TypeScript, pruebas y build.
+
+Si todo pasa:
+7. Crear un commit específico y hacer push a main.
+8. Verificar el despliegue del proyecto autoparts-chile, no autoparts-store.
+9. Comprobar en producción que el aviso es visible en escritorio y móvil y que Analytics sigue recibiendo eventos después de aceptar.
+
+No modificar variables de Vercel, Neon, autenticación, checkout, pagos ni inventario.
+No crear cuentas ni ejecutar compras.
+No ejecutar pruebas de carga.
+
+Si aparece algún problema, detenerse e informar antes de continuar.
+FIN DEL PROMPT
+Preparación: commit exclusivo de consentimiento. Revisados status/diff; CSS, markup y pruebas de visibilidad únicamente, manteniendo funciones y guardas Analytics/purchase intactas. package.json/E2E/documentación histórica/capturas/temporales/secretos fuera del índice. Verificación y publicación condicionadas a checks locales correctos. Se comprobará autoparts-chile y el dominio estable; envíos de navegador no se presentarán como confirmación de DebugView sin acceso a la propiedad.
+Verificaciones previas PROMPT 039: snapshot exclusivo con lint, TypeScript, Prisma y build correctos; 27 unitarias y ocho pruebas de navegador locales correctas (dos unitarias E2E anteriores fuera del commit). Igualdad visual, encuadre, teclado, consentimiento y revocación comprobados. Auditoría del índice de seis archivos sin cambios comerciales, variables, persistencia purchase, package.json o E2E anterior. No dependencias nuevas ni archivos privados/capturas/temporales.

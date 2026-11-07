@@ -1,5 +1,9 @@
 # Instrucciones permanentes de AutoParts Chile
 
+Autorización vigente: commit y publicación exclusivos de mejoras visuales/accesibilidad de consentimiento tras lint/tipos/pruebas/build. Verificar autoparts-chile en escritorio/móvil, bloqueo previo a consentimiento y envíos posteriores. No cambiar variables o datos, cuentas/compras ni incluir trabajo E2E pendiente. Consultar docs/analytics-consent-visibility.md.
+
+Autorización vigente 2026-11-06: mejorar solo presentación/accesibilidad del consentimiento Analytics y verificar localmente. Baseline público en contexto nuevo muestra el panel visible sin Google; no se reprodujo ausencia de renderizado, sí poca prominencia y preferencias al final de página. Nuevo panel centrado, botones equivalentes y preferencias fijas. Lógica de consentimiento/eventos/purchase intacta; ocho pruebas locales de navegador y 29 unitarias, validate/build correctos. No publicar, cambiar variables, Neon o módulos comerciales. Consultar docs/analytics-consent-visibility.md; esperar autorización de publicación.
+
 Autorización vigente de publicación: solo correcciones Analytics, commit específico y push main tras verificaciones. Analytics permanece desactivado, sin variables Vercel ni cuentas/compras, escrituras Neon, migraciones o carga. Mantener cambios E2E y documentación anterior fuera del commit. Ver docs/analytics-instrumentation-corrections.md.
 
 Última autorización 2026-11-06: correcciones locales GA4 únicamente; page_view por navegación/recarga, observaciones view_item/begin_checkout por visita, debug_mode omitido al desactivar y remove_from_cart tras éxito. Persistencia purchase intacta. Pruebas sin cuentas/compras mediante harness local con respuestas simuladas; Analytics sigue desactivado. Sin Neon, variables Vercel, cambios comerciales, commits, push o despliegues. Consultar docs/analytics-instrumentation-corrections.md y esperar autorización para publicar.
