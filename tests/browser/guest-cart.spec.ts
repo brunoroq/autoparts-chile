@@ -19,7 +19,7 @@ test("invitado agrega, recarga, modifica y elimina sin login ni errores de hidra
   await expect(page.getByRole("status")).toContainText("Cantidad actualizada");
   await page.reload();
   await expect(page.getByLabel("Cantidad", { exact: true })).toHaveValue("2");
-  await page.getByRole("link", { name: "Continuar al checkout" }).click();
+  await page.getByRole("link", { name: /Iniciar sesión para pagar/ }).click();
   await expect(page).toHaveURL(/iniciar-sesion.*callbackUrl=%2Fcheckout/);
   await page.goto("/carrito");
   await page.getByRole("button", { name: /Eliminar Kit/ }).click();

@@ -1271,3 +1271,79 @@ Al terminar, informa el nuevo SHA, el estado de GitHub y el estado real del desp
 FIN DEL PROMPT
 Verificación previa: HEAD=86673f077d7abf3dd065b2538bf014f87f3656eb y origin/main coincide. Identidad Git efectiva autor/committer brunoroq con correo legítimo configurado anteriormente por el usuario, sin modificar configuración ni sobrescribir identidad. Cambios exclusivos del controlador (elimina retorno de vacío), cinco pruebas nuevas, comando npm y registros de estas tareas.
 Checks repetidos: lint/TypeScript/Prisma, 27 unitarias, cinco pruebas del controlador, ocho regresiones de navegador y build correctos, usando entorno ficticio local en memoria sin conexiones Neon, datos, cuentas, compras o eventos reales. Se autoriza un commit correctivo real sobre el original, sin amend o commits artificiales. Push normal HEAD:refs/heads/main condicionado a revalidar que remoto siga exactamente en 86673f0, sin force. Si rechazo remoto o Vercel, detenerse, sin reescribir historia ni cambiar planes/configuración. Todo el trabajo y archivos temporales permanecen en este worktree.
+
+
+PROMPT 043 — registro 2026-11-10 22:13:58 America/Santiago
+Agente: Codex. Modelo exacto no disponible; hora de registro, no hora original del mensaje.
+INICIO DEL PROMPT
+Actualmente, los usuarios invitados (sin sesión iniciada) no pueden agregar productos al carrito. El sistema bloquea la acción arrojando un error 403 "Origen de la solicitud no permitido" desde la función checkOrigin en src/lib/http/input.ts. Además, cuando el carrito de invitado está vacío en el localStorage, el cliente intenta hacer un fetch con un arreglo vacío [], lo que detona errores innecesarios.
+Objetivos de esta iteración:
+Arreglar la validación de Origen: Modificar la función checkOrigin en src/lib/http/input.ts para que permita peticiones donde el header origin sea null (comportamiento normal en peticiones same-origin en algunos navegadores) sin romper la seguridad CSRF actual.
+Evitar fetch vacío: Actualizar cart-controller.tsx para que, si el carrito local de invitado está vacío, retorne un estado vacío inmediatamente sin llamar a quoteGuest ni consultar la API.
+Forzar login para pagar: Asegurarte de que los usuarios invitados puedan agregar productos y ver su carrito sin problemas, pero que el botón de "Ir a pagar" o "Checkout" en la interfaz del carrito esté condicionado: si es invitado, el botón debe decir "Iniciar sesión para pagar" y redirigir al login. El flujo de fusión de carritos (mergeGuestCart) que ya existe debe mantenerse intacto al autenticarse.
+Reglas de ejecución (Obligatorias según rúbrica del proyecto):
+Usa un lenguaje español neutro latinoamericano.
+Antes de escribir el código definitivo, explícame paso a paso qué vas a hacer y en qué archivos exactos, y espera mi confirmación explícita para aplicarlo.
+Documenta el código que modifiques.
+Una vez que confirmemos y apliques los cambios, debes registrar este prompt completo, la fecha, hora y un resumen de lo implementado en el archivo LogFile.txt.
+Al terminar la implementación, recuérdame verificar que compile y pregúntame si quiero hacer el commit de esta versión.
+FIN DEL PROMPT
+Se presentó el plan antes de implementar y se esperó la aprobación explícita. Se distinguió Origin ausente de literal null, se comprobó que el controlador ya evitaba quote vacío y se identificó el caso pendiente al eliminar la última línea. No se modificó código en esa propuesta.
+
+
+PROMPT 044 — registro 2026-11-10 22:13:58 America/Santiago
+Agente: Codex. Modelo exacto no disponible; hora de registro, no hora original del mensaje.
+INICIO DEL PROMPT
+Confirmo la implementación del plan propuesto.
+
+Autorizo aplicar los cambios exclusivamente en el worktree autoparts-review-86673f0, manteniendo intacta mi carpeta principal.
+
+Precauciones adicionales:
+1. No aceptar indiscriminadamente peticiones sin Origin. Debe existir evidencia confiable de procedencia same-origin, según la política propuesta.
+2. Rechazar explícitamente Origin: null, peticiones cross-site y encabezados de host inconsistentes.
+3. No confiar en X-Forwarded-Host como prueba suficiente de legitimidad.
+4. Mantener el carrito de invitado funcional, incluyendo agregar, modificar y eliminar productos.
+5. Evitar quoteGuest([]) al eliminar el último producto.
+6. Mantener la interfaz accesible del carrito vacío, con «Tu carrito está vacío.» y «Explorar accesorios».
+7. Mostrar «Iniciar sesión para pagar» a invitados y conservar el acceso al checkout para usuarios autenticados.
+8. Verificar que mergeGuestCart siga funcionando al iniciar sesión.
+9. Añadir pruebas de regresión y seguridad para estos comportamientos.
+10. Documentar los cambios y registrar el prompt completo con fecha, hora y resultados en LogFile.txt.
+
+Ejecuta lint, TypeScript, Prisma, pruebas relevantes y build.
+
+No modificar Neon, variables de Vercel, Analytics, pagos ni inventario. No ejecutar compras ni pruebas de carga.
+
+No crear commits, hacer push ni desplegar todavía.
+
+Al terminar, entrega el resumen de archivos modificados, resultados de pruebas y riesgos pendientes. Recuérdame verificar la compilación y pregúntame si autorizo crear el commit.
+FIN DEL PROMPT
+Implementación autorizada solo en este worktree: input.ts incorpora respaldo con Fetch Metadata same-origin o Referer canónico, exige Host presente/consistente si falta Origin y rechaza literal null, cross-site, señales ambiguas y forwarded host inconsistente (nunca prueba suficiente). guest-client.ts solo añade snapshot local al quote vacío, incluido borrado de última línea; mergeGuestCart sin cambios. cart-view.ts etiqueta al invitado Iniciar sesión para pagar y conserva destino login/callback y checkout autenticado. cart-controller.tsx conserva optimización e interfaz previas sin cambios.
+Pruebas: origin.test.ts añade positivos/negativos de respaldo; cart-controller.browser.test.ts integra AddToCart/AuthForm y validación Origin real con cabecera omitida en transporte ficticio. Siete pruebas cubren agregar/cambiar/borrar sin quote vacío, persistencia, interfaz, login y fusión simulados (2+1=3), limpieza de pendiente y no duplicación en recarga. guest-cart.spec.ts actualiza solo expectativa del enlace; no ejecutado por usar cuentas/base integrada. 30 unitarias, siete browser carrito, ocho regresiones Analytics, lint, TypeScript, Prisma y build correctos. Sin cuentas/compras ni datos reales, no se verificó Auth.js/PostgreSQL real o Vercel en esta tarea. Documentación docs/guest-cart-origin-fallback.md y autorización AGENTS.md en este worktree.
+Revisión: solo tres archivos productivos modificados (input.ts, guest-client.ts, cart-view.ts), tres archivos de pruebas y documentación/registros relacionados. Comentarios de código en español. Lógica de precios/stock y fusión durable intacta. Sin carpeta principal, Neon, variables Vercel, Analytics/pagos/inventario/esquema/dependencias, compras/carga, commits/push/despliegues. Pendiente comprobar encabezados reales en navegador/proxy autorizado; clientes sin señal suficiente y Origin:null continúan rechazados intencionalmente. Recordar compilación y solicitar autorización de commit.
+
+
+PROMPT 045 — registro 2026-11-10 22:20:07 America/Santiago
+Agente: Codex. Modelo exacto no disponible; hora de registro, no hora original del mensaje.
+INICIO DEL PROMPT
+Autorizo crear el commit de esta versión, pero todavía NO autorizo hacer push ni desplegar.
+
+Trabaja exclusivamente en autoparts-review-86673f0.
+
+Antes del commit:
+1. Verifica que el worktree esté basado en el último origin/main y que no existan cambios remotos nuevos.
+2. Revisa el diff completo para confirmar que solo contiene la corrección del carrito de invitados, seguridad de origen, pruebas y documentación relacionada.
+3. Confirma que npm run build sigue funcionando.
+4. Verifica que los casos de seguridad CSRF continúan cubiertos por pruebas.
+5. Confirma que no se modificaron secretos, variables de producción ni archivos ajenos.
+
+Si todo está correcto:
+6. Crea un commit descriptivo con mi identidad Git legítima.
+7. Conserva intacta la autoría de los commits anteriores.
+8. No hagas push ni despliegue.
+
+Al finalizar, informa el SHA, los archivos incluidos y cualquier riesgo pendiente.
+
+Después prepararemos una verificación controlada del carrito de invitados en producción, sin realizar compras ni modificar inventario.
+FIN DEL PROMPT
+Verificaciones repetidas correctas: lint, TypeScript, Prisma, 30 unitarias (incluye origen ausente con respaldo, literal null, cross-site, hosts/proxy y ausencia de evidencia), siete pruebas de carrito con HTTP/login simulados, ocho regresiones de navegador y build. Se revisó diff de tres archivos productivos, tres pruebas y documentación/registros relacionados; sin secretos, archivos privados de entorno, artefactos o cambios de módulos protegidos/dependencias. Solo .env.example en el worktree, variables ficticias de prueba en memoria. Sin conexiones Neon, compras o pruebas de carga. Base local y origin/main verificados en 2220b59f0815efe3bb678bc88295fc0b83f35b1f. Se autoriza commit local exclusivo con identidad legítima configurada y sin amend/override de autor; no se autoriza push, despliegue ni verificación en producción. Persiste pendiente validar encabezados reales/proxy y fusión integrada, sin abrir permisos para Origin:null o clientes sin evidencia. El SHA final se informa en el chat; el commit no puede registrar su propio hash. Carpeta principal intacta.

@@ -25,11 +25,31 @@ export function checkOrigin(request: Request) {
   // detrás de un proxy esa URL puede representar el transporte interno.
   const host = request.headers.get("host");
   const forwardedHost = request.headers.get("x-forwarded-host");
+  const origin = request.headers.get("origin");
+  const site = request.headers.get("sec-fetch-site");
+  let sourceAllowed = origin === expected.origin;
+  if (origin === null) {
+    // Un encabezado ausente no equivale al literal Origin: null (origen opaco).
+    // Host identifica el destino; por sí solo, ni siquiera junto a X-Forwarded-Host,
+    // acredita la procedencia. Exigir Fetch Metadata o Referer del origen canónico.
+    const referer = request.headers.get("referer");
+    let trustedReferer = false;
+    if (referer !== null) {
+      try {
+        const source = new URL(referer);
+        trustedReferer = source.origin === expected.origin && !source.username && !source.password;
+      } catch { /* Referer inválido: no usarlo como respaldo. */ }
+    }
+    sourceAllowed = host !== null && (
+      (site === "same-origin" && (referer === null || trustedReferer)) ||
+      (site === null && trustedReferer)
+    );
+  }
   if (
-    request.headers.get("origin") !== expected.origin ||
-    request.headers.get("sec-fetch-site") === "cross-site" ||
+    !sourceAllowed ||
+    site === "cross-site" ||
     (host !== null && host.toLowerCase() !== expected.host) ||
-    (process.env.VERCEL === "1" && forwardedHost !== null &&
+    (forwardedHost !== null &&
       forwardedHost.toLowerCase() !== expected.host)
   )
     throw new ApiError(

@@ -3,6 +3,9 @@ import { guestItems, type GuestItem } from "../../modules/cart/guest-validation"
 import type { CartSnapshot } from "../../modules/cart/service";
 
 export async function quoteGuest(items: GuestItem[]): Promise<CartSnapshot> {
+  // Sin productos no existen precios/stock que consultar. También cubre eliminar
+  // la última línea, sin enviar una cotización vacía ni alterar la fusión pendiente.
+  if (items.length === 0) return { version: 0, items: [], totalClp: 0, currency: "CLP" };
   const response = await fetch("/api/v1/cart/guest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items }), cache: "no-store" });
   const result = await response.json();
   if (!response.ok) throw new Error(result.error?.message ?? "No pudimos consultar los precios actuales.");

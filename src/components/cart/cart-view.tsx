@@ -159,7 +159,8 @@ export function CartView({ initialCart, guest = false }: { initialCart: CartSnap
               el pago.
             </div>
             <Link href={guest ? "/iniciar-sesion?callbackUrl=%2Fcheckout" : "/checkout"} className="button button-red">
-              Continuar al checkout →
+              {/* El invitado conserva su carrito y se autentica antes de pagar. */}
+              {guest ? "Iniciar sesión para pagar" : "Continuar al checkout"} →
             </Link>
             <Link href="/catalogo" className="button button-dark">
               Seguir explorando →
