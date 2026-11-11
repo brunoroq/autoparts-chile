@@ -1223,3 +1223,51 @@ Si aparece algún problema, detenerse e informar antes de continuar.
 FIN DEL PROMPT
 Preparación: commit exclusivo de consentimiento. Revisados status/diff; CSS, markup y pruebas de visibilidad únicamente, manteniendo funciones y guardas Analytics/purchase intactas. package.json/E2E/documentación histórica/capturas/temporales/secretos fuera del índice. Verificación y publicación condicionadas a checks locales correctos. Se comprobará autoparts-chile y el dominio estable; envíos de navegador no se presentarán como confirmación de DebugView sin acceso a la propiedad.
 Verificaciones previas PROMPT 039: snapshot exclusivo con lint, TypeScript, Prisma y build correctos; 27 unitarias y ocho pruebas de navegador locales correctas (dos unitarias E2E anteriores fuera del commit). Igualdad visual, encuadre, teclado, consentimiento y revocación comprobados. Auditoría del índice de seis archivos sin cambios comerciales, variables, persistencia purchase, package.json o E2E anterior. No dependencias nuevas ni archivos privados/capturas/temporales.
+
+PROMPT 041 — registro 2026-11-10, America/Santiago
+Agente: Codex. Modelo exacto no disponible. Hora original del mensaje no disponible.
+INICIO DEL PROMPT
+Autorizo corregir la regresión detectada en el commit 86673f0 de Matías Ponce.
+
+Trabaja exclusivamente en el worktree limpio autoparts-review-86673f0, sin modificar mi carpeta principal ni sus cambios pendientes.
+
+Objetivos:
+1. Conservar la optimización que evita solicitar una cotización cuando el carrito está vacío.
+2. Restaurar la interfaz original del carrito vacío, incluyendo el encabezado accesible «Tu carrito está vacío.» y el enlace «Explorar accesorios».
+3. Mantener el comportamiento correcto para carritos con productos, sin introducir cambios innecesarios en la lógica de cotización.
+4. Agregar o ajustar pruebas que verifiquen que no se solicita cotización con carrito vacío y que se conserva su interfaz.
+5. Ejecutar lint, TypeScript, pruebas relevantes y build.
+6. Revisar el diff final para asegurar que solo incluye la corrección y sus pruebas.
+
+No modificar Neon, Vercel, Analytics, pagos ni inventario.
+No hacer todavía commit, push ni despliegue.
+
+Al terminar, mostrarme el resumen del cambio, las pruebas realizadas y confirmar que la corrección está lista para publicarse desde mi cuenta, conservando la autoría original del commit de Matías.
+FIN DEL PROMPT
+Implementación exclusiva en este worktree: cart-controller.tsx elimina el retorno alternativo del vacío (11 líneas), reutilizando CartView y conservando emptySnapshot y todas las condiciones de cotización/fusión de 86673f0. Sin cambios de CartView, clientes/servicios/validaciones, Analytics, esquema o módulos comerciales. package.json agrega solo test:cart:browser:local; tests/cart-controller.browser.test.ts monta componentes reales con Next/HTTP simulados, sin base de datos o cuentas. Registro de esta tarea en este LogFile.txt; ningún archivo de la carpeta principal leído para configuración ni modificado.
+Validaciones: cinco pruebas nuevas correctas: vacío invitado/autenticado y recarga con cero cotizaciones/fusiones y heading/enlace originales; invitado con productos y respuesta de servidor; snapshot autenticado conservado sin petición vacía; error de cotización visible sin borrar localStorage. Fallo inicial solo del selector exacto que omitía la flecha original del enlace, corregido a prefijo sin cambiar la interfaz. 27 unitarias, ocho regresiones de navegador existentes, lint, TypeScript, Prisma y build correctos. Entorno ficticio local solo en memoria, sin archivos privados/secretos, conexiones Neon, usuarios/pedidos/pagos o eventos reales de Analytics. Herramienta temporal en tmp ignorada por Git.
+Diff final: únicamente corrección del controlador, prueba nueva, comando de ejecución y trazabilidad de esta tarea. HEAD continúa 86673f077d7abf3dd065b2538bf014f87f3656eb, autor Matias Ponce; no amend, commits nuevos, push o despliegue. Código listo para preparar un commit correctivo posterior conservando el commit original; la autorización de Vercel Hobby sigue siendo una comprobación separada y no se garantiza que la cuenta propietaria evite el bloqueo por autor. Esperar aprobación antes de publicar.
+
+PROMPT 042 — registro 2026-11-10, America/Santiago
+Agente: Codex. Modelo exacto no disponible. Hora original del mensaje no disponible.
+INICIO DEL PROMPT
+Autorizo preparar y publicar la corrección del carrito vacío.
+
+Trabaja exclusivamente en el worktree autoparts-review-86673f0.
+
+1. Verifica que HEAD sea 86673f0 y que la corrección esté completa.
+2. Revisa el diff y confirma que no contiene cambios ajenos.
+3. Ejecuta nuevamente las verificaciones necesarias.
+4. Crea un commit correctivo con mi identidad Git legítima, únicamente si está correctamente configurada. No falsifiques ni reescribas autores.
+5. Conserva intacto el commit original de Matías.
+6. Haz push del nuevo commit a origin/main, solo si es un avance directo y no hay cambios remotos nuevos.
+7. Comprueba si Vercel despliega automáticamente el nuevo commit en kernel-en-crisis/autoparts-chile.
+8. Si Vercel lo bloquea, detente e informa el motivo exacto. No actives Pro ni intentes eludir las restricciones.
+
+No modificar mi carpeta principal, Neon, variables de entorno, Analytics, pagos ni inventario.
+No ejecutar compras ni pruebas de carga.
+
+Al terminar, informa el nuevo SHA, el estado de GitHub y el estado real del despliegue en Vercel.
+FIN DEL PROMPT
+Verificación previa: HEAD=86673f077d7abf3dd065b2538bf014f87f3656eb y origin/main coincide. Identidad Git efectiva autor/committer brunoroq con correo legítimo configurado anteriormente por el usuario, sin modificar configuración ni sobrescribir identidad. Cambios exclusivos del controlador (elimina retorno de vacío), cinco pruebas nuevas, comando npm y registros de estas tareas.
+Checks repetidos: lint/TypeScript/Prisma, 27 unitarias, cinco pruebas del controlador, ocho regresiones de navegador y build correctos, usando entorno ficticio local en memoria sin conexiones Neon, datos, cuentas, compras o eventos reales. Se autoriza un commit correctivo real sobre el original, sin amend o commits artificiales. Push normal HEAD:refs/heads/main condicionado a revalidar que remoto siga exactamente en 86673f0, sin force. Si rechazo remoto o Vercel, detenerse, sin reescribir historia ni cambiar planes/configuración. Todo el trabajo y archivos temporales permanecen en este worktree.

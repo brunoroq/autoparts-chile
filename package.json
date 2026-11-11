@@ -56,7 +56,8 @@
     "test:deployment:integration": "tsx --test tests/deployment.integration.test.ts",
     "test:deployment": "tsx scripts/deployment-checks.ts",
     "check:local-preservation": "tsx scripts/check-local-preservation.ts",
-    "test:analytics:browser:local": "tsx --test tests/analytics.browser.test.ts"
+    "test:analytics:browser:local": "tsx --test tests/analytics.browser.test.ts",
+    "test:cart:browser:local": "tsx --test tests/cart-controller.browser.test.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

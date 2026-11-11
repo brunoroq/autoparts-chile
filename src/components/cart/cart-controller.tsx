@@ -79,17 +79,6 @@ export function CartController({
     };
   }, [initialCart, attempt]);
 
-  // Pantalla de estado vacío
-  if (state && state.cart.items.length === 0) {
-    return (
-      <div style={{ textAlign: "center", padding: "4rem 2rem" }}>
-        <p style={{ fontSize: "1.125rem", color: "#4b5563" }}>
-          aún no has añadido nada al carrito
-        </p>
-      </div>
-    );
-  }
-
   return (
     <>
       {error && (
