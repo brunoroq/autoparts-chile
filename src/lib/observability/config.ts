@@ -1,4 +1,5 @@
 import type { AnalyticsConfig } from "../analytics/contracts";
+import { validSyntheticId } from "../analytics/synthetic";
 const label = (value: string | undefined, fallback: string) =>
   value && /^[a-zA-Z0-9_-]{1,64}$/.test(value) ? value : fallback;
 export function experimentContext() {
@@ -15,13 +16,16 @@ export function experimentContext() {
 }
 export function analyticsConfig(): AnalyticsConfig {
   const context = experimentContext();
+  // Un laboratorio mal etiquetado no debe caer en la propiedad humana.
+  const lab = process.env.PERF_ISOLATED === 'true' || context.environment === 'performance-local';
   const id =
     context.traffic === "synthetic"
       ? process.env.GA4_SYNTHETIC_MEASUREMENT_ID
       : process.env.GA4_MEASUREMENT_ID;
   const measurementId = id && /^G-[A-Z0-9]{5,20}$/.test(id) ? id : "";
   const separated =
-    context.traffic !== "synthetic" || id !== process.env.GA4_MEASUREMENT_ID;
+    (context.traffic !== "synthetic" || validSyntheticId(id, process.env.GA4_MEASUREMENT_ID)) &&
+    (!lab || (context.traffic === 'synthetic' && process.env.PERF_BROWSER_ANALYTICS === 'true'));
   const origin = new URL(process.env.NEXTAUTH_URL || "http://localhost:3000")
     .origin;
   return {

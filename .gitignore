@@ -7,6 +7,7 @@ src/generated/prisma/
 *.tsbuildinfo
 .env*
 !.env.example
+!.env.performance.example
 *.log
 .DS_Store
 # Respaldos y directorios locales de PostgreSQL; las migraciones SQL sí se versionan.

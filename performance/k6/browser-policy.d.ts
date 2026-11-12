@@ -1,0 +1,6 @@
+export const BROWSER_LIMITS: Readonly<{requests: number; tunnels: number; bytes: number}>;
+export function googleHost(host: string): boolean;
+export function browserRequestAllowed(method: string, rawUrl: string): boolean;
+export function browserNetworkAllowed(method: string, rawUrl: string, body: string | null, measurementId: string): boolean;
+export type BrowserPlan = {baseUrl: string; measurementId: string; proxyPort: number; runId: string; catalogSize: number; delaySeconds: number; createdAt: number; deadline: number};
+export function validateBrowserPlan(plan: BrowserPlan, now?: number): BrowserPlan;

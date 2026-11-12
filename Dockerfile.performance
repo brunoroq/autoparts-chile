@@ -1,0 +1,13 @@
+FROM node:24.21.0-bookworm-slim
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+# generate/build no requieren una base accesible; la URL es un marcador local.
+ENV DATABASE_URL=postgresql://fixture:fixture@postgres:5432/autoparts_performance_test
+ENV NEXT_TELEMETRY_DISABLED=1 ANALYTICS_ENABLED=false PAYMENT_PROVIDER=simulated
+RUN NEXTAUTH_SECRET=build_fixture_only_012345678901234567890123456789 npm run build && chown -R node:node /app/.next
+ENV NODE_ENV=production
+USER node
+CMD ["node", "node_modules/next/dist/bin/next", "start", "--hostname", "0.0.0.0", "--port", "3000"]

@@ -1,0 +1,82 @@
+name: autoparts-performance
+x-app: &app
+  build:
+    context: .
+    dockerfile: Dockerfile.performance
+  image: autoparts-performance:local
+  cpus: 2
+  mem_limit: 2g
+  networks: [lab]
+  environment: &environment
+    DATABASE_URL: postgresql://performance:${PERF_DB_PASSWORD:?Use el preparador}@postgres:5432/autoparts_performance_test
+    DIRECT_URL: postgresql://performance:${PERF_DB_PASSWORD:?Use el preparador}@postgres:5432/autoparts_performance_test
+    NEXTAUTH_URL: http://127.0.0.1:3100
+    NEXTAUTH_SECRET: ${PERF_AUTH_SECRET:?Use el preparador}
+    PAYMENT_TOKEN_SECRET: ${PERF_PAYMENT_SECRET:?Use el preparador}
+    PAYMENT_PROVIDER: simulated
+    WEBPAY_ENVIRONMENT: integration
+    PERF_ISOLATED: "true"
+    # Solo el runner habilita esta opción con un ID sintético validado.
+    ANALYTICS_ENABLED: ${PERF_BROWSER_ANALYTICS:-false}
+    PERF_BROWSER_ANALYTICS: ${PERF_BROWSER_ANALYTICS:-false}
+    GA4_MEASUREMENT_ID: ""
+    GA4_SYNTHETIC_MEASUREMENT_ID: ${PERF_GA4_SYNTHETIC_MEASUREMENT_ID:-}
+    GA4_DEBUG: "false"
+    WEB_VITALS_ENABLED: "false"
+    RESOURCE_METRICS_ENABLED: "true"
+    RESOURCE_SAMPLE_MS: "5000"
+    APP_ENV: performance-local
+    TRAFFIC_KIND: synthetic
+    EXPERIMENT_ID: ${PERF_EXPERIMENT_ID:?Use el preparador}
+    CATALOG_SIZE: ${PERF_CATALOG_SIZE:?Use el preparador}
+    EXPERIMENT_CONCURRENCY: ${PERF_CONCURRENCY:-unspecified}
+    DB_POOL_MAX: "5"
+    NEXT_TELEMETRY_DISABLED: "1"
+services:
+  postgres:
+    image: postgres:18.6-bookworm
+    cpus: 2
+    mem_limit: 2g
+    networks: [lab]
+    environment:
+      POSTGRES_USER: performance
+      POSTGRES_PASSWORD: ${PERF_DB_PASSWORD:?Use el preparador}
+      POSTGRES_DB: autoparts_performance_test
+    volumes: [performance_data:/var/lib/postgresql]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U performance -d autoparts_performance_test"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  prepare:
+    <<: *app
+    profiles: [tools]
+    command: [node, --import, tsx, scripts/prepare-performance.ts]
+    depends_on:
+      postgres: {condition: service_healthy}
+  app:
+    <<: *app
+    # Solo la aplicación recibe la red de ingreso; PostgreSQL permanece privado.
+    networks: [lab, ingress]
+    # Docker resuelve los alias internos; no reenviar DNS público a otro resolver.
+    dns: [127.0.0.1]
+    ports: ["127.0.0.1:3100:3000"]
+    depends_on:
+      postgres: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000/api/performance/status').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+networks:
+  lab:
+    internal: true
+  ingress:
+    driver: bridge
+    enable_ipv6: false
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+      com.docker.network.bridge.enable_ip_masquerade: "false"
+volumes:
+  performance_data:
+    name: autoparts-performance-${PERF_RUN_ID:?Use el preparador}

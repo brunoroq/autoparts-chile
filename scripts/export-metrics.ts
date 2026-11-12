@@ -69,6 +69,7 @@ export function summarize(records: RecordData[], durationSeconds?: number) {
       count: rows.length,
       meanMs: ms.reduce((a, b) => a + b, 0) / ms.length,
       p50Ms: percentile(ms, 0.5),
+      p90Ms: percentile(ms, 0.9),
       p95Ms: percentile(ms, 0.95),
       p99Ms: percentile(ms, 0.99),
       throughputRps: durationSeconds ? rows.length / durationSeconds : null,

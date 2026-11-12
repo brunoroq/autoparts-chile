@@ -1347,3 +1347,97 @@ Al finalizar, informa el SHA, los archivos incluidos y cualquier riesgo pendient
 Después prepararemos una verificación controlada del carrito de invitados en producción, sin realizar compras ni modificar inventario.
 FIN DEL PROMPT
 Verificaciones repetidas correctas: lint, TypeScript, Prisma, 30 unitarias (incluye origen ausente con respaldo, literal null, cross-site, hosts/proxy y ausencia de evidencia), siete pruebas de carrito con HTTP/login simulados, ocho regresiones de navegador y build. Se revisó diff de tres archivos productivos, tres pruebas y documentación/registros relacionados; sin secretos, archivos privados de entorno, artefactos o cambios de módulos protegidos/dependencias. Solo .env.example en el worktree, variables ficticias de prueba en memoria. Sin conexiones Neon, compras o pruebas de carga. Base local y origin/main verificados en 2220b59f0815efe3bb678bc88295fc0b83f35b1f. Se autoriza commit local exclusivo con identidad legítima configurada y sin amend/override de autor; no se autoriza push, despliegue ni verificación en producción. Persiste pendiente validar encabezados reales/proxy y fusión integrada, sin abrir permisos para Origin:null o clientes sin evidencia. El SHA final se informa en el chat; el commit no puede registrar su propio hash. Carpeta principal intacta.
+
+
+PROMPT 063 - Solicitud de preparación de flujo de carga en GA4
+Fecha/hora de registro: 2026-11-12T16:02:37-03:00. Hora original del mensaje no disponible.
+Agente: Codex. Modelo exacto no disponible.
+PROMPT COMPLETO DEL USUARIO
+Procede a implementar lo necesario para que se registre el flujo de carga en el google analytics
+FIN DEL PROMPT
+Resultado de esa solicitud: revisados bloqueos de Analytics en Compose y configuración sintética existente. Presentado plan de navegador observador, propiedad separada, bloqueo del ID oficial, pruebas offline y archivos afectados. Se solicitó confirmación concreta conforme AGENTS antes de implementar. Sin cambios de código o ejecuciones durante la propuesta.
+
+PROMPT 064 - Implementación autorizada de observador sintético
+Fecha/hora de registro: 2026-11-12T16:02:37-03:00. Hora original del mensaje no disponible.
+Agente: Codex. Modelo exacto no disponible.
+PROMPT COMPLETO DEL USUARIO
+Confirmo y autorizo implementar el plan propuesto con k6/browser y una propiedad GA4 exclusiva para el laboratorio.
+
+Condiciones:
+
+1. Mantener completamente separada la propiedad GA4 oficial G-VVKYV486NP.
+2. Implementar el laboratorio con GA4 desactivado por defecto.
+3. Exigir un identificador GA4 sintético válido y diferente del oficial para habilitar Analytics en el laboratorio.
+4. Bloquear explícitamente el envío accidental de eventos al ID de producción.
+5. Implementar el recorrido de navegador: aceptar consentimiento, visitar catálogo, abrir un producto, agregar una unidad al carrito y retirarla.
+6. No incluir registro, autenticación, checkout, pedidos ni pagos.
+7. Conservar las tres pruebas k6 existentes y sus resultados sin modificaciones.
+8. Etiquetar los eventos del laboratorio como tráfico sintético, cuando la instrumentación lo permita.
+9. Incorporar comprobaciones de seguridad y pruebas automatizadas con transporte simulado.
+10. Documentar que los navegadores observadores y los usuarios virtuales HTTP representan poblaciones distintas.
+
+Autorizo modificar únicamente los archivos necesarios para esta implementación.
+
+Por ahora:
+
+- No ejecutar carga ni enviar eventos reales a Google.
+- No modificar Vercel, Neon ni la propiedad GA4 oficial.
+- No hacer commits, push ni despliegues.
+- No realizar compras ni modificar inventario.
+
+Ejecuta lint, TypeScript, Prisma, pruebas pertinentes y build.
+
+Registra los cambios y resultados en LogFile.txt y entrega instrucciones para crear y conectar posteriormente la propiedad GA4 de laboratorio.
+
+Espera una nueva autorización antes de ejecutar las simulaciones con Analytics habilitado.
+FIN DEL PROMPT
+Implementación exclusivamente en autoparts-review-86673f0. Nuevo synthetic.ts bloquea ID oficial aun sin ID humano; config mantiene producción humana y cierra Analytics en laboratorio mal etiquetado/sin opt-in. Marcador aislado conserva validación de PostgreSQL local, proveedor simulado y tráfico sintético; solo acepta Analytics con doble opt-in y destino válido separado. Compose usa variables PERF_BROWSER_ANALYTICS/PERF_GA4_SYNTHETIC_MEASUREMENT_ID, defaults false/vacío. No se modificó ningún archivo privado o entorno efectivo del laboratorio.
+Nuevo recorrido k6/browser con un VU/una iteración: consentimiento por interfaz, catálogo, producto activo con stock>1, cantidad1, adición invitada, carrito y retiro. Sin autenticación, merge, checkout o compras. Verifica CLP/precio desde cotización, etiquetas environment/traffic_kind/experiment_id existentes y presencia única de eventos de comercio. Seguimiento de cola saneado entre documentos, sin cookies/client IDs; no equivale a recepción Google.
+Runner conserva perfiles HTTP y separa directorios browser/baseline para no sobrescribir resultados previos. --browser --synthetic-id obligatorio, closed; --observer-only permite referencia sin carga HTTP. Máximo400 requests navegador,24túneles,32MiBproxy,9599HTTP+400navegador+1preflight. Proxy loopback permite solo app literal y tres hostsGoogle con TLS verificado; page.route comprueba rutas/métodos y tid/id/send_to en query/body/batch, rechaza oficial/otrosIDs y resuelve precargas ajenas localmente sin visitar checkout/login. Se conservan supervisión Docker/watchdog y se comprueba RAMhost>=2GiB durante run; procesos hijos se cierran y finally apaga Analytics recreando soloapp. Cierre forzado puede impedir finally: documentado procedimiento de revisión, no se afirma garantía frente a manipulación deliberada de flags/código.
+Aclaración técnica corregida durante revisión: BrowserContext no tiene la misma interceptación que Playwright, pero Page.route sí está documentado en k6v2.3; se usa además del proxy. waitForFunction tiene orden de argumentos diferente: helper compartido evita argumentos para no depender de la diferencia. addInitScript se pasa como string conforme documentación. JSON/CSV del navegador solo agregan números y métricas con nombres permitidos, sin URLs collect/query ni HAR; salidas HTTP originales intactas.
+Archivos nuevos: src/lib/analytics/synthetic.ts; performance/k6/browser-policy.js/.d.ts, browser-flow.js/.d.ts, browser-journey.js; scripts/performance-browser-proxy.ts; tests/performance-browser.test.ts; tests/fixtures/performance-browser-harness.tsx; docs/performance/analytics-laboratory.md. Modificados de esta tarea: src/lib/observability/config.ts, src/lib/observability/performance-isolation.ts, scripts/run-performance.ts, compose.performance.yaml, .env.performance.example, package.json(solo ampliar test:performance), docs/performance/phase-1-2.md(enlace), AGENTS y este registro. Conservados los cambios previos de Fase1.2. Sin dependencias nuevas o cambios de Prisma/migraciones.
+Verificaciones: lint PASS; TypeScript/prisma generate/next typegen PASS; prisma validate PASS;38unitarias generales PASS;14performance PASS(incluye8anteriores y6nuevas, recorrido Chrome con componentes reales y Google/cotización simulados, sinBD);8browserAnalytics PASS. Build producción PASS con conexión fixture inaccesible local y secretos exclusivamente temporales de validación, Analyticsfalse/telemetríaNextoff. No se consultaron secretos privados. Primer build falló por NEXTAUTH_SECRET ausente; se corrigió solo el entorno del proceso y se repitió exitosamente. Primer tsc halló tipo de cabecera proxy-connection; corregido OutgoingHttpHeaders. Fixture inicial requirió resolveDir para React; corregido y pruebas pasaron. Primeras pruebas en sandbox fallaron uv_os_get_passwd/ENOMEM; fuera del sandbox pasaron. Una revisión automática no se completó por límite de uso; tras autorización de continuar se pudo repetir revisión y ejecutar pruebas locales, sin eludir el control.
+k6 inspect únicamente(no run, usuarios, Chrome ni tráfico): PASS,1VU/1iteración/max90s para referencia, opcionesChromium/thresholds/percentiles/etiquetas correctas. Primeros inspect se detuvieron por ruta relativa resuelta desde módulo y flag no expuesto; se usó ruta absoluta y parámetro -e explícito. Runner pasa flags proxy tanto en entorno del proceso como -e para evitar ambigüedad. No se inició ninguna simulación k6 ni envíos reales.
+Documentado procedimiento manual para propiedad GA4 nueva/flujo web/ID/dimensiones de evento/filtros/Realtime, diferencias de poblaciones y limitaciones. Pendientes: crear propiedad e ID real separado, reconstruir imagen app con autorización, prueba real k6/Chrome contra Docker y recepción de Google. No inferir que GA4 registró pruebas antiguas o que un observador representa todos los VU.
+Sin cambios efectivos en Docker/Vercel/Neon/GA4, sin cuentas, pedidos, pagos, inventario, seed, migraciones, commits/push/despliegues o carga. Los resultados baja/normal/pico no fueron reescritos. Esperar nueva autorización para cualquier ejecución con Analytics habilitado.
+
+PROMPT 065 - Continuación
+Fecha/hora de registro: 2026-11-12T16:02:37-03:00. Hora original del mensaje no disponible.
+Agente: Codex. Modelo exacto no disponible.
+PROMPT COMPLETO DEL USUARIO
+coontinua
+FIN DEL PROMPT
+Continuadas exclusivamente implementación, pruebas y documentación de prompt064. Sin ampliar permisos de ejecución de carga o producción. Resultados y restricciones registrados en entrada064.
+Cierre y revisión final prompt064/065, 2026-11-12T16:04:23-03:00: git diff --check PASS(solo avisos LF/CRLF del entorno). Sin diff en Prisma, lockfile, componentes comerciales o AnalyticsProvider. Directorios originales conservados: baja-closed, normal-closed y pico-closed, fechas de modificación del11nov; no directorios nuevos de escenarios. tmp de inspección y compose.env confirmados ignorados. Sin .env privados añadidos, secretos reales, backups o imágenes/capturas incluidas. Lint, TypeScript y Prisma finales PASS;38unitarias generales,14performance y8browserAnalytics PASS;build producción PASS. No se ejecutaron usuarios k6, Chrome mediante k6, carga, comunicaciones reales de Analytics o cambios de Docker/producción. Quedan pendientes ID real separado y validación end-to-end bajo nueva autorización.
+
+PROMPT 066 - Commit local del laboratorio GA4
+Fecha/hora de registro: 2026-11-12T16:10:20-03:00. Hora original del mensaje no disponible.
+Agente: Codex. Modelo exacto no disponible.
+PROMPT COMPLETO DEL USUARIO
+Autorizo realizar un commit exclusivamente local de la implementación del laboratorio GA4 con k6/browser.
+
+Antes del commit:
+
+1. Revisa git status y git diff.
+2. Verifica que no existan secretos, credenciales, archivos .env privados ni resultados experimentales incluidos.
+3. Conserva AGENTS.md, LogFile.txt y la documentación actualizada.
+4. Confirma que no se hayan incorporado cambios ajenos a la implementación autorizada.
+5. Ejecuta las verificaciones finales necesarias.
+
+Realiza un commit local con un mensaje descriptivo, por ejemplo:
+
+feat(performance): incorporar observadores k6 browser con GA4 aislado
+
+Después informa el hash del commit y los archivos incluidos.
+
+No hagas push ni despliegues.
+No ejecutes pruebas de carga.
+No envíes eventos reales a Google.
+No modifiques Vercel, Neon ni la propiedad GA4 oficial.
+
+Espera mi autorización antes de continuar.
+FIN DEL PROMPT
+Revisión previa: HEAD decfa361b5f550dadc93f1aff253b3344fd74dd6; índice inicialmente vacío; identidad legítima Git brunoroq/broque@utem.cl sin cambios. La base Fase1.2 sigue sin versionar: se incluyen solo dependencias técnicas necesarias del observador, runner/Compose/seguridad/endpoint/módulosk6/pruebas y p90 requerido por pruebas. Se excluyen informes y resultados de ejecuciones, cambios README/decisiones/metodología y contadores PostgreSQL adicionales de resources.ts. AGENTS y LogFile se prepararán parcialmente en el índice sin borrar sus entradas locales anteriores. No se promete árbol limpio: el trabajo previo ajeno debe permanecer pendiente. Verificaciones finales en curso, sin carga ni Google real.
+Verificaciones finales prompt066: npm run validate PASS(lint, TypeScript, Prisma), npm run build PASS,38unitarias generales PASS,14performance PASS y8browserAnalytics PASS; Google y cotizaciones simulados. No hubo escenarios k6, Google real, Docker, Neon, cuentas o compras. Se auditará el índice antes del commit; informes/resultados y cambios anteriores no necesarios permanecen excluidos. El SHA se informará después de crearlo.
+
+Auditoría final del índice prompt066:34archivos, sin .env privados, respaldos, artefactos, resultados experimentales o módulos comerciales. Conexiones Neon ficticias del test negativo clasificadas como fixture, sin secretos reales. Documentación/registro preparados parcialmente; pendientes anteriores preservados fuera del commit. Las dependencias mínimas del laboratorio permiten resolver imports del observador. Verificaciones finales exitosas ya registradas; commit local con identidad configurada, sin reescribir autores. No push/despliegue/carga/Google real. SHA informado en respuesta, no dentro de su propio commit.
