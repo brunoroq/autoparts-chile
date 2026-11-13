@@ -1,8 +1,36 @@
 # Instrucciones permanentes de AutoParts Chile
 
+Estado vigente 2026-11-13: mediciones CWV pausadas para compartir avances en
+`feature/performance-evidence`. Autorizado revisar, validar, commit y push solo de
+esa rama; no main, despliegues, carga, producción ni bases. Ver
+docs/performance/handoff.md. CWV vigente: protocolo manual simplificado de18visitas,
+NA permitido, sin Computer Use/k6browser/proxy/calentamiento automático; sustituye
+las restricciones incompatibles del protocolo081 histórico. Solo baseline manual
+autorizado antes de esta pausa; 10VU requiere autorización separada.
+
+Autorización vigente prompt081: preparación local/offline de30visitas CWV (3páginas×2condiciones×5) sin Chrome/Docker/k6 reales. Estudio7c220427-10d1-4961-acb3-b365371ecfae, GA4apagado/IDsvacíos,10VU solo en nueva autorización de ejecución. Ver docs/performance/core-web-vitals-protocol.md. Mantener cinco carpetas históricas, producción/Neon/PostgreSQLhabitual intactos. Sin commits/push/despliegues. k6/browser–GA4 pausado. Preflight real y primerINP pendientes; ejecutar bloque a bloque solo tras aprobación.
+
+Autorización/cierre prompt079: investigación offline Chromium/k6v2.3.0. Candidato NetworkTimeServiceQuerying descartado porque reemplaza defaults al pasar K6_BROWSER_ARGS; arranque/proxy conservados. Ver docs/performance/chromium-startup-research.md. Solo documentación y pruebas de reproducción, sin navegador/Docker/SQL/Google, cambios históricos, producción o commits/push/despliegues. No repetir ensayo real hasta resolver y aprobar un arranque seguro.
+
+Autorización vigente, prompt075: corregir únicamente el falso negativo del preflight del marcador original antiguo, con Analyticsfalse/IDs vacíos comprobados independientemente en Config.Env. Mantener temporal3101 estricto y oficial bloqueado; solo pruebas offline. Sin Docker/SQL/k6 real/Google, cambios de contenedores o resultados, commits/push/despliegues. Ver docs/performance/browser-proxy-diagnostics.md. Esperar autorización para ejecución real.
+
+Autorización vigente, prompt073: solo diagnóstico offline del fallo a59a3235 y mejoras de evidencia del proxy/k6/browser, con transporte simulado. Sin k6 real, Google, Docker/SQL, cambios de contenedores, producción, commits/push/despliegues. Mantener ID oficial bloqueado, límites y resultados anteriores intactos. Ver docs/performance/browser-proxy-diagnostics.md. Esperar aprobación explícita para un único reintento.
+
+Autorización vigente, prompt071: solo implementación y pruebas offline del observador adicional en 127.0.0.1:3101. Original 3100 y PostgreSQL intactos; sin Docker real, Google, carga, migraciones, seed, compras, commits/push/despliegues. Ver docs/performance/analytics-laboratory.md. La prueba real requiere nueva autorización. Preservar cambios y resultados anteriores.
+
 Autorización vigente, prompt066: crear solo commit local del observador k6/browser y GA4 aislado tras auditoría de índice/secretos y verificaciones finales. Incluir dependencias mínimas no versionadas; excluir informes y artefactos experimentales y cambios anteriores ajenos. Conservar trabajo local pendiente. Sin push, despliegues, carga, eventos reales Google o cambios de producción. Detenerse después de informar SHA y archivos.
 
 Autorización vigente, 2026-11-12: implementar únicamente observador k6/browser y GA4 sintético del laboratorio, con ID oficial bloqueado y Analytics apagado por defecto. Ver docs/performance/analytics-laboratory.md. No ejecutar carga ni enviar eventos reales a Google, reconstruir/recrear contenedores, compras, inventario, producción, commits/push/despliegues. Preservar resultados baja/normal/pico y cambios previos. Pruebas offline con transporte simulado; esperar nueva autorización antes de ejecutar cualquier simulación con Analytics.
+
+Último cierre, prompt060: una sola carga pico/closed/30 autorizada y ejecutada, máximo30VU, experimento22672790-ca60-4917-aa80-6c8522ac2448. Salida0,3388HTTP200,846recorridos completos,0errores y datos/inventario intactos. Se compararon los tres perfiles con ventanas comunes observadas de59s. No se determinó saturación máxima ni se autoriza repetir/aumentar cargas. Ver docs/performance/pico-30-results.md. Sin compras, tráficoGA4/Vercel/Neon, commits/push/despliegues. Esperar nueva aprobación.
+
+Último cierre, prompt054: única carga normal/closed/30 autorizada y ejecutada con máximo10VU, experimento168dd82a-8439-434d-91c4-ae3d032d908e. Salida0,3362HTTP200,850recorridos completos y0errores, sin cambios de inventario o datos de negocio. Ver docs/performance/normal-30-results.md y comparación baja. No autoriza pico, repeticiones, compras, commits/push/despliegues; esperar aprobación antes de continuar.
+
+Última autorización/cierre, prompt053: ejecutada una sola carga baja/closed/30 mediante runner protegido, experimento8018ee58-ceab-4cc5-8220-c99ec8797aff. Salida0,439HTTP200,111recorridos completos,0errores; integridad Product/stock/pedidos verificada por SELECT. No autoriza repetir carga o iniciar normal/pico. Conservar archivos/reportes y esperar aprobación para continuar. Ver docs/performance/first-low-30-results.md; sin commits/push/despliegues.
+
+Actualización 2026-11-11, prompts051/052: autorizada corrección del acceso Windows al laboratorio existente324a39f2-2164-44cc-8276-5ef9defec5db. Aplicada solo a app: ingress/bridge con loopback3100, sin masquerading; PostgreSQL permanece privado. Preparador verifica HTTP desde host antes de informar éxito. Memoria recuperada a unos5GiB,38unitarias/validate/build correctos, GET locales200. Sin repetir migraciones/seed ni ejecutar k6, compras, commits/push/despliegues. Esperar autorización para cualquier escenario. Conservar trabajo pendiente; ver docs/performance/phase-1-2.md.
+
+Autorización vigente 2026-11-11: Fase 1.2 local solo en autoparts-review-86673f0, scripts k6, límites y entorno aislado. No ejecutar carga de ninguna intensidad, levantar laboratorio, tocar producción o hacer commits/push/despliegues. Preservar LogFile.txt pendiente y anexar prompts/resultados. Consultar docs/performance/phase-1-2.md. Docker Engine no disponible durante revisión; no asumir recursos asignados. Futuras compras solo en base aislada con aprobación adicional.
 
 Autorización de cierre 2026-11-10: crear únicamente commit local de CSRF/carrito invitado después de comprobar base origin/main sin novedades, diff, seguridad y build. Usar identidad Git legítima ya configurada sin reescribir autores anteriores. No push, despliegue o prueba de producción; la verificación controlada posterior requiere nueva autorización. Trabajar solo en autoparts-review-86673f0.
 

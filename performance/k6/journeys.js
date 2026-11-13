@@ -59,8 +59,15 @@ function json(response) {
 }
 // La verificación se repite por VU; --no-setup no permite omitir el aislamiento.
 let verified = false;
+let cwvClockSent = false;
 export default function journey() {
   guard();
+  // Reloj real del escenario, emitido una sola vez sin datos del navegador.
+  if (__ENV.PERF_CWV === 'true' && exec.vu.idInTest === 1 && !cwvClockSent) {
+    if (plan.profile !== 'normal' || plan.model !== 'closed' || plan.maxVus !== 10 || plan.catalogSize !== 30) exec.test.abort('CWV requiere normal/closed/10VU/30productos.');
+    console.log(JSON.stringify({event:'cwv_scenario_clock',runId:plan.runId,startMs:exec.scenario.startTime}));
+    cwvClockSent = true;
+  }
   if (!verified) {
     const marker = json(request('GET', '/api/performance/status'));
     if (marker?.runId !== plan.runId || marker?.catalogSize !== plan.catalogSize || marker?.isolated !== true) exec.test.abort('Instancia aislada no confirmada.');

@@ -59,7 +59,9 @@
     "test:analytics:browser:local": "tsx --test tests/analytics.browser.test.ts",
     "test:cart:browser:local": "tsx --test tests/cart-controller.browser.test.ts",
     "perf": "tsx scripts/run-performance.ts",
-    "test:performance": "tsx --test tests/performance.test.ts tests/performance-browser.test.ts"
+    "cwv": "tsx scripts/cwv.ts",
+    "test:cwv": "tsx --test tests/cwv.test.ts",
+    "test:performance": "tsx --test tests/performance.test.ts tests/performance-browser.test.ts tests/performance-observer.test.ts tests/performance-diagnostics.test.ts tests/performance-observer-marker.test.ts tests/performance-chromium-research.test.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

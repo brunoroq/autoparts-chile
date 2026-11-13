@@ -69,6 +69,9 @@ export function startResourceSampler() {
           ...result.rows[0],
         }),
       );
+      // Contadores acumulados: calcular deltas por ventana, no tasas del arranque.
+      const database = await pool.query(`SELECT xact_commit, xact_rollback, blks_read, blks_hit, temp_files, temp_bytes, deadlocks, tup_returned, tup_fetched FROM pg_stat_database WHERE datname = current_database()`);
+      console.log(JSON.stringify({ event: 'postgres_resources', timestamp: new Date().toISOString(), ...experimentContext(), ...database.rows[0] }));
     } catch {
       console.log(
         JSON.stringify({

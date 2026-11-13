@@ -1,136 +1,163 @@
-# GA4 exclusivo del laboratorio y navegador observador
+# GA4 de laboratorio: contenedor adicional y evidencia HTTP
 
-## Alcance y estado
+## Estado actual y alcance
 
-Implementación local del 12 de noviembre de 2026. No habilita Analytics en ningún
-entorno existente, crea propiedades ni ejecuta escenarios. El ID oficial
-`G-VVKYV486NP` queda bloqueado como destino sintético, aunque falte el ID humano.
+Actualización 2026-11-12. Implementación local, sin crear contenedores ni
+reconstruir imágenes en esta etapa y sin tráfico real a Google.
 
-La carga HTTP de k6 no ejecuta gtag.js. El nuevo modo combina opcionalmente esa
-carga con **un navegador observador y un recorrido**. GA4 registra ese navegador,
-no los 3/10/30 VU HTTP. En pico son hasta 30 VU HTTP más un observador; no sumar
-como una población homogénea. Las tres pruebas anteriores no se reenvían a Google
-ni se sobrescriben. Un recorrido no permite conclusiones estadísticas sólidas.
+Propiedad de laboratorio informada por el usuario: **G-BLNW54CZ2R**.
+Propiedad oficial **G-VVKYV486NP**: prohibida y bloqueada para tráfico sintético.
+No se modifican la propiedad oficial, Vercel ni Neon.
 
-El observador acepta consentimiento en la interfaz; visita catálogo, producto y
-carrito; agrega una unidad y la elimina. No registra, autentica, fusiona, inicia
-checkout, crea pedidos ni paga. Usa un contexto nuevo y cotización del servidor.
-El carrito invitado no reserva ni descuenta stock.
+La aplicación original sigue en **http://127.0.0.1:3100** y conserva su ID,
+imagen, configuración, volumen/red y estado. Compose fuerza Analytics apagado.
+El observador utilizará **http://127.0.0.1:3101**, solo loopback; no necesita
+parar, renombrar, eliminar, recrear o reemplazar el contenedor original.
+Si el puerto 3101 está ocupado, el runner falla sin liberar puertos ni tocar otros servicios.
 
-## Activación y seguridad
+Este modo admite solo **un observador, una iteración y cero carga HTTP adicional**.
+La ruta se activa con --browser --observer-only; profile baja es una etiqueta
+requerida por el CLI, no ejecuta el escenario baja. Normal/pico y modo arrival
+con observador se rechazan. Los tres perfiles HTTP existentes permanecen aparte,
+sin cambios de sus módulos ni resultados anteriores. GA4 observará al navegador,
+no a los usuarios virtuales HTTP; son poblaciones distintas.
 
-- Compose deja `PERF_BROWSER_ANALYTICS=false` e ID vacío por defecto. Solo
-  `--browser --synthetic-id G-ID_DEL_LAB` activa temporalmente el modo.
-- ID válido sintácticamente: G- más 5–20 caracteres alfanuméricos mayúsculos;
-  distinto del oficial y del ID humano conocido. Verificar manualmente que
-  pertenece a la **propiedad nueva**: el formato no demuestra pertenencia.
-- El runner limpia variables Analytics/k6 heredadas. No lee archivos .env de
-  producción. El archivo exclusivo del laboratorio sigue ignorado por Git.
-- El marcador mantiene las validaciones de base local, proveedor simulado,
-  tráfico sintético, UUID y catálogo. Exige doble opt-in para Analytics y devuelve
-  `analytics` y `measurementId` públicos. Una imagen antigua falla la salud antes
-  de cargar; hay que reconstruirla posteriormente, con autorización.
-- `page.route()` verifica rutas, métodos e IDs en query/body/batch antes de
-  permitir transporte a Google. Las precargas Next fuera del recorrido reciben
-  204 localmente, sin consultar login, checkout u órdenes.
-- Proxy obligatorio en loopback: solo 127.0.0.1:3100 y túneles TLS a
-  www.googletagmanager.com, www.google-analytics.com y region1.google-analytics.com.
-  No descifra TLS ni registra cuerpos/cabeceras/URLs; Chrome verifica certificados.
-  Si Google requiere otro host, detener y diagnosticar antes de ampliar permisos.
-- Presupuesto navegador: 400 solicitudes, 24 túneles, 32 MiB en el proxy. Se
-  reservan 400 del presupuesto HTTP: hasta 9.599 HTTP + 400 navegador + 1 preflight.
-  Los túneles no cuentan mensajes HTTP cifrados; page.route controla solicitudes.
-- Un observador/una iteración, espera de meseta 30/60/90 s y hasta 90 s de recorrido.
-  Se conserva watchdog, observación Docker y mínimo de 2 GiB libres en Windows.
-  Chrome consume recursos adicionales en el mismo host.
-- El script directo exige plan vigente y proxy. No protege frente a alguien que
-  edite deliberadamente código o falsifique planes/flags.
-- Al terminar o fallar de forma controlada, se apaga Analytics y se recrea **solo
-  app**; no PostgreSQL ni su volumen. Si falla, detener y revisar. Un cierre forzado
-  de Windows/proceso puede impedir finally: verificar que ambas variables estén
-  apagadas antes de reutilizar el laboratorio. No ejecutar Compose directamente
-  con una configuración que haya quedado habilitada.
+## Recorrido y controles previos
 
-## Crear y conectar la propiedad posteriormente
+El recorrido completo es: **inicio → consentimiento → catálogo → producto →
+agregar una unidad → carrito → eliminar → carrito vacío**. Se comprueba
+JavaScript mediante interacciones/evaluaciones reales y consentimiento granted
+leído después de pulsar Aceptar analítica, sin preescribirlo en localStorage.
+No hay login, registro, merge, checkout, pedidos, pagos ni reserva de stock.
+Los precios y la cantidad se contrastan con la cotización del servidor.
 
-1. Crear una propiedad GA4 nueva: `AutoParts Chile — Laboratorio sintético`.
-   No editar la propiedad oficial ni su flujo.
-2. Crear flujo Web identificado como laboratorio. Usar como referencia
-   http://127.0.0.1:3100 si el formulario lo admite; si lo rechaza, revisar ese
-   paso antes de continuar. No reutilizar el flujo oficial ni instalar en Vercel.
-3. Copiar su ID G-…; no se necesita API secret, Measurement Protocol o contraseña.
-4. Revisar medición mejorada de páginas vistas en la propiedad nueva: desactivar
-   seguimiento automático de cambios del historial para no duplicar el manual.
-   El código usa send_page_view:false. Documentar el ajuste.
-5. En Definiciones personalizadas, registrar dimensiones de evento:
-   `environment`, `traffic_kind`, `experiment_id`. Esta última tiene alta cardinalidad;
-   limitarla a pocas ejecuciones y correlacionar con el manifiesto. No usar PII.
-6. Debug permanece false. Verificar primero Realtime; DebugView requiere una
-   activación futura exclusiva del laboratorio. Revisar filtros de tráfico interno
-   o desarrollador para no excluir el experimento inadvertidamente.
-7. Si se autoriza compartir, profesor como Lector también en esta propiedad.
+Antes de crear el contenedor, el runner valida:
 
-## Comandos preparados: no ejecutados
+- Docker Linux y recursos; Windows debe tener al menos 2 GiB libres.
+- Original app/PGhealthy, nombres/labels y volumen del UUID del entorno.
+- PostgreSQL exclusivo: postgres:5432/autoparts_performance_test, red interna,
+  sin puerto host. No se heredan conexiones DATABASE_URL del shell.
+- App original con Analytics apagado, IDs vacíos, tráfico synthetic y3100 en loopback.
+- Puerto 3101 libre: si no lo está, se detiene sin cambiar la aplicación original.
+- Snapshots privados en memoria de todos los contenedores anteriores. Sus IDs,
+  imágenes, estado/health, configuración, redes y montajes deben conservarse.
+- Lecturas SELECT con default_transaction_read_only=on sobre la base aislada:
+  conteos y huellas de nueve tablas. Deben existir 30 productos y 6 categorías y ninguna
+  cuenta, carrito, orden o pago. No se guardan filas ni información personal.
 
-Sustituir G-ID_DEL_LAB por el ID nuevo (no es secreto). Estos planes son offline:
+## Ciclo del contenedor adicional, solo bajo futura autorización
 
-```powershell
-npm run perf -- plan --profile baja --catalog 30 --browser --synthetic-id G-ID_DEL_LAB --observer-only
-npm run perf -- plan --profile normal --catalog 30 --browser --synthetic-id G-ID_DEL_LAB
-```
+1. Construir una imagen con tag único observer/UUID, usando Dockerfile.performance.
+   La construcción no contiene migraciones o seed. El build usa fixtures, no la BD.
+   Setup de build: timeout de 900 s y control de RAM antes/después, separado del ensayo.
+2. Crear un contenedor con nombre/labels únicos, env privado, 1 CPU / 1 GiB, pool de 2 conexiones,
+   128 PIDs, sin privilegios adicionales, sin montajes o volúmenes y sin restart.
+3. Conectarlo a las redes ya existentes; solo el adicional recibe 3101 en loopback.
+   PostgreSQL y los otros servicios no se arrancan/reinician/modifican.
+4. Verificar healthcheck, puertos efectivos, límite de recursos y marcador
+   isolated/observer/origin/UUID/catalogSize/measurementId antes del navegador.
+5. Ejecutar un solo k6/browser Chromium en el host contra la app Docker. No se
+   instala Chrome en el contenedor ni se afirma haberlo ejecutado allí.
+6. Al acabar o fallar: cerrar navegador/proxy y **detener solo el adicional propio**,
+   comprobando ID y labels contra la lista protegida. No se borra el contenedor,
+   su imagen o un volumen. El original nunca se detiene. El adicional tiene una
+   vida máxima independiente de 180 s para no quedar sirviendo si muere el runner.
+7. Comparar datos antes/después y verificar originales intactos. Si hay diferencias,
+   reportar y detenerse; nunca reparar automáticamente.
 
-Antes de ejecutar: nueva autorización, imagen app reconstruida, laboratorio
-saludable, UUID/catálogo confirmados y memoria suficiente. No repetir prepare,
-migraciones o seed, ni tocar PostgreSQL habitual o restauraciones. En esta tarea
-no se reconstruye ni recrea ningún contenedor.
+El archivo observer.env contiene secretos locales reutilizados solo para esa
+aplicación y está bajo artifacts ignorado por Git: **no compartirlo**. El runner
+no modifica compose.env ni fuentes ni secretos de producción.
 
-Futuros comandos, cada uno con autorización independiente:
+## Límites del recorrido
 
-```powershell
-# Referencia: un recorrido de navegador, sin carga HTTP adicional.
-npm run perf -- run --run-id UUID_DEL_LAB --profile baja --model closed --catalog 30 --browser --synthetic-id G-ID_DEL_LAB --observer-only --execute
-# Observación durante una carga nueva: ejemplo normal.
-npm run perf -- run --run-id UUID_DEL_LAB --profile normal --model closed --catalog 30 --browser --synthetic-id G-ID_DEL_LAB --execute
-```
+- Un VU/una iteración, maxDuration de 90 s y watchdog externo de 120 s, sin reintentos.
+- Hasta 400 solicitudes; 24 túneles y 32 MiB en proxy. No se generan solicitudes HTTP k6
+  de carga; los GETdeaislamiento y el healthcheck son comprobaciones de control.
+- RAM libre del host y salud/configuración de contenedores se vigilan cada 5 s;
+  CPU/memoria/I/O se muestrean con Docker. Saturación sostenida detiene el ensayo.
+- Proxy loopback obligatorio; solo destino local 3101 y tres hosts Google necesarios.
+  TLS extremo a extremo, sin desactivar certificados ni descifrar tráfico.
+- Page.route valida rutas/métodos, IDs tid/id/send_to y etiquetas del experimento
+  en query/body/batch antes del transporte. Bloquea el ID oficial, otros IDs y
+  operaciones comerciales. Precargas Next fuera del recorrido reciben 204 local,
+  sin visitar checkout/login. No ampliar hosts ante fallos sin diagnóstico.
+- El script directo exige plan y proxy válidos. No protege contra manipulación
+  deliberada del código. Una sesión nueva acepta el consentimiento por la UI.
 
-No lanzar scripts directos ni dos runners. Lock exclusivo. Salidas nuevas:
-`<perfil>-closed-browser` y `<perfil>-closed-browser-baseline`, sin sobrescribir
-las tres salidas HTTP originales. Un directorio existente impide repetición
-accidental. UUID de experimento nuevo por ejecución.
+## Qué prueba cada evidencia
 
-## Evidencias e interpretación
+- **Cola gtag:** prueba emisión de la instrumentación, no transporte.
+- **Solicitud pendiente/sin respuesta:** no permite afirmar recepción.
+- **HTTP 2xx de Google:** prueba respuesta del transporte del colector; **no** que
+  GA4 haya procesado, atribuido o mostrado el evento.
+- **Realtime/DebugView:** confirmación posterior dentro de la propiedad del laboratorio.
+  Este proyecto no posee acceso automático a esa interfaz ni lo presupone.
 
-- manifest.json: configuración, población, recursos, commit y UUID.
-- browser/plan.json: ID sintético, plazo y proxy local; sin credenciales.
-- browser/summary.json y summary.csv: agregados numéricos k6/browser, incluidos
-  Web Vitals cuando se observen. Sin muestras crudas de red con URLs de collect,
-  cookies, HAR o identificadores de cliente GA.
-- browser/outcome.json: salida, contadores del proxy y resultados saneados de la
-  cola de gtag. **Cola correcta no confirma recepción por Google.**
-- HTTP y recursos app/Docker permanecen separados. No sumar Google y recursos
-  estáticos al throughput del recorrido HTTP.
-- Eventos: page_view de catálogo/detalle/carrito, view_item, add_to_cart y
-  remove_from_cart. CLP, cantidad 1 y precio de cotización del servidor.
-  Sin begin_checkout ni purchase de este recorrido.
-- Verificación futura: Network y Realtime de la propiedad nueva, con
-  environment=performance-local, traffic_kind=synthetic y experiment_id del
-  manifiesto. No presentar estas cifras como visitantes reales o ventas.
-- Un solo recorrido no representa distribuciones de engagement, rebote,
-  conversión o p99. Comparar referencia/carga en mismas páginas/dispositivo y
-  documentar muestras, ventanas, cachés y sobrecosto del generador/interceptación.
-- Pendiente ejecución k6/Chrome contra Docker y recepción real en GA4. Las
-  pruebas actuales usan componentes reales con Google y cotización simulados,
-  sin PostgreSQL, cuentas, compras o tráfico externo. k6 inspect solo inspecciona
-  sintaxis/opciones, no inicia Chrome, usuarios, HTTP o escenarios.
+El parser solo conserva nombre permitido, ID destino, estado HTTP y etiquetas
+verificadas. Omite cid, sid, cookies, tokens, títulos, URL completa y payload
+libre. Reconoce GET/POST y batches; 200/204 son éxitoHTTP; 503 o fallos de red no.
+first_visit/session_start pueden ser derivados por GA4 de flags del primer evento:
+no inventar emisiones explícitas si solo se observaron esos flags.
 
-## Verificaciones y fuentes
+Se esperan **cuatro page_view**, un view_item, un add_to_cart y un remove_from_cart
+si no hay duplicados; el verificador exige esas cantidades para aprobar el caso.
+La configuración de medición mejorada debe evitar duplicar el seguimiento manual.
+No se generan begin_checkout o purchase. User_engagement/first_visit/session_start
+son posibles automáticos, no se fuerzan para completar el informe.
 
-Resultados finales e incidentes documentados en LogFile.txt. Pruebas:
-`npm test`, `npm run test:performance`, `npm run test:analytics:browser:local`,
-lint, TypeScript, Prisma y build. No equivalen a una simulación real autorizada.
+Artefactos nuevos en artifacts/performance/UUID_ENTORNO/browser-observer-UUID/:
+manifest.json, container.json, isolation.json, plan.json, summary.json/csv,
+browser-outcome.json, outcome.json, resources.json, data-before/after.json y el
+**privado** observer.env. No se sobrescriben baja-closed/normal-closed/pico-closed.
+Las salidas del navegador son agregadas; no se guardan HAR o muestras de red con
+query strings. Fallos incluyen etapa y evidencia saneada disponible.
 
-Fuentes oficiales:
-[k6/browser](https://grafana.com/docs/k6/latest/javascript-api/k6-browser/),
-[interceptación de página](https://grafana.com/docs/k6/latest/javascript-api/k6-browser/page/route/),
-[pageviews GA4](https://developers.google.com/analytics/devguides/collection/ga4/views),
-[dimensiones de evento](https://support.google.com/analytics/answer/14239696).
+## Preparación manual GA4 y comando futuro
+
+El usuario ya creó propiedad y dimensiones de ámbito Evento: environment,
+experiment_id,traffic_kind. Conservar la propiedad oficial intacta. Verificar
+medición mejorada de historial para no duplicar page_view; el código usa
+send_page_view:false. GA4_DEBUG permanece false: usar Realtime primero; DebugView
+requiere una activación futura exclusiva del laboratorio. Revisar filtros que
+pudieran excluir sintéticos; no alterarlos automáticamente. Profesor como Lector
+solo si se autoriza compartir esa propiedad.
+
+Plan offline, sin Docker, navegador, Google o escrituras:
+
+~~~powershell
+npm run perf -- plan --profile baja --catalog 30 --browser --observer-only --synthetic-id G-BLNW54CZ2R
+~~~
+
+**No ejecutar todavía** el siguiente comando. Requiere nueva autorización y
+preflight saludable antes de crear el adicional:
+
+~~~powershell
+npm run perf -- run --run-id 324a39f2-2164-44cc-8276-5ef9defec5db --profile baja --catalog 30 --model closed --browser --observer-only --synthetic-id G-BLNW54CZ2R --execute
+~~~
+
+Luego buscar los eventos en la propiedad G-BLNW54CZ2R y contrastar
+traffic_kind=synthetic,environment=performance-local y el experiment_id nuevo del
+manifiesto. El UUID del entorno 324a39f2... no es el UUID de experimento.
+No presentar una sola observación como una distribución representativa de rebote,
+engagement, conversiones o p99. No reenviar resultados históricos a GA4.
+
+## Verificación local y pendientes
+
+Pruebas con componentes reales, transporte Google simulado y Docker ficticio:
+inicio/consentimiento/recorrido,7 eventos HTTP 204, rechazo del oficial, aislamiento,
+propiedad de contenedor, no detención de originales, batches,503/fallos de red y
+sanitización. Lint, TypeScript, Prisma, build y regresiones según LogFile.txt.
+No equivalen a validación real de Docker/Chrome/Google. Esa ejecución queda
+pendiente de autorización, sin credenciales de GA4 necesarias en código.
+
+Fuentes oficiales: [k6 Page.on](https://grafana.com/docs/k6/latest/javascript-api/k6-browser/page/on/),
+[Page.route](https://grafana.com/docs/k6/latest/javascript-api/k6-browser/page/route/),
+[pageviews GA4](https://developers.google.com/analytics/devguides/collection/ga4/views).
+
+## Diagnóstico del intento fallido y próximo ensayo
+
+Ver [diagnóstico offline del proxy](browser-proxy-diagnostics.md): hechos e hipótesis
+del experimento a59a3235, esquema saneado de etapas/errores y procedimiento para
+un único reintento que requiere autorización nueva. No se ampliaron destinos
+ni se repitió el ensayo real durante esta mejora.

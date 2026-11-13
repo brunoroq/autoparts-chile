@@ -1,5 +1,12 @@
 # Metodología prevista de evaluación
 
+Estado al12nov2026: baja, normal y pico HTTP ya ejecutados una vez; ver sus reportes
+específicos. La propuesta inicial siguiente no describe mediciones adicionales
+ejecutadas. Preparación de30documentos navegador en
+[protocolo Core Web Vitals](core-web-vitals-protocol.md), todavía sin ejecución.
+
+Actualización 2026-11-11: scripts locales preparados en [Fase 1.2](phase-1-2.md). Ningún escenario ejecutado. La matriz cloud y el recorrido de compra descritos abajo son objetivos futuros, no autorizaciones de ejecución.
+
 Este documento es un protocolo inicial; no contiene resultados ni umbrales validados. Confirmar valores concretos antes de ejecutar carga.
 
 ## Matriz experimental

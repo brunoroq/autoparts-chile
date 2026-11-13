@@ -4,6 +4,12 @@ Proyecto universitario de **INFB8091 - Desempeño de Sistemas**: tienda de acces
 
 ## Estado
 
+Actualización 2026-11-11: carrito invitado publicado en decfa361. Fase 1.2 local: [protocolo, requisitos y límites](docs/performance/phase-1-2.md) y [primera carga baja con30productos](docs/performance/first-low-30-results.md), única ejecución autorizada. El estado histórico de etapas que sigue no describe las publicaciones posteriores registradas en LogFile.txt.
+
+Actualización posterior: [carga normal con30productos y comparación](docs/performance/normal-30-results.md) completada con autorización separada. Solo una ejecución por perfil; pico no ejecutado ni autorizado.
+
+Actualización vigente: [pico con30productos y comparación de los tres perfiles](docs/performance/pico-30-results.md) completado con autorización060, una sola ejecución y sin cambios de inventario. Cualquier nuevo ensayo requiere otra aprobación; aún no se determinó capacidad máxima ni se midieron Web Vitals bajo carga.
+
 Etapas 0 a 5 versionadas; cierre de etapa 5: 69fe039280522b79f0b147432cee0afc2778ee6a. Preparación Vercel/Neon incluida en un segundo commit local separado autorizado por prompt 016 (consultar Git). Analytics y métricas opcionales desactivados por defecto. Sin propiedad GA4 real, acceso externo, despliegue, k6 ni etapa 6. Webpay oficial sigue pendiente de compra manual.
 
 La preparación Vercel/Neon está implementada, verificada localmente y versionada por separado de etapa 5, sin push ni publicación. La base Docker habitual se conserva íntegra; continuar con configuración manual de Neon.

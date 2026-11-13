@@ -1,5 +1,9 @@
 # Registro de decisiones técnicas
 
+## 2026-11-11: carga exclusivamente local y acotada
+
+Contexto: Fase 1.2 aprobada para implementar, sin autorizar ejecución. Decisión: k6 v2.3.0 sin dependencias de producción nuevas; Compose/red/volumen propios, URL loopback literal, lista de rutas, plan con vencimiento y presupuesto por VU más watchdog/lock. Analytics apagado y compras bloqueadas. Consecuencias: no consume Vercel/Neon; no representa serverless ni navegador completo. Docker Engine no estaba disponible, por lo que integración del laboratorio y ensayos quedan pendientes. Ver [protocolo](../performance/phase-1-2.md).
+
 Registrar decisiones importantes con fecha, estado, contexto, decisión y consecuencias. Una tabla basta mientras el proyecto sea pequeño; crear documentos separados solo si una decisión requiere más detalle. Las propuestas pendientes no equivalen a implementaciones aprobadas.
 
 | ID y fecha | Estado | Contexto y decisión | Consecuencias |

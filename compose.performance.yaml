@@ -16,13 +16,14 @@ x-app: &app
     PAYMENT_PROVIDER: simulated
     WEBPAY_ENVIRONMENT: integration
     PERF_ISOLATED: "true"
-    # Solo el runner habilita esta opción con un ID sintético validado.
-    ANALYTICS_ENABLED: ${PERF_BROWSER_ANALYTICS:-false}
-    PERF_BROWSER_ANALYTICS: ${PERF_BROWSER_ANALYTICS:-false}
+    # El original siempre queda apagado; el observador usa otro contenedor/puerto.
+    ANALYTICS_ENABLED: "false"
+    PERF_BROWSER_ANALYTICS: "false"
     GA4_MEASUREMENT_ID: ""
-    GA4_SYNTHETIC_MEASUREMENT_ID: ${PERF_GA4_SYNTHETIC_MEASUREMENT_ID:-}
+    GA4_SYNTHETIC_MEASUREMENT_ID: ""
     GA4_DEBUG: "false"
-    WEB_VITALS_ENABLED: "false"
+    # Opt-in exclusivo de mediciones nuevas; GA4 permanece desactivado arriba.
+    WEB_VITALS_ENABLED: "${PERF_WEB_VITALS:-false}"
     RESOURCE_METRICS_ENABLED: "true"
     RESOURCE_SAMPLE_MS: "5000"
     APP_ENV: performance-local

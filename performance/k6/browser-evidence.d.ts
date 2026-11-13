@@ -1,0 +1,4 @@
+export type WireEvent = {event: string; measurementId: string; labelsVerified: boolean; experimentId: string | null; environment: string | null; trafficKind: string | null; firstVisitFlag: boolean; sessionStartFlag: boolean};
+export type TransportEvent = WireEvent & {httpStatus: number | null; transport: string; httpSuccess: boolean; googleIngestionConfirmed: boolean};
+export function collectEvidence(method: string, url: string, body: string | null, measurementId: string, experimentId: string): WireEvent[] | null;
+export function attachAnalyticsEvidence(page: unknown, measurementId: string, experimentId: string, diagnose?: (code:string, fields?:Record<string,unknown>) => void): {state: {rows: TransportEvent[]; failed: boolean; pending: number}; allowed: (req: unknown) => boolean; snapshot: () => {rows: TransportEvent[]; failed: boolean; pending: number}};
