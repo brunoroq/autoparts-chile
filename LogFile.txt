@@ -3304,3 +3304,95 @@ Restricciones:
 - Si detectas un problema de seguridad o archivos inesperados, detenerte antes del commit.
 
 REGISTRO PREVIO AL COMMIT: Rama/worktree confirmados; índice inicial vacío. Se añade exclusivamente regla .config/k6/installation-id a .gitignore y se actualiza su descripción en el informe autorizado. Conjunto limitado a lista30+.gitignore. Se auditarán blobs staged, identidadGit, procedencia y hashes antes de crear un único commit; no anticipar SHA ni éxito. Validaciones previas55/55/lint/TypeScript aprobadas, sin cambios nuevos de lógica. No k6,DB,servicios,redexterna,push/merge/rebase. Evidencia experimental permanece ignorada y local. El resultado final y SHA se comunicarán después del commit sin crear otro commit para registrar su propio hash.
+
+Fecha/hora registro: 2026-11-16T20:23:04.5537138-03:00
+PROMPT 121 — preparación local de integración
+Agente Codex; modelo exacto no disponible. Hora original del mensaje no disponible; zona America/Santiago.
+PROMPT COMPLETO:
+Autorizo preparar localmente la integración de feature/k6-purchase-safe, pero NO autorizo push, actualización de main ni despliegue.
+
+Estado conocido:
+- origin/main: decfa361b5f550dadc93f1aff253b3344fd74dd6
+- feature/k6-purchase-safe: b7de74a40e2b9a392dd45a4b2f41f643a24846fb
+- Diferencia: 4 commits adelante, 0 detrás.
+- La main local del worktree principal está divergida y no debe tocarse.
+
+Tareas autorizadas:
+1. Crear un worktree nuevo de integración desde origin/main y realizar exclusivamente allí la integración local fast-forward de feature/k6-purchase-safe.
+2. Confirmar que el resultado contiene los cuatro commits previstos y no incorpora 8ebe47a.
+3. Preparar un cambio mínimo en vercel.json para desactivar Preview de:
+   - feature/performance-evidence
+   - feature/k6-purchase-safe
+   - integration/k6-purchase-safe
+4. Revisar la sintaxis y semántica de deploymentEnabled y comprobar qué garantías ofrece realmente para el primer push. No asumir que la configuración local evita por sí sola un despliegue.
+5. Preparar un anexo público en el repositorio con los originales de ambas pruebas de compra: summary.json, plan.json, outcome.json, k6.csv, k6.jsonl y análisis disponibles.
+6. Crear un manifiesto SHA-256 público que cubra exclusivamente los archivos publicados.
+7. Añadir un README con metodología, resultados, limitaciones, experimentos y enlaces relativos descargables.
+8. Revisar los anexos para evitar secretos, sesiones, cookies, credenciales, identificadores privados y referencias a snapshots SQL.
+9. Preservar los archivos originales, los hashes históricos y las auditorías del otro worktree.
+10. Ejecutar tests, lint, TypeScript y las comprobaciones de integridad correspondientes.
+
+Restricciones:
+- No hacer push.
+- No actualizar main.
+- No modificar configuración remota de Vercel.
+- No ejecutar k6 ni generar nuevas compras.
+- No tocar la main local divergida.
+- No modificar servicios, bases ni producción.
+- No hacer commit todavía.
+
+Entregar:
+- Estado del worktree de integración.
+- Archivos preparados y su tamaño.
+- Validaciones.
+- Resultado de la revisión de Vercel.
+- Riesgos pendientes.
+- Lista exacta propuesta para un commit local posterior.
+- Recomendación GO/NO-GO para publicar la rama.
+
+RESULTADO: Nuevo worktree autoparts-integration-k6, branch integration/k6-purchase-safe creado desdeorigin/main decfa361, fast-forwardlocal autorizadohasta b7de74a. Cuatrocommits previstos ysin8ebe47a;mainlocalf4a6c9c/featureb7de74a intactas;no mergecommit. vercel.json añade dosreglasfalse conservandoperformance-evidence. No garantíaremotaporarchivolocal:tippublicadodebecontenerreglas,raízproyectoyotrasautomatizacionesremotas no verificadas. Originalfeatureb7aúnnoincluyebloqueo. NO-GOpublicarahora;GOrevisión/commitlocalposteriorautorizado.
+ANEXO: docs/evidence/purchase/{1vu,10vu},12métricosoriginales1134272bytesincluidoanálisis1VUposprocesado,README ysha256solo12fuentespúblicas. No snapshotsSQL/credenciales/cookies. UUIDsoloexperimentos/entorno. Comparación4secretosconocidosenmemoria:0coincidencias. DocehashpúblicosydiecisietehistóricosOK;fuentesintactas. Docs/performance/integration-preparation-20261116.md incluye17rutasexactasparaotrocommit.
+VALIDACION:55/55tests offline,lint yTypeScriptPASS;generaciónlocalURLficticia/telemetríaoff,junctiondependenciasignoradassininstalar. No buildnuevo,k6,navegador,DB,servicios,producción,GA4,Transbank,commit,push,despliegue. Solo consultawebdocumentaciónoficialVercel. No stage. No cambios a otrosworktrees.
+
+Fecha/hora registro: 2026-11-16T20:29:22.2253485-03:00
+PROMPT 122 — commit local de anexos
+Agente Codex; modelo exacto no disponible; zona America/Santiago; hora original del mensaje no disponible.
+PROMPT COMPLETO:
+Autorizo crear UN commit selectivo LOCAL en el worktree autoparts-integration-k6, rama integration/k6-purchase-safe.
+
+Utiliza exclusivamente la lista exacta de 17 archivos documentada en:
+docs/performance/integration-preparation-20261116.md
+
+Objetivo:
+Versionar el anexo público de las pruebas de compra, su manifiesto SHA-256, la documentación y las exclusiones de Preview en vercel.json.
+
+Antes del commit:
+1. Confirmar rama integration/k6-purchase-safe y HEAD b7de74a.
+2. Revisar los 17 archivos y confirmar que todos corresponden a la lista autorizada.
+3. Verificar que los 12 archivos métricos publicados no contienen credenciales, cookies, sesiones, secretos ni snapshots privados.
+4. Comprobar los 12 hashes públicos y los 17 históricos.
+5. Validar los enlaces relativos del README.
+6. Revisar que vercel.json conserve las exclusiones de las tres ramas previstas y sea JSON válido.
+7. Confirmar que el commit inseguro 8ebe47a no está en la historia.
+8. Ejecutar git diff --cached --check después del stage selectivo.
+
+Si todo pasa, crear un único commit local con el mensaje:
+docs(performance): publicar evidencias de compra y proteger previews
+
+Después:
+- Informar SHA y lista de archivos incluidos.
+- Confirmar estado del worktree.
+- Confirmar integridad de las evidencias.
+- Indicar cualquier riesgo que impida publicar.
+
+Restricciones:
+- NO hacer push.
+- NO hacer merge ni rebase.
+- NO modificar main.
+- NO modificar configuración remota de Vercel.
+- NO ejecutar k6.
+- NO modificar bases, servicios ni producción.
+- NO incluir archivos fuera de los 17 autorizados.
+- Detenerse ante cualquier diferencia inesperada.
+
+REGISTRO PREVIO AL COMMIT: Rama integration/k6-purchase-safe yHEADb7de74a confirmados;índice inicial vacío. Únicamente se anexa este registro dentro del LogFile autorizado. Se revisarán conjunto17,12hashpúblicos/17históricos,enlacesREADME,reglasPreview3,secretos yprocedencia antesdelcommit;resultadofinal/SHA se entregará después,sin otrocommit. No cambios a métricas ni originales,main,configremota,servicios,bases;sinpush/merge/rebase/k6. Las validaciones anteriores55tests/lint/TypeScript están documentadas;no cambios delógica desdeellas.

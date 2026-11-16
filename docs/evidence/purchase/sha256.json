@@ -1,0 +1,78 @@
+{
+  "algorithm": "SHA-256",
+  "scope": "Only public metric files copied byte-for-byte; no private SQL snapshots or private source paths.",
+  "files": [
+    {
+      "path": "1vu/k6.csv",
+      "bytes": 43088,
+      "sha256": "6c2131c0916c7fe143f1cc8763e91b99918dbf07f52237f67a0a19f7aaa5397c",
+      "experiment": "206d0db0-457c-48a6-a93b-dc93e0a95b71"
+    },
+    {
+      "path": "1vu/k6.jsonl",
+      "bytes": 80553,
+      "sha256": "f225faa0b97f66130f8997de4313d4270e34a7d247cd262a0da5cd2b151f54ed",
+      "experiment": "206d0db0-457c-48a6-a93b-dc93e0a95b71"
+    },
+    {
+      "path": "1vu/outcome.json",
+      "bytes": 115,
+      "sha256": "dc204b86140f069e40f6d3b8cee78073256819073886850544bb46ab25ec9311",
+      "experiment": "206d0db0-457c-48a6-a93b-dc93e0a95b71"
+    },
+    {
+      "path": "1vu/plan.json",
+      "bytes": 363,
+      "sha256": "570c7d2b896d448c3f8fe75b5ddc4eed22f33736b2810b594417aaf094536762",
+      "experiment": "206d0db0-457c-48a6-a93b-dc93e0a95b71"
+    },
+    {
+      "path": "1vu/summary.json",
+      "bytes": 5753,
+      "sha256": "2e276f6c3c5809bb80dc0a3f61328978f20c61de334f49b78b055abb751994f6",
+      "experiment": "206d0db0-457c-48a6-a93b-dc93e0a95b71"
+    },
+    {
+      "path": "1vu/analysis.json",
+      "bytes": 577,
+      "sha256": "c917dd4afb770449d5afc445b7e23a326a9086116631e5829fa4974cbc0721e4",
+      "experiment": "206d0db0-457c-48a6-a93b-dc93e0a95b71"
+    },
+    {
+      "path": "10vu/analysis.json",
+      "bytes": 514,
+      "sha256": "cf855c91b53c6d10a9843b5b26172ae2ea18a0c1aa27f4b53506a7d174812321",
+      "experiment": "635f372f-a8bb-45f8-b97e-4584aec6dd02"
+    },
+    {
+      "path": "10vu/k6.csv",
+      "bytes": 354517,
+      "sha256": "bd8c0181f03b5b7a7e3a1db37650a2c98979e7fcd6d5f9dc9c679eb29b8d245d",
+      "experiment": "635f372f-a8bb-45f8-b97e-4584aec6dd02"
+    },
+    {
+      "path": "10vu/k6.jsonl",
+      "bytes": 642543,
+      "sha256": "1aed5fc9429b5c788e6ab20ca6195ed18290d4fa45cf913f3f28b17ceec2ba6f",
+      "experiment": "635f372f-a8bb-45f8-b97e-4584aec6dd02"
+    },
+    {
+      "path": "10vu/outcome.json",
+      "bytes": 177,
+      "sha256": "f1792c098f7e3d149d89cb1c3ca553b6ca3846476f0699e687f49bdd9f5f2d7a",
+      "experiment": "635f372f-a8bb-45f8-b97e-4584aec6dd02"
+    },
+    {
+      "path": "10vu/plan.json",
+      "bytes": 365,
+      "sha256": "ad9424dd0fb766757ddc030d856427ad927cd9427be181e62db9b7d3c58c27fe",
+      "experiment": "635f372f-a8bb-45f8-b97e-4584aec6dd02"
+    },
+    {
+      "path": "10vu/summary.json",
+      "bytes": 5707,
+      "sha256": "42423a95c75c9b6a8405ba89a36c9ef9cca85426c0766a9677b9970601683bf8",
+      "experiment": "635f372f-a8bb-45f8-b97e-4584aec6dd02"
+    }
+  ]
+}

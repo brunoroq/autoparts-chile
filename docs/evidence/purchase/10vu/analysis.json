@@ -1,0 +1,22 @@
+{
+  "requests": 140,
+  "statuses": {
+    "200": 130,
+    "201": 10
+  },
+  "routes": {
+    "GET /api/performance/status": 40,
+    "GET /api/auth/session": 10,
+    "GET /api/v1/cart": 20,
+    "GET /api/v1/products": 10,
+    "GET /api/v1/products/[id]": 20,
+    "POST /api/v1/cart/items": 10,
+    "POST /api/v1/checkout": 10,
+    "POST /api/v1/payments/[id]/simulate": 10,
+    "GET /api/v1/orders/[id]": 10
+  },
+  "destinationEvidence": [
+    "relative_label_only"
+  ],
+  "configuredOrigin": "http://127.0.0.1:3102"
+}

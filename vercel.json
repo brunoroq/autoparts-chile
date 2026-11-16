@@ -2,7 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
-      "feature/performance-evidence": false
+      "feature/performance-evidence": false,
+      "feature/k6-purchase-safe": false,
+      "integration/k6-purchase-safe": false
     }
   }
 }

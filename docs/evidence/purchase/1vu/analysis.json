@@ -1,0 +1,24 @@
+{
+  "requests": 17,
+  "statuses": {
+    "200": 16,
+    "201": 1
+  },
+  "routes": {
+    "GET /api/performance/status": 5,
+    "GET /api/auth/csrf": 1,
+    "POST /api/auth/callback/credentials": 1,
+    "GET /api/auth/session": 1,
+    "GET /api/v1/cart": 2,
+    "GET /api/v1/products": 1,
+    "GET /api/v1/products/[id]": 2,
+    "POST /api/v1/cart/items": 1,
+    "POST /api/v1/checkout": 1,
+    "POST /api/v1/payments/[id]/simulate": 1,
+    "GET /api/v1/orders/[id]": 1
+  },
+  "destinationEvidence": [
+    "relative_label_only"
+  ],
+  "configuredOrigin": "http://127.0.0.1:3102"
+}

@@ -1,0 +1,14 @@
+{
+  "workload": "purchase",
+  "baseUrl": "http://127.0.0.1:3102",
+  "runId": "635f372f-a8bb-45f8-b97e-4584aec6dd02",
+  "environmentId": "a52a7a92-9b7f-4ae1-a6cf-643a0a25f14f",
+  "paymentProvider": "SIMULATED",
+  "analytics": false,
+  "vus": 10,
+  "maxPurchases": 10,
+  "maxRequests": 500,
+  "seconds": 90,
+  "createdAt": 1794869336682,
+  "deadline": 1794869426682
+}
