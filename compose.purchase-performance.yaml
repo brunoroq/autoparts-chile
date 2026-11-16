@@ -1,0 +1,77 @@
+name: autoparts-purchase
+x-app: &app
+  image: autoparts-purchase:local
+  cpus: 2
+  mem_limit: 1536m
+  labels: { autoparts.scope: purchase-test }
+  networks: [lab]
+  environment:
+    DATABASE_URL: postgresql://purchase_test:${PURCHASE_DB_PASSWORD:?Private env required}@purchase-postgres:5432/autoparts_purchase_test
+    DIRECT_URL: postgresql://purchase_test:${PURCHASE_DB_PASSWORD:?Private env required}@purchase-postgres:5432/autoparts_purchase_test
+    NEXTAUTH_URL: http://127.0.0.1:3102
+    NEXTAUTH_SECRET: ${PURCHASE_AUTH_SECRET:?Private env required}
+    PAYMENT_TOKEN_SECRET: ${PURCHASE_TOKEN_SECRET:?Private env required}
+    PAYMENT_PROVIDER: simulated
+    WEBPAY_ENVIRONMENT: integration
+    PERF_PURCHASE_ISOLATED: "true"
+    PERF_ISOLATED: "false"
+    PERF_BROWSER_ANALYTICS: "false"
+    ANALYTICS_ENABLED: "false"
+    GA4_MEASUREMENT_ID: ""
+    GA4_SYNTHETIC_MEASUREMENT_ID: ""
+    GA4_DEBUG: "false"
+    WEB_VITALS_ENABLED: "false"
+    RESOURCE_METRICS_ENABLED: "true"
+    RESOURCE_SAMPLE_MS: "5000"
+    APP_ENV: purchase-local
+    TRAFFIC_KIND: synthetic
+    EXPERIMENT_ID: ${PURCHASE_ENVIRONMENT_ID:?Private env required}
+    DB_POOL_MAX: "2"
+    NEXT_TELEMETRY_DISABLED: "1"
+services:
+  purchase-postgres:
+    container_name: autoparts-purchase-postgres
+    image: postgres:18.6-bookworm
+    cpus: 1
+    mem_limit: 512m
+    labels: { autoparts.scope: purchase-test }
+    networks: [lab]
+    environment:
+      POSTGRES_USER: purchase_test
+      POSTGRES_PASSWORD: ${PURCHASE_DB_PASSWORD:?Private env required}
+      POSTGRES_DB: autoparts_purchase_test
+    volumes: [purchase_data:/var/lib/postgresql]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U purchase_test -d autoparts_purchase_test"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  prepare:
+    <<: *app
+    profiles: [tools]
+    command: [node, --import, tsx, scripts/prepare-purchase-lab.ts]
+  app:
+    <<: *app
+    container_name: autoparts-purchase-app
+    networks: [lab, ingress]
+    dns: [127.0.0.1]
+    ports: ["127.0.0.1:3102:3000"]
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000/api/performance/status').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+networks:
+  lab:
+    name: autoparts-purchase_lab
+    internal: true
+  ingress:
+    name: autoparts-purchase_ingress
+    driver: bridge
+    enable_ipv6: false
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+      com.docker.network.bridge.enable_ip_masquerade: "false"
+volumes:
+  purchase_data:
+    name: autoparts-purchase-${PURCHASE_ENVIRONMENT_ID:?Private env required}

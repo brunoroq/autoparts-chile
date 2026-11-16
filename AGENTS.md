@@ -1,5 +1,9 @@
 # Instrucciones permanentes de AutoParts Chile
 
+Estado vigente de cierre 2026-11-16: finalizaron las ejecuciones k6 de esta etapa. Solo revisión de integración, documentación y verificaciones offline en feature/k6-purchase-safe. Compras verificadas: una de 1 VU y diez de 10 VUs; ver docs/performance/purchase-integration-review-20261116.md. Las autorizaciones históricas de ejecución están consumidas. No nuevas cargas, servicios, bases, commit, push, merge ni despliegue sin nueva autorización. Preservar originales y excluir .config/k6/installation-id y artifacts privados.
+
+Alcance vigente 2026-11-16: worktree autoparts-k6-purchase-safe, base40829fa. Solo código y pruebas offline del modo compra; ver docs/performance/purchase-safe.md. No ejecutar k6, iniciar servicios, preparar bases, comprar, conectar GA4/Transbank, publicar o cambiar el worktree original. Requiere nueva autorización para preparar3102 y para su primera compra.
+
 Estado vigente 2026-11-13: mediciones CWV pausadas para compartir avances en
 `feature/performance-evidence`. Autorizado revisar, validar, commit y push solo de
 esa rama; no main, despliegues, carga, producción ni bases. Ver

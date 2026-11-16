@@ -2950,3 +2950,357 @@ Auditoríaautomatizada enmemoria compara valoressecretosprivadoscon candidatos,n
 Verificaciones PASS:npmrunvalidate(lint,TypeScript,Prisma);npmtest(unitariasgenerales);48pruebasofflineperformance/CWV(con12CWV)sinChrome/mediciones;buildproducciónPASS. InicialbuildfallóporNEXTAUTH_SECRETausente; primerintentogeneraciónusóAPIde.NETno compatible, corregida conRandomNumberGenerator.Create/GetBytes(byte[]) yBase64. Buildfinal con secretosaleatorios efímerossoloenmemoria, DATABASE/DIRECTficticios127.0.0.1:1,Analyticsfalse,Nexttelemetryoff. NingunaconexiónBD, migración,seed,k6,Chrome,GAreal,Dockerconfig oproducción. Sinactualizardependencias/lockfile. Pruebabrowsercontransportesimuladoexcluida explícitamente con test-skip-pattern recorrido compartido. No confundirfixturesdelanálisis30muestras conresultadosreales.
 Gitdiffchecksinproblemas, salvoavisosnormalesLF/CRLF. Próximospasosautorizados:auditoríaíndicefinal,branchfeature/performance-evidence,commitdescriptivoypushexclusivodeesarama,sinforce; resultadosSHA/remotoyenlaceenrespuestafinal. Estaentrada se registraantesdelcommit por lo que no atribuye aún éxito alpush. No PR/merge/deploy. Mantener artefactoslocales y resultadosanteriores intactos.
 Ampliación auditoría088: rango completo origin/main incluye también tests/performance.test.ts44 con fixture ep-example.neon.tech y credenciales fixture:fixture; segunda coincidencia ficticia de rechazo, no secreto. Ambas excepciones acotadas a archivo y literal específico. Auditoría final cubre también el commit local previo.
+
+---
+PROMPT 112 | Registro: 2026-11-16T19:06:28.3330385-03:00 | America/Santiago | Codex | Modelo exacto no disponible; hora original del mensaje no disponible.
+PROMPT COMPLETO:
+Autorizo implementar localmente la parte de código y pruebas offline del plan docs/security-k6-remediation-plan.md.
+
+Objetivo:
+Preparar un recorrido k6 de compra simulada real, seguro y verificable, sin ejecutarlo todavía.
+
+Tareas:
+
+1. Trabajar en un worktree limpio basado en el commit 40829fa, sin alterar el worktree actual.
+2. Incorporar únicamente los cambios seguros y necesarios del trabajo de Matías, preservando su atribución.
+3. Eliminar los envíos directos a GA4 y cualquier secreto incrustado.
+4. Implementar el recorrido autenticación → carrito → checkout → pago simulado → verificación del pedido.
+5. Utilizar Idempotency-Key y cartVersion según los contratos existentes.
+6. Incorporar límites independientes para compras, VUs, solicitudes y duración.
+7. Exigir comprobaciones explícitas del entorno aislado, proveedor simulado y Analytics desactivado antes de permitir compras.
+8. Evitar reintentos automáticos de operaciones de compra ante timeouts.
+9. Separar métricas de navegación y compra.
+10. Actualizar pruebas unitarias y de seguridad del runner.
+11. Ejecutar exclusivamente pruebas offline, lint y TypeScript, sin contactar servicios externos.
+12. Documentar los cambios y los resultados.
+
+Restricciones:
+
+- No ejecutar k6 contra ningún servidor.
+- No crear pedidos ni realizar pagos.
+- No preparar ni modificar bases de datos.
+- No contactar GA4 ni Transbank.
+- No modificar Vercel ni producción.
+- No hacer merge, rebase, commit ni push.
+- No reescribir historial Git.
+- No imprimir ni almacenar secretos.
+
+Al finalizar, informa:
+
+- Archivos modificados.
+- Pruebas ejecutadas y resultados.
+- Controles que impiden ejecutar compras fuera del laboratorio.
+- Qué falta para preparar la instancia 3102.
+- Si el código está listo para una revisión de seguridad antes de ejecutar la primera compra.
+ALCANCE: worktreelimpionuevo C:/Users/br1rk/Documents/Github/autoparts-k6-purchase-safe,ramafeature/k6-purchase-safe,base40829fafa99fefa35142fd368696191e7b4d3eea. No merge/cherrypick8ebe47a,sinsecretoscopiados. AtribuciónMatíasPonceen docs/performance/purchase-safe.md;noimportados500/250000nidefaultsGA4inseguros. OriginalworktreeHEADypendientesintactos. node_modules reutilizado mediantejunction, sininstalación ni cambiosdependencias.
+IMPLEMENTACION: purchase-policy.js/d.ts,flow.js/d.ts,journey.js;scripts/purchase-environment.ts,run-purchase-performance.ts;purchase-isolation.ts;endpointstatuseligecompraválida soloconoptin;packagecmdperf:purchase/test;tests/purchase-performance.test.ts;AGENTS/docs/Lognuevoworktree. AuthCSRF/cookiesporVU,GETcartversion,POSTitemsIfMatch,POSTcheckoutkeyúnica/versión,POSTsimulateapproved,GETorder/cart/productverify. ProviderSIMULATED/Analyticsfalse/IDsvacíos antesdecadaPOST;fijoloopback3102DBautoparts_purchase_test;inspecciónDockerfutura,públicosPGprohibidos,redprivadaegresosinmasquerade. TimeoutsinretryPOST;budgets1defaultmax10VU/10compras/500requests/120s incluyepreflight,watchdog/memoria.Salidasnuevasmetricsworkloadpurchase/authtransaction,latenciasdb/app/providerseparadas,cuentasp stdin/envmemoria nuncaarchivo.
+VALIDACION:52/52testsunitariosoffline,8nuevos,lint yTypeScript aprobados;gitdiffcheckOK. VMdoblesejecutaadaptadornok6real. No pedidoreal,HTTPexterno,DB,migración,serviciospreparados,compra,pagos,GA4,Transbank,producción,merge/rebase/commit/push. Erroresinicialesdetiposcorregidos;fixtureVMnormalizadaentreprototipos. Buildnoejecutadopor alcanceofflineexclusivo.
+PENDIENTE: revisiónseguridad;Compose3102/PGaliaslabelsredsaludrecursos,BDnuevacuenta/stockfixture con autorización;preflightreal ysmoke1compraconotraprobación. SecretoremotoGA4siguependienterevocaciónmanual;historialnosepurga. Pruebasoffline noacreditanconcurrenciaPostgreSQL,sesiónreal niresultadosdedesempeño.
+---
+PROMPT 113 | Registro: 2026-11-16T19:08:17.3686927-03:00 | America/Santiago | Codex | Modelo exacto no disponible; hora del mensaje no disponible.
+PROMPT COMPLETO:
+Autorizo preparar el laboratorio aislado de compras k6, siguiendo docs/performance/purchase-safe.md en el worktree feature/k6-purchase-safe.
+
+Objetivo:
+Dejar operativa una aplicación de pruebas en 127.0.0.1:3102, con PostgreSQL independiente y pagos exclusivamente simulados.
+
+Tareas:
+
+1. Crear la configuración Docker Compose necesaria, con contenedores, volúmenes y red exclusivos del laboratorio.
+2. Crear una base nueva llamada autoparts_purchase_test, sin reutilizar bases existentes.
+3. Configurar PAYMENT_PROVIDER=simulated y desactivar completamente GA4.
+4. Utilizar exclusivamente credenciales locales de prueba, sin copiar secretos de producción.
+5. Aplicar las migraciones existentes a la base nueva.
+6. Cargar productos y crear cuentas exclusivas para los VUs compradores.
+7. Levantar la aplicación de pruebas en 127.0.0.1:3102.
+8. Ejecutar únicamente el preflight de seguridad: identidad del entorno, contenedores, puertos, red, proveedor y marcador de aislamiento.
+9. Verificar que los entornos 3004 y 3100 siguen intactos.
+10. Documentar configuración, resultados y recursos utilizados.
+
+Restricciones:
+
+- No ejecutar todavía k6 ni iniciar compras.
+- No crear pedidos ni pagos.
+- No conectar Transbank ni GA4.
+- No utilizar Neon, Vercel ni bases existentes.
+- No modificar producción.
+- No hacer commit ni push.
+- Detenerse si no puede garantizar el aislamiento.
+
+Entregar:
+
+- Estado del laboratorio 3102.
+- Resultado del preflight.
+- Número de productos y cuentas de prueba.
+- Confirmación de aislamiento.
+- Comando exacto propuesto para ejecutar después 1 VU y 1 compra, sin ejecutarlo todavía.
+RESULTADOS: DETENIDO enpreflightinicial. dockerinfoypsfallan:npipe dockerDesktopLinuxEngine noexiste;motorLinuxno disponible. No confundir resultadoformato|0|0 con recursosrealesDocker. RAMWindows8,09GiBlibres. No sepuede inspeccionarestadosni aislamiento; noseinicióDockerDesktopparaevitararranqueimplicitootrosservicios. NoCompose/contendedor/red/volumen/BD/migraciones/seed/cuentas creados. No pedidos/pagos/k6/HTTPexterno/GA4/Transbank/producción/commit/push. Worktreeanteriorintacto. Estadode3004/3100noverificableconDocker;ningunaoperación sobreellos. Falta motorDockerLinuxdisponible para repetirelpreflightycontinuarpreparaciónyaautorizada. SinUUIDdeentornoreal,noesposible darcomandofinaldeejecuciónválido. SoloLogydocanexados.
+---
+PROMPT 114 | Registro: 2026-11-16T19:18:55.3293502-03:00 | America/Santiago | Codex | Modelo exacto no disponible; hora original no disponible.
+PROMPT COMPLETO:
+Continua
+CONTEXTO: Continuar preparación autorizada enPROMPT113; no k6 ni compras.
+RESULTADOS: DockerLinuxrecuperado12CPU/8290881536bytes,RAM5,06GiB;serviciosperformance/PGWebpayyaexited,sepreservaron.IDnuevoa52a7a92-9b7f-4ae1-a6cf-643a0a25f14f. Compose/Dockerfilepurchase exclusivos,envlocalnuevoprivadoACL/Gitignored,imagenbaseexistenteconstruidarednone sinsecretos. CreadoPG18.6nuevo,nuevovolumen/redinternal,siete migracionesdeploy,30productos/6categorías,10cuentas/10carritosvacíos/0items/0pedidos/0pagos. SecretoscuentasHMACenmemoria,BDhashscrypt;no impresos.
+PREFLIGHT: npmperf:purchasepreflightúnicamentelectura readytrue,app3102HTTP200/healthy yPGhealthy0restarts,providerSIMULATED/GA4false/IDs vacíos,PGsinpublicar,appsolo127.0.0.1:3102,ingressmasqueradefalse,labinternal. Primera cuentahashverificadaSQLreadonly enBDnueva. Snapshot antes/después contenedoresprotegidosidentidad/config/state/mounts/ports idéntico;nosaludablesporqueestabandetenidos, noafirmararranque.4,60GiBmemlibrepreflight.
+ARCHIVOS: ComposeDockerfilepurchase;prepare-purchase-lab.ts,purchase-accounts.ts,purchase-preflight.ts,run-purchase-once.ts;runnerrefactoriza preflightcompartido;packagecmdonce;policytypes/8+1tests;docs/performance/purchase-safe.md ypurchase-lab-preflight-2026-11-16.json;LogFile. BuildimagenOK,53/53tests/lint/TypeScriptOK. No compras/k6/GA4/Transbank/Neon/Vercel/commit/push. Gitcheckignoreenusuarioelevadodubiousownership,verificadoenusuarioworktree sinconfigglobal.
+SIGUIENTE: comandoexactofuturo npm run perf:purchase:once -- --env-file artifacts/purchase-lab/a52a7a92-9b7f-4ae1-a6cf-643a0a25f14f/compose.env --execute --accept-test-writes. NO ejecutado. Esperar autorización1VU/1compra;generaplanfresco ycredentialsstdinmemoria. No resembrar baseexistente.
+---
+PROMPT 115 | Registro: 2026-11-16T19:33:30.1856373-03:00 | America/Santiago | Codex | Modelo exacto no disponible; hora original no disponible.
+PROMPT COMPLETO:
+Autorizo ejecutar una única prueba funcional de compra simulada con k6 en el laboratorio aislado 3102.
+
+Laboratorio autorizado:
+
+- URL: http://127.0.0.1:3102
+- UUID: a52a7a92-9b7f-4ae1-a6cf-643a0a25f14f
+- Base: autoparts_purchase_test
+- Proveedor: SIMULATED
+- GA4: desactivado
+- Máximo: 1 VU, 1 compra, 100 solicitudes y 90 segundos.
+
+Antes de ejecutar:
+
+1. Repetir el preflight completo de aislamiento.
+2. Confirmar que el UUID, la base, el proveedor y el destino coinciden exactamente.
+3. Confirmar que no existen pedidos ni pagos previos.
+4. Verificar que no se contactará GA4 ni Transbank.
+5. Detenerse ante cualquier discrepancia.
+
+Si todo pasa, ejecutar una sola vez:
+
+npm run perf:purchase:once -- --env-file artifacts/purchase-lab/a52a7a92-9b7f-4ae1-a6cf-643a0a25f14f/compose.env --execute --accept-test-writes
+
+Después:
+
+1. Comprobar que existe exactamente un pedido y un pago simulado aprobado.
+2. Verificar que el carrito quedó vacío y que el stock disminuyó una sola unidad.
+3. Registrar latencia, errores, solicitudes y duración.
+4. Guardar los resultados originales y sus hashes.
+5. Verificar que los otros laboratorios y las bases externas no fueron modificados.
+6. Actualizar la auditoría indicando el alcance exacto de la prueba.
+
+Restricciones:
+
+- No repetir automáticamente la ejecución si falla.
+- No aumentar VUs, compras ni duración.
+- No modificar código ni configuración durante la prueba.
+- No ejecutar contra Vercel, Neon ni Transbank.
+- No hacer commit ni push.
+- Si aparece un error, detenerse y entregar diagnóstico antes de reintentar.
+
+Entregar el resultado completo de la prueba y si el recorrido de compra quedó acreditado funcionalmente.
+RESULTADOS: PreflightrealreadytrueUUID/base/provider/destinoexactos,GAfalseIDsvacíos,mem3,90GiB,0orders/payments/itemsinicial. Snapshot30productos/código/metadataotroslaboratorios. ComandoejecutadoUNAvezexit0/stoppedfalse,experimento206d0db0-457c-48a6-a93b-dc93e0a95b71,1VU/1compra/17HTTP200x16y201x1/0errores.1preflightHTTPdelrunneradicionalfueraresumenk6. Recorrido611ms/iteración611,7395ms/ventanarunner1280ms/rpsnominal27,7166,latenciasavg34,6932med9,1187p9047,3003p95120,2082p99298,7627ms.
+PERSISTENCIA SELECT: exactamente1pedidoPAID73b36e31-7ff0-46a5-bb22-a848d96c7862,1pagoSIMULATEDAPPROVEDAUTHORIZED6990CLP,qty1/SKUAP-SEED-00002stock22->21/precio6990sin cambio/carritovacío. Todos30productos/precios/identidad/activo/categorías/usuarios/cartcountscomparados,únicodelta1stock. Metadataotroscontenedoresyfuentehashsin cambios,ningunaacciónDBexterna. No afirmarinspecciónremotaNeon/producción.
+INCIDENCIA: posprocesador efímeroInvalidURLporque etiquetaurlk6esrutarelativa. ComparacionesDB/protegidos/fuentesyaaprobadasantesdeeseerror. No fuefallodek6/pago. No retryk6,nocambioscódigo/config. Se completólectura deoriginalesyhashes,sindeducirredobservadadeURLrelativa.
+EVIDENCIA: artifacts/purchase-results/206d0db0-457c-48a6-a93b-dc93e0a95b71 yartifacts/purchase-verification/functional-once-20261116,7fuenteshasheadas/revalidadas,sinpatronessensiblesdetectados. Nuevaauditoríasuplementodocs/auditoria-compra-k6-2026-11-16.mdypurchase-safeactualizado. Comprafuncionalacreditada,nocapacidad/concurrenciaestadística. Nootraspruebas/GA4/Transbank/Neon/Vercel/commit/push,esperarnuevaautorización.
+---
+PROMPT 116 | Registro: 2026-11-16T19:43:27.1112271-03:00 | America/Santiago | Codex | Modelo exacto no disponible; hora original no disponible.
+PROMPT COMPLETO:
+La prueba funcional k6 de 1 VU y 1 compra simulada fue exitosa.
+
+Quiero preparar una prueba complementaria de compras concurrentes, pero NO ejecutarla todavía.
+
+Contexto:
+
+- Laboratorio 127.0.0.1:3102
+- UUID a52a7a92-9b7f-4ae1-a6cf-643a0a25f14f
+- Primera compra validada: pedido PAID, pago SIMULATED/APPROVED, stock 22→21.
+- 17 solicitudes k6, 0 errores.
+- Resultados y hashes conservados.
+- El posprocesador falló con etiquetas relativas.
+
+Tareas:
+
+1. Corregir el posprocesador para aceptar etiquetas relativas sin tratarlas como URLs absolutas.
+2. Añadir pruebas de regresión para ese caso.
+3. Preparar una ejecución de hasta 10 VUs y 10 compras simuladas, respetando los límites de seguridad.
+4. Verificar que existan cuentas y productos adecuados, sin reutilizar pedidos ni modificar el pedido aprobado.
+5. Garantizar que cada VU tenga una cuenta y un carrito exclusivos.
+6. Confirmar que no se agotará el inventario.
+7. Verificar que no haya reintentos automáticos de checkout o pago ante timeouts.
+8. Mantener GA4 desactivado, proveedor SIMULATED y destino exclusivo 127.0.0.1:3102.
+9. Ejecutar únicamente pruebas offline, lint y TypeScript.
+10. Proponer el comando exacto y el plan de verificación posterior.
+
+Restricciones:
+
+- No ejecutar todavía k6 ni crear compras.
+- No reiniciar ni modificar otros laboratorios.
+- No acceder a Neon, Vercel, Transbank ni GA4.
+- No hacer commit ni push.
+- No alterar los resultados originales de la primera compra.
+
+Entrega:
+
+- Corrección del posprocesador y pruebas.
+- Resultado de validaciones offline.
+- Plan de prueba concurrente.
+- Riesgos pendientes y decisión GO/NO-GO para ejecutarla.
+RESULTADOS: Solo preparacióncódigo/offline ylecturasSQL3102. Nuevo purchase-analysis/analyze-purchase aceptaURLsrelativas sininventarorigen,testsregresión,original17HTTPreprocesado en directrionuevo relative-label-analysis-20261116.7hashprimeraejecución intactos. SQL10usuarios/10carritosexclusivos/0items;1pedido/pagoprevioPAIDAPPROVED6990sin cambios;SKU00002stock21suficiente10dejan11.
+CONCURRENCIA: PreparaciónNodeauthsecuencial10antesk6 paraevitarmáximo2scryptactivos,4HTTPporcuenta+GETsesiónencadaVU,propietariosúnicos/cookiespormemoriaporVU,sincredencialesJWTenarchivos/logs. policyreserva40setup+1preflight dentro500;journey10VU1iteración,10keys nuevas,no retryPOST,90sdeadlineglobaldescuentasetup. run-purchase-once acepta --vus10 optin,total10purchases500requests90s. MétricassetupRequests/authDurationMs aparte deHTTPk6; resultadosfuturosnocomparablesdirectamente17HTTPpreviosauthincluida. No seprepararonsesionesreales duranteesta tarea.
+VALIDACIONES:55/55offline,lint yTypeScriptOK,VMk6falsa;noHTTPk6real,compras,pagos,reinicios,DBwrites,serviciosexternos,commit/push. Docs/performance/purchase-concurrent-plan.md concomandoexacto yverificacionesbaseline1->11órdenes/pagos,stockdeltaagregado10,originalpedidoinalterado,hashes. GOcondicionadoanuevaautorización/preflight/stock/RAMvigentes;transferenciacookiesreal/concurrenciaPGpendientes. No build niinfra modificada.
+PROMPT 117
+Fecha/hora registro UTC: 2026-11-16T22:47:01.428Z; zona de trabajo America/Santiago. Hora original del mensaje no disponible.
+Agente: Codex; modelo exacto no disponible.
+PROMPT COMPLETO:
+Autorizo ejecutar UNA sola prueba complementaria de compras concurrentes con k6, siguiendo docs/performance/purchase-concurrent-plan.md.
+
+Laboratorio exclusivo:
+- URL: http://127.0.0.1:3102
+- UUID: a52a7a92-9b7f-4ae1-a6cf-643a0a25f14f
+- Base: autoparts_purchase_test
+- Proveedor: SIMULATED
+- GA4 desactivado.
+- M?ximo: 10 VUs, 10 compras, 500 solicitudes y 90 segundos.
+
+Antes de ejecutar:
+1. Repetir el preflight de aislamiento y comprobar identidad, proveedor, base, contenedores y destino.
+2. Confirmar que el pedido original de la prueba de 1 VU sigue intacto.
+3. Confirmar 10 cuentas con carritos independientes vac?os y stock suficiente.
+4. Verificar que el secreto GA4 no se usa ni se env?a tr?fico a Google.
+5. Detenerse ante cualquier discrepancia.
+
+Si todo coincide, ejecutar UNA sola vez:
+npm run perf:purchase:once -- --env-file artifacts/purchase-lab/a52a7a92-9b7f-4ae1-a6cf-643a0a25f14f/compose.env --execute --accept-test-writes --vus 10
+
+Despu?s:
+1. Comprobar pedidos y pagos nuevos, sus estados y ausencia de duplicados.
+2. Verificar stock final, carritos y conservaci?n del pedido original.
+3. Registrar compras exitosas y fallidas, errores HTTP/funcionales, latencias p50/p90/p95/p99 y throughput.
+4. Separar el tiempo de autenticaci?n previa de la medici?n de compras.
+5. Guardar resultados originales y hashes SHA-256.
+6. Verificar que no hubo contacto con Transbank, GA4, Neon ni Vercel.
+7. Actualizar la auditor?a indicando qu? demuestra esta prueba y qu? no demuestra.
+
+Restricciones:
+- No repetir autom?ticamente si falla.
+- No aumentar l?mites.
+- No modificar c?digo ni configuraci?n durante la ejecuci?n.
+- No hacer commit ni push.
+- Si el preflight falla, detenerse sin ejecutar.
+- Si hay errores durante la prueba, conservar evidencia y diagnosticar antes de cualquier reintento.
+
+Entr?game el resultado de las 10 compras, m?tricas completas y estado final de la base de pruebas.
+RESULTADO: DETENIDO ANTES DE K6. Preflight protegido ready=true, UUID/base/origen/SIMULATED/analytics=false e IDs vac?os correctos; memoria libre 5.56 GiB. La comprobaci?n SQL posterior us? por error del agente el rol purchase_local, inexistente: FATAL role does not exist. No se confirm? baseline actual de pedido/cuentas/stock. No se ejecut? runner de compras, autenticaci?n previa ni k6. No nuevas m?tricas. No escrituras DB, servicios externos, cambios de c?digo/configuraci?n, reinicios, commit ni push. Se cre? ?nicamente directorio vac?o artifacts/purchase-verification/concurrent-20261116 antes del fallo. No se reintent?. Requiere autorizaci?n para corregir el comando de lectura usando el rol efectivo configurado, repetir verificaciones y decidir nueva ejecuci?n.
+
+PROMPT 118
+Fecha de registro: 2026-11-16; hora exacta UTC en manifiesto final; zona America/Santiago. Agente Codex; modelo exacto no disponible. Hora original del mensaje no disponible.
+PROMPT COMPLETO:
+Autorizo corregir exclusivamente el comando SQL de lectura del preflight, utilizando el rol PostgreSQL que ya está configurado en el laboratorio 3102.
+
+Procedimiento:
+1. Obtener el nombre del rol desde la configuración local existente, sin imprimir contraseñas ni secretos.
+2. Corregir el comando de consulta, sin crear roles, modificar permisos ni alterar la base.
+3. Repetir el preflight completo de aislamiento.
+4. Confirmar mediante consultas de solo lectura:
+   - UUID correcto: a52a7a92-9b7f-4ae1-a6cf-643a0a25f14f.
+   - Base autoparts_purchase_test.
+   - Pedido original intacto y PAID.
+   - Exactamente 10 cuentas y 10 carritos independientes vacíos.
+   - Stock suficiente para 10 compras.
+   - Proveedor SIMULATED y GA4 desactivado.
+5. Si TODAS las verificaciones pasan, ejecutar UNA sola vez la prueba k6 previamente autorizada:
+
+npm run perf:purchase:once -- --env-file artifacts/purchase-lab/a52a7a92-9b7f-4ae1-a6cf-643a0a25f14f/compose.env --execute --accept-test-writes --vus 10
+
+Límites: 10 VUs, 10 compras, 500 solicitudes y 90 segundos.
+
+Después, verificar pedidos, pagos, stock, carritos, duplicados, errores y métricas. Conservar resultados originales y hashes.
+
+Restricciones:
+- No ejecutar k6 si falla alguna comprobación.
+- No repetir automáticamente una ejecución iniciada, aunque falle.
+- No modificar código, configuración, roles ni datos manualmente.
+- No contactar GA4, Transbank, Neon ni Vercel.
+- No hacer commit ni push.
+
+Si el problema SQL persiste, detenerse y entregar el diagnóstico sin continuar.
+
+RESULTADOS: Rol obtenido en memoria de POSTGRES_USER; consultas SELECT correctas. Preflight aprobado, 5,59 GiB libres; 10 cuentas/10 carritos vacíos; original PAID intacto; stock21; 7 hashes históricos válidos. UNA ejecución 635f372f-a8bb-45f8-b97e-4584aec6dd02 salida0/stoppedfalse/analysisValidtrue:10 compras,140HTTP (130x200/10x201),0errores. Setup40HTTP/3118ms separado. HTTP avg42,5316/p50 34,2943/p90 114,25491/p95 119,535165/p99 132,220098ms;227,295678req/s nominales. Recorrido avg604,2/p50 607/p90 611,4/p95 613,2/p99 614,64ms. SELECT final:11pedidos/11pagos,10nuevos PAID/SIMULATED APPROVED AUTHORIZED,10compradores/carritos/keys,0items carrito,stock21->11,precios yoriginal sin cambios. Contenedores sin reinicios; otros laboratorios ya detenidos intactos. Preflight finalready6,14GiB. Falso negativo de verificador al comparar JSON compacto vs indentado conservado en verification.json; containers-readback.json confirma igualdad parseada. No repetición k6 ni cambios de código/config/roles/manuales DB. GAoff IDs vacíos y SIMULATED/red aislada/rutaslocales; sin captura independiente paquetes ni auditoría de bases externas. Auditoría actualizada y reporte purchase-concurrent-results-20261116.md; originales/hashes en artifacts. Sin commit/push.
+
+Fecha/hora registro: 2026-11-16T19:56:17.5352326-03:00
+PROMPT 119
+Agente: Codex; modelo exacto no disponible. Zona America/Santiago; hora original del mensaje no disponible.
+PROMPT COMPLETO:
+La prueba de 10 VUs y 10 compras concurrentes fue exitosa. Doy por finalizadas las ejecuciones de k6 para esta etapa.
+
+Quiero preparar la integración y entrega del trabajo, pero todavía NO autorizar commit, push ni merge.
+
+Trabaja en feature/k6-purchase-safe.
+
+Tareas:
+1. Revisar git status y git diff completos.
+2. Identificar los archivos de código, tests, scripts y documentación que deben versionarse.
+3. Identificar y excluir archivos .env, credenciales, secretos, sesiones, identificadores sensibles y datos temporales del laboratorio.
+4. Revisar que no se haya incorporado el commit inseguro de Matías ni su secreto de GA4.
+5. Verificar que los resultados de 1 VU y 10 VUs estén documentados y que sus originales y hashes se conserven.
+6. Proponer cómo incluir evidencia suficiente en el repositorio sin subir archivos innecesariamente grandes.
+7. Revisar la compatibilidad con la rama principal y detectar conflictos potenciales sin hacer merge.
+8. Ejecutar tests, lint y TypeScript.
+9. Preparar una lista exacta de archivos para un commit selectivo.
+10. Identificar cualquier requisito pendiente de la pauta de evaluación.
+
+Restricciones:
+- No ejecutar k6.
+- No modificar bases ni servicios.
+- No contactar GA4, Transbank ni producción.
+- No hacer commit, push ni merge.
+- No eliminar ni sobrescribir evidencia histórica.
+
+Entregar un informe breve con:
+- Archivos listos para integrar.
+- Archivos que deben permanecer fuera de Git.
+- Riesgos o conflictos.
+- Validaciones.
+- Propuesta de commit e integración segura.
+
+RESULTADOS: Revisión local de diff rastreado y archivos nuevos; branch feature/k6-purchase-safe HEAD40829fa. 8ebe47a no ancestro; comparación del secreto expuesto en memoria contra345candidatos sin coincidencias;3secretosprivados laboratorio comparados sin coincidencias. No se imprimieron secretos. Primer acceso privadoEPERM porACL se repitió con autorización de lectura elevada, sin modificar permisos. URLsNeon detectadas eranfixtures/placeholders. .config/k6/installation-id no ignorado:excluir expresamente; artifacts/envs/generated/node_modulesprivados ignorados. Sin stage.
+VALIDACIONES:55/55tests offline,lint yTypeScriptPASS,URLficticialoopback1/telemetríaoff;gitdiffcheckPASS. No nuevo build. 7hashfuncionales y10concurrentes válidos;11archivosoriginales suman1133695bytes,no se copiaron/publicaron. Sin patrones de cookies/JWT/secret/correo sintético en fuentes métricas revisadas.
+DOCUMENTACION: purchase-integration-review-20261116.md contiene lista exacta30rutas,exclusiones,anexospropuestos,compatibilidad,riesgos ypauta. AGENTS ypurchase-safe reciben cierrevigente sin borrarcronología. Referencialocalorigin/main decfa361 esancestroHEAD;no fetch:remotoactual no confirmado. RiesgoPreviewautoVercel ysecretoGA4remoto revocaciónnoacreditada;no configurar aquí. Otrosworktrees/documentos no tocados. No k6/servicios/DB/contactoexterno/commit/push/merge. Esperar autorización para integrar/publicar.
+
+Fecha/hora registro: 2026-11-16T20:01:11.8049092-03:00
+PROMPT 120
+Agente Codex; modelo exacto no disponible; zona America/Santiago; hora original del mensaje no disponible.
+PROMPT COMPLETO:
+Autorizo crear UN commit selectivo LOCAL en la rama feature/k6-purchase-safe, siguiendo la lista exacta de 30 archivos de docs/performance/purchase-integration-review-20261116.md.
+
+Mensaje:
+feat(performance): incorporar compras simuladas aisladas y evidencias verificadas
+
+Antes de hacer stage:
+1. Confirmar la rama y el worktree correctos.
+2. Revisar nuevamente los 30 archivos autorizados.
+3. Agregar .config/k6/installation-id a .gitignore, sin versionar ese identificador.
+4. Excluir .env privados, credenciales, cookies, sesiones, snapshots SQL, volúmenes, node_modules y temporales.
+5. Comprobar que no hay secretos ni archivos de laboratorio privados en el conjunto staged.
+6. Confirmar que no se incorporó el commit 8ebe47a.
+7. Conservar los resultados originales y sus hashes sin modificarlos.
+
+Ejecutar git add únicamente sobre los archivos autorizados y el ajuste de .gitignore.
+
+Antes del commit, mostrar:
+- git diff --cached --stat
+- lista exacta de archivos staged
+- resultado de revisión de secretos
+- confirmación de que no hay archivos no autorizados
+
+Si todo coincide, crear UN commit local con el mensaje indicado.
+
+Después:
+1. Mostrar SHA del commit y archivos incluidos.
+2. Confirmar que el worktree está en el estado esperado.
+3. Verificar que los resultados originales siguen intactos.
+4. Indicar qué evidencia pública aún falta incorporar.
+5. Proponer una estrategia para integrar en main sin activar accidentalmente un despliegue Preview.
+
+Restricciones:
+- NO hacer push.
+- NO hacer merge ni rebase.
+- NO ejecutar k6.
+- NO modificar bases ni servicios.
+- NO contactar GA4, Transbank ni producción.
+- NO incorporar el commit inseguro de Matías.
+- NO agregar archivos fuera de la lista revisada, salvo .gitignore.
+- Si detectas un problema de seguridad o archivos inesperados, detenerte antes del commit.
+
+REGISTRO PREVIO AL COMMIT: Rama/worktree confirmados; índice inicial vacío. Se añade exclusivamente regla .config/k6/installation-id a .gitignore y se actualiza su descripción en el informe autorizado. Conjunto limitado a lista30+.gitignore. Se auditarán blobs staged, identidadGit, procedencia y hashes antes de crear un único commit; no anticipar SHA ni éxito. Validaciones previas55/55/lint/TypeScript aprobadas, sin cambios nuevos de lógica. No k6,DB,servicios,redexterna,push/merge/rebase. Evidencia experimental permanece ignorada y local. El resultado final y SHA se comunicarán después del commit sin crear otro commit para registrar su propio hash.

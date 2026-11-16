@@ -21,3 +21,4 @@ playwright-report/
 
 # Exportaciones experimentales locales (documentar resúmenes en docs).
 /artifacts/
+/.config/k6/installation-id

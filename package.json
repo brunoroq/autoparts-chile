@@ -16,7 +16,7 @@
     "typecheck": "prisma generate && next typegen && tsc --noEmit",
     "validate": "npm run lint && npm run typecheck && npm run db:validate",
     "check:http": "node scripts/check-http.mjs",
-    "test": "tsx --test tests/catalog.test.ts tests/auth.test.ts tests/checkout.test.ts tests/analytics.test.ts tests/deployment.test.ts tests/guest-cart.test.ts tests/origin.test.ts tests/performance.test.ts tests/http-instrumentation.test.ts",
+    "test": "tsx --test tests/catalog.test.ts tests/auth.test.ts tests/checkout.test.ts tests/analytics.test.ts tests/deployment.test.ts tests/guest-cart.test.ts tests/origin.test.ts tests/performance.test.ts tests/http-instrumentation.test.ts tests/purchase-performance.test.ts tests/purchase-analysis.test.ts",
     "test:auth:compat": "node scripts/check-auth-compat.mjs",
     "test:auth:prepare": "tsx scripts/prepare-auth-tests.ts",
     "test:auth:integration": "tsx --test tests/auth.integration.test.ts",
@@ -61,7 +61,9 @@
     "perf": "tsx scripts/run-performance.ts",
     "cwv": "tsx scripts/cwv.ts",
     "test:cwv": "tsx --test tests/cwv.test.ts",
-    "test:performance": "tsx --test tests/performance.test.ts tests/performance-browser.test.ts tests/performance-observer.test.ts tests/performance-diagnostics.test.ts tests/performance-observer-marker.test.ts tests/performance-chromium-research.test.ts"
+    "test:performance": "tsx --test tests/performance.test.ts tests/performance-browser.test.ts tests/performance-observer.test.ts tests/performance-diagnostics.test.ts tests/performance-observer-marker.test.ts tests/performance-chromium-research.test.ts",
+    "perf:purchase": "tsx scripts/run-purchase-performance.ts",
+    "perf:purchase:once": "tsx scripts/run-purchase-once.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
