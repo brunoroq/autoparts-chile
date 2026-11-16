@@ -1,102 +1,333 @@
-import http from 'k6/http';
-import { check, sleep } from 'k6';
-import exec from 'k6/execution';
-import { Counter, Rate, Trend } from 'k6/metrics';
-import { buildScenario } from './scenarios.js';
-import { BASE_URL, validatePlan, allowedRequest, requestBudget } from './safety.js';
-import { summaryFiles } from './summary.js';
+import http from "k6/http";
+import { check, sleep } from "k6";
+import exec from "k6/execution";
+import { Counter, Rate, Trend } from "k6/metrics";
+import { buildScenario } from "./scenarios.js";
+import {
+  BASE_URL,
+  validatePlan,
+  allowedRequest,
+  requestBudget,
+} from "./safety.js";
+import { summaryFiles } from "./summary.js";
 
 // Sin plan privado emitido por el comando principal no se inicializa el generador.
-if (!__ENV.PERF_PLAN) throw new Error('Ejecución directa bloqueada: falta PERF_PLAN.');
+if (!__ENV.PERF_PLAN)
+  throw new Error("Ejecución directa bloqueada: falta PERF_PLAN.");
 const plan = validatePlan(JSON.parse(open(__ENV.PERF_PLAN)));
-const statuses = new Counter('http_status');
-const failures = new Rate('functional_errors');
-const db = new Trend('server_db_ms', true);
-const app = new Trend('server_app_ms', true);
+const statuses = new Counter("http_status");
+const failures = new Rate("functional_errors");
+const db = new Trend("server_db_ms", true);
+const app = new Trend("server_app_ms", true);
 let sent = 0;
 export const options = {
   scenarios: { workload: buildScenario(plan) },
-  summaryTrendStats: ['avg', 'med', 'p(90)', 'p(95)', 'p(99)', 'min', 'max', 'count'],
+  summaryTrendStats: [
+    "avg",
+    "med",
+    "p(90)",
+    "p(95)",
+    "p(99)",
+    "min",
+    "max",
+    "count",
+  ],
   thresholds: {
-    http_req_failed: [{ threshold: 'rate<0.05', abortOnFail: true, delayAbortEval: '30s' }],
-    functional_errors: [{ threshold: 'rate<0.05', abortOnFail: true, delayAbortEval: '30s' }],
-    http_req_duration: [{ threshold: 'p(95)<5000', abortOnFail: true, delayAbortEval: '30s' }],
-    'http_req_duration{phase:steady}': ['p(95)<5000'],
+    http_req_failed: [
+      { threshold: "rate<0.05", abortOnFail: true, delayAbortEval: "30s" },
+    ],
+    functional_errors: [
+      { threshold: "rate<0.05", abortOnFail: true, delayAbortEval: "30s" },
+    ],
+    http_req_duration: [
+      { threshold: "p(95)<5000", abortOnFail: true, delayAbortEval: "30s" },
+    ],
+    "http_req_duration{phase:steady}": ["p(95)<5000"],
   },
-  tags: { experiment: plan.runId, profile: plan.profile, catalog: String(plan.catalogSize), traffic: 'synthetic' },
+  tags: {
+    experiment: plan.runId,
+    profile: plan.profile,
+    catalog: String(plan.catalogSize),
+    traffic: "synthetic",
+  },
   maxRedirects: 0,
 };
 function guard() {
-  try { validatePlan(plan); } catch { exec.test.abort('Plan vencido o inválido.'); }
-  if (exec.vu.idInTest > plan.maxVus || exec.instance.vusActive > plan.maxVus || sent >= requestBudget(plan.maxRequests, plan.maxVus, exec.vu.idInTest)) {
-    exec.test.abort('Límite de usuarios, tiempo o solicitudes alcanzado.');
+  try {
+    validatePlan(plan);
+  } catch {
+    exec.test.abort("Plan vencido o inválido.");
+  }
+  if (
+    exec.vu.idInTest > plan.maxVus ||
+    exec.instance.vusActive > plan.maxVus ||
+    sent >= requestBudget(plan.maxRequests, plan.maxVus, exec.vu.idInTest)
+  ) {
+    exec.test.abort("Límite de usuarios, tiempo o solicitudes alcanzado.");
   }
 }
 function request(method, route, payload) {
   guard();
-  if (!allowedRequest(method, route)) exec.test.abort('Operación fuera de la lista permitida.');
-  if (method === 'POST' && (!payload?.items?.length || payload.items.some(i => i.quantity !== 1))) exec.test.abort('Cotización inválida.');
+  if (!allowedRequest(method, route))
+    exec.test.abort("Operación fuera de la lista permitida.");
+  if (
+    method === "POST" &&
+    (!payload?.items?.length || payload.items.some((i) => i.quantity !== 1))
+  )
+    exec.test.abort("Cotización inválida.");
   sent++;
   const elapsed = (Date.now() - exec.scenario.startTime) / 1000;
-  const window = plan.profile === 'baja' ? [30, 150] : plan.profile === 'normal' ? [60, 360] : [90, 150];
-  const phase = elapsed >= window[0] && elapsed < window[1] ? 'steady' : 'ramp';
-  const response = http.request(method, BASE_URL + route, payload ? JSON.stringify(payload) : null, {
-    redirects: 0, timeout: '5s', tags: { phase, name: route.split('?')[0].replace(/\/products\/[a-f0-9-]{36}$/, '/products/[id]').replace(/\/productos\/.+$/, '/productos/[slug]') },
-    headers: { Origin: BASE_URL, 'Content-Type': 'application/json', 'X-Experiment-Id': plan.runId },
+  const window =
+    plan.profile === "baja"
+      ? [30, 150]
+      : plan.profile === "normal"
+        ? [60, 360]
+        : [90, 150];
+  const phase = elapsed >= window[0] && elapsed < window[1] ? "steady" : "ramp";
+  const response = http.request(
+    method,
+    BASE_URL + route,
+    payload ? JSON.stringify(payload) : null,
+    {
+      redirects: 0,
+      timeout: "5s",
+      tags: {
+        phase,
+        name: route
+          .split("?")[0]
+          .replace(/\/products\/[a-f0-9-]{36}$/, "/products/[id]")
+          .replace(/\/productos\/.+$/, "/productos/[slug]"),
+      },
+      headers: {
+        Origin: BASE_URL,
+        "Content-Type": "application/json",
+        "X-Experiment-Id": plan.runId,
+      },
+    },
+  );
+  statuses.add(1, {
+    status: String(response.status),
+    kind:
+      response.status >= 500 || response.status === 0
+        ? "technical"
+        : response.status >= 400
+          ? "unexpected_client"
+          : "success",
   });
-  statuses.add(1, { status: String(response.status), kind: response.status >= 500 || response.status === 0 ? 'technical' : response.status >= 400 ? 'unexpected_client' : 'success' });
-  const ok = check(response, { 'HTTP 200': r => r.status === 200 });
+  const ok = check(response, { "HTTP 200": (r) => r.status === 200 });
   failures.add(!ok);
-  if ([301, 302, 303, 307, 308].includes(response.status)) exec.test.abort('Redirección inesperada; no se siguió el destino.');
-  for (const [name, metric] of [['db', db], ['app', app]]) {
-    const match = new RegExp(`${name};dur=([0-9.]+)`).exec(response.headers['Server-Timing'] || '');
+  if ([301, 302, 303, 307, 308].includes(response.status))
+    exec.test.abort("Redirección inesperada; no se siguió el destino.");
+  for (const [name, metric] of [
+    ["db", db],
+    ["app", app],
+  ]) {
+    const match = new RegExp(`${name};dur=([0-9.]+)`).exec(
+      response.headers["Server-Timing"] || "",
+    );
     if (match) metric.add(Number(match[1]));
   }
   return response;
 }
 function json(response) {
-  try { return response.json(); } catch { failures.add(true); return null; }
+  try {
+    return response.json();
+  } catch {
+    failures.add(true);
+    return null;
+  }
 }
 // La verificación se repite por VU; --no-setup no permite omitir el aislamiento.
 let verified = false;
 let cwvClockSent = false;
 export default function journey() {
   guard();
+
   // Reloj real del escenario, emitido una sola vez sin datos del navegador.
-  if (__ENV.PERF_CWV === 'true' && exec.vu.idInTest === 1 && !cwvClockSent) {
-    if (plan.profile !== 'normal' || plan.model !== 'closed' || plan.maxVus !== 10 || plan.catalogSize !== 30) exec.test.abort('CWV requiere normal/closed/10VU/30productos.');
-    console.log(JSON.stringify({event:'cwv_scenario_clock',runId:plan.runId,startMs:exec.scenario.startTime}));
+  if (__ENV.PERF_CWV === "true" && exec.vu.idInTest === 1 && !cwvClockSent) {
+    if (
+      plan.profile !== "normal" ||
+      plan.model !== "closed" ||
+      plan.maxVus !== 10 ||
+      plan.catalogSize !== 30
+    )
+      exec.test.abort("CWV requiere normal/closed/10VU/30productos.");
+    console.log(
+      JSON.stringify({
+        event: "cwv_scenario_clock",
+        runId: plan.runId,
+        startMs: exec.scenario.startTime,
+      }),
+    );
     cwvClockSent = true;
   }
+
   if (!verified) {
-    const marker = json(request('GET', '/api/performance/status'));
-    if (marker?.runId !== plan.runId || marker?.catalogSize !== plan.catalogSize || marker?.isolated !== true) exec.test.abort('Instancia aislada no confirmada.');
+    const marker = json(request("GET", "/api/performance/status"));
+    if (
+      marker?.runId !== plan.runId ||
+      marker?.catalogSize !== plan.catalogSize ||
+      marker?.isolated !== true
+    )
+      exec.test.abort("Instancia aislada no confirmada.");
     verified = true;
   }
+
+  // --- CONFIGURACIÓN DE GOOGLE ANALYTICS ---
+  const GA_MEASUREMENT_ID = "G-VVKYV486NP";
+  const GA_API_SECRET = "vPZDT6eKSWi8QPOuWCRvTg";
+  const clientId = `vu-${exec.vu.idInTest}`;
+  const sessionId = exec.scenario.startTime;
+  const gaHeaders = {
+    headers: { "Content-Type": "application/json" },
+    tags: { name: "Google Analytics" },
+  };
+  const gaUrl = `https://www.google-analytics.com/mp/collect?measurement_id=${GA_MEASUREMENT_ID}&api_secret=${GA_API_SECRET}`;
+
+  // 1. EVENTO GA4: PAGE VIEW
+  http.post(
+    gaUrl,
+    JSON.stringify({
+      client_id: clientId,
+      events: [
+        {
+          name: "page_view",
+          params: {
+            page_location: "https://tu-proyecto-autoparts.vercel.app/",
+            page_title: "Home / Carga k6",
+            session_id: sessionId,
+            engagement_time_msec: 2000,
+          },
+        },
+      ],
+    }),
+    gaHeaders,
+  );
+
   const n = (exec.vu.idInTest * 17 + exec.vu.iterationInScenario) % 10;
-  const pause = () => sleep(1 + (exec.vu.idInTest + exec.vu.iterationInScenario) % 3);
-  if (n < 4) { request('GET', '/'); pause(); request('GET', '/catalogo'); }
-  const terms = ['LED', 'limpieza', 'zz_sin_resultados'];
-  const query = n < 8 && n >= 4 ? `?q=${terms[exec.vu.iterationInScenario % 3]}&minPrice=0&maxPrice=100000&sort=price_asc&page=1&pageSize=12` : '?pageSize=12';
-  const list = json(request('GET', '/api/v1/products' + query));
+  const pause = () =>
+    sleep(1 + ((exec.vu.idInTest + exec.vu.iterationInScenario) % 3));
+
+  if (n < 4) {
+    request("GET", "/");
+    pause();
+    request("GET", "/catalogo");
+  }
+
+  const terms = ["LED", "limpieza", "zz_sin_resultados"];
+  const query =
+    n < 8 && n >= 4
+      ? `?q=${terms[exec.vu.iterationInScenario % 3]}&minPrice=0&maxPrice=100000&sort=price_asc&page=1&pageSize=12`
+      : "?pageSize=12";
+  const list = json(request("GET", "/api/v1/products" + query));
   const products = list?.data;
+
   failures.add(!Array.isArray(products));
   if (!Array.isArray(products)) return;
+
   if (n >= 4 && n < 8) {
-    const categories = json(request('GET', '/api/v1/categories'));
+    const categories = json(request("GET", "/api/v1/categories"));
     const slug = categories?.data?.[exec.vu.iterationInScenario % 6]?.slug;
-    if (slug) request('GET', `/api/v1/products?category=${encodeURIComponent(slug)}&sort=price_desc&page=2&pageSize=12`);
+    if (slug)
+      request(
+        "GET",
+        `/api/v1/products?category=${encodeURIComponent(slug)}&sort=price_desc&page=2&pageSize=12`,
+      );
   }
-  const product = products.find(p => p.stock > 1);
+
+  const product = products.find((p) => p.stock > 1);
   if (product) {
     pause();
-    request('GET', `/api/v1/products/${product.id}`);
-    if (n < 4) request('GET', `/productos/${product.slug}`);
+    request("GET", `/api/v1/products/${product.id}`);
+
+    // 2. EVENTO GA4: VITRINA (view_item)
+    http.post(
+      gaUrl,
+      JSON.stringify({
+        client_id: clientId,
+        events: [
+          {
+            name: "view_item",
+            params: {
+              session_id: sessionId,
+              engagement_time_msec: 1000,
+              items: [{ item_id: product.id }],
+            },
+          },
+        ],
+      }),
+      gaHeaders,
+    );
+
+    if (n < 4) request("GET", `/productos/${product.slug}`);
+
     if (n >= 8) {
-      const quote = json(request('POST', '/api/v1/cart/guest', { items: [{ productId: product.id, quantity: 1 }] }));
-      failures.add(!check(quote, { 'Cotización CLP coherente': q => q?.data?.currency === 'CLP' && q.data.items.length === 1 && q.data.items[0].quantity === 1 && q.data.totalClp === product.priceClp }));
+      const quote = json(
+        request("POST", "/api/v1/cart/guest", {
+          items: [{ productId: product.id, quantity: 1 }],
+        }),
+      );
+      failures.add(
+        !check(quote, {
+          "Cotización CLP coherente": (q) =>
+            q?.data?.currency === "CLP" &&
+            q.data.items.length === 1 &&
+            q.data.items[0].quantity === 1 &&
+            q.data.totalClp === product.priceClp,
+        }),
+      );
+
+      if (quote && quote.data) {
+        // 3. EVENTO GA4: CARRITO (add_to_cart)
+        http.post(
+          gaUrl,
+          JSON.stringify({
+            client_id: clientId,
+            events: [
+              {
+                name: "add_to_cart",
+                params: {
+                  session_id: sessionId,
+                  engagement_time_msec: 2000,
+                  value: product.priceClp,
+                  currency: "CLP",
+                  items: [{ item_id: product.id, quantity: 1 }],
+                },
+              },
+            ],
+          }),
+          gaHeaders,
+        );
+
+        pause();
+
+        // 4. EVENTO GA4: COMPRA (purchase)
+        // Usamos un transaction_id único dinámico para que GA4 no descarte compras duplicadas
+        http.post(
+          gaUrl,
+          JSON.stringify({
+            client_id: clientId,
+            events: [
+              {
+                name: "purchase",
+                params: {
+                  session_id: sessionId,
+                  engagement_time_msec: 5000,
+                  transaction_id: `T-k6-${Date.now()}-${exec.vu.iterationInScenario}`,
+                  value: product.priceClp,
+                  currency: "CLP",
+                  items: [{ item_id: product.id, quantity: 1 }],
+                },
+              },
+            ],
+          }),
+          gaHeaders,
+        );
+      }
     }
   }
   pause();
 }
-export function handleSummary(data) { return summaryFiles(data, plan); }
+export function handleSummary(data) {
+  return summaryFiles(data, plan);
+}
