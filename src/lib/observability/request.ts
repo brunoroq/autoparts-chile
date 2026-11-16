@@ -52,6 +52,13 @@ export async function instrumentResponse(
       if (known && error.retryAfter)
         response.headers.set("Retry-After", String(error.retryAfter));
     }
+    // Las redirecciones y respuestas de fetch pueden tener headers inmutables.
+    // Copiar sin consumir el cuerpo ni repetir la operación que ya terminó.
+    response = new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: new Headers(response.headers),
+    });
     const totalMs = performance.now() - start;
     response.headers.set("Cache-Control", "no-store");
     response.headers.set("X-Request-Id", requestId);
