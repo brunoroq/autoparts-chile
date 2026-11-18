@@ -3,6 +3,8 @@
 **Kernel en Crisis** · **Universidad Tecnológica Metropolitana (UTEM)**  
 **INFB8091 — Desempeño de Sistemas** · Segundo semestre de 2026
 
+🌐 **[Visitar AutoParts Chile](https://autoparts-chile.vercel.app)**
+
 AutoParts Chile es una plataforma web de comercio electrónico de accesorios automotrices, desarrollada como proyecto académico para estudiar el comportamiento de una aplicación ante diferentes condiciones de carga.
 
 El trabajo combina la implementación de una tienda funcional con pruebas de rendimiento, monitoreo de recursos, analítica web y evaluación de la experiencia de navegación.
@@ -122,7 +124,10 @@ Universidad Tecnológica Metropolitana (UTEM)
 Asignatura: **INFB8091 — Desempeño de Sistemas**  
 Período: **Segundo semestre de 2026**
 
-**Integrantes:** _[Completar con los cuatro integrantes]_  
+**Integrantes:** -Bruno Roque Mendoza
+                 -Fernanda Durandeau Cerda
+                 -Matias Ponce Palma
+                 -Estefany Serrano Jaque
 **Docente:** Javier Etienne Aranda Bellenger
 
 ---
